@@ -57,7 +57,15 @@ class Regression:
         """
         Mostra os argumentos
         """
-        return f"FUNCTION: {self.function.__name__}\nREGRESSOR: {self.regressor}\nPARAMS: {self.__args_function}\nLOCK PARAMS: {self.__lock}"
+        output:str = f"FUNCTION: {self.function.__name__}"
+        output += f"\nREGRESSOR: {', '.join(self.regressor)}"
+        if len(self.__lock) > 0:
+            output += f"\nLOCK PARAMS: {', '.join(self.__lock)}"
+        output += "\nPARAMS:"
+        for arg in self.__args_function.keys():
+            output += f"\n  {arg} = {self.__args_function[arg]:0.08f}"
+        return output
+        
 
     def __getitem__(self, index:str) -> float:
         """
@@ -81,6 +89,12 @@ class Regression:
         for arg in args:
             assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.function.__name__}"
             self.__lock[arg] = args[arg]
+
+    def prediction(self, **x_args) -> float:
+        """
+        Faz a previsão de f(...) = y
+        """
+        return self.function(**x_args, **self.__args_function)
 
     def run(self, data:[list], precision:float = 0.01) -> None:
         """

@@ -52,4 +52,5 @@ if __name__ == "__main__":
     teste_5.run(dado, precision = 0.001)
     print(teste_5)
 
-    
+    print(dado[3])
+    print(teste_5.prediction(x_1 = 3, x_2 = 9))
