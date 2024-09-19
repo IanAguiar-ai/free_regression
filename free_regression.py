@@ -2,7 +2,12 @@
 Regressão que aceita qualquer função para uma variável regressora
 
 Metodo:
-    Acha aleatóriamente os parâmetros da função de regressão passada usando algum tipo de função de perda
+    Acha aleatóriamente os parâmetros da função de regressão passada usando algum tipo de função de perda.
+    1. Começa com os parâmetros modificaveis sendo igual a 1;
+    2. Altera esses parâmetros em -<precision>/2 até <precision>/2 para cima ou para baixo;
+    3. Se precision <presision> minima definida pelo usuário ele passa para o passo 5;
+    4. Se ele não melhora em <iterations> iterações, ele divide precision por 2 e volta para o passo (2);
+    5. Salva o erro e os parâmetros ótimos que podem ser acessados pelo usuário. 
 
 """
 from inspect import signature # Para pegar os argumentos de uma função
