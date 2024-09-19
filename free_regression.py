@@ -20,6 +20,12 @@ class Regression:
     __slots__ = ("function", "iterations", "params", "regressor", "__args_function", "__seed", "__lock")
     
     def __init__(self, function:"function", regressor:list = None) -> None:
+        """
+        Inicializa a classe, as etapas são:
+
+        -
+        - 
+        """
         self.function:"function" = function
         
         temp = tuple(signature(function).parameters.keys())
