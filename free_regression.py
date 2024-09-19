@@ -171,8 +171,7 @@ class Regression:
                 args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
 
         precision_final, precision = precision/2, max(precision * 10, 1)
-        while precision >= precision_final: #Vai diminuindo a variação da busca
-            #print(f"Precisão atual: {precision}")
+        while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
             while with_no_iteration < self.iterations:
                 with_no_iteration += 1
@@ -185,7 +184,6 @@ class Regression:
                     x_args:dict = {}
                     for i in range(len(x)):
                         x_args[self.regressor[i]] = x[i]
-                    #print(x_args, args_temp)
 
                     # Fazendo a predição
                     y_predicted.append(self.function(**x_args, **args_temp))
@@ -202,16 +200,12 @@ class Regression:
                     with_no_iteration = 0
                     best_result:float = result
                     best_args = deepcopy(args_temp)
-                    #print(f"ERRO: {best_result} | ARGUMENTOS {best_args}")
-                    #print(f"{y_predicted}\n{y_expected}")
                 else:
                     args_temp = deepcopy(best_args)
 
                 for parameter in self.__args_function.keys():
                     if parameter not in self.__lock.keys():
-                        #print(f"{parameter}: {args_temp[parameter]} -> ", end = "")
                         args_temp[parameter] += random()*precision - precision/2
-                        #print(f"{args_temp[parameter]}")
 
             # Aumenta a precisão
             precision /= 2
