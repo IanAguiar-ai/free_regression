@@ -175,9 +175,5 @@ class Teste(unittest.TestCase):
 
         
 if __name__ == "__main__":
-    #unittest.main()
-    s_1 = Regression(reg_1)
-    s_2 = Regression(reg_2)
-    print(s_1 == Regression(reg_1))
-    s_1_2 = s_1 + s_2
+    unittest.main()
 

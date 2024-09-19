@@ -31,11 +31,11 @@ def least_squares(vector_1:list, vector_2:list) -> float:
     """
     return sum([(vector_1[i] - vector_2[i])*(vector_1[i] - vector_2[i]) for i in range(len(vector_1))])
 
-def generic_function_separation(regressor_1:dict, regressor_2:dict, args_1:dict, args_2:dict, function_1:"function", function_2:"function") -> ("function", "function"):
+def generic_function_separation(args_1:dict, args_2:dict, function_1:"function", function_2:"function") -> ("function", "function"):
     """
     Função genérica para a separação dos argumentos da mistura
     """
-    return function_1(**regressor_1, **args_1), function_2(**regressor_2, **args_2)
+    return function_1(**args_1), function_2(**args_2)
 
 class Regression:
     """
@@ -113,13 +113,6 @@ class Regression:
         assert type(index) == str, "The index must be a character(chr)"
         assert index in self.params, f"The index '{index}' must exist in params '{', '.join(self.params)}'"
         return self.__args_function[index]
-
-    def __add__(self, obj) -> "Regression":
-        """
-        + para mistura
-        """
-        if type(obj) == Regression:
-            func_1, func_2 = generic_function_separation(self.regressor, self.__args_function, self.__function, obj.regressor, obj.__args_function, obj.__function)
 
     def set_seed(self, seed:int) -> None:
         """
