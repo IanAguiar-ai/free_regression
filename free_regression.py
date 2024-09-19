@@ -40,7 +40,7 @@ class Regression:
     - function: A função qual o usuário quer fazer a regressão, essa função deve sempre ter a variável regressora chamada de x
     
     """
-    __slots__ = ("function", "iterations", "params", "regressor", "__args_function", "__seed", "__lock", "__loss_function")
+    __slots__ = ("function", "iterations", "params", "regressor", "__args_function", "__seed", "__lock", "__loss_function", "__error")
     
     def __init__(self, function:"function", regressor:list = None, loss_function:"function" = least_squares) -> None:
         """
@@ -50,7 +50,8 @@ class Regression:
         - 
         """
         self.function:"function" = function
-        self.__loss_function = loss_function
+        self.__loss_function:"function" = loss_function
+        self.__error:float = None
         
         temp = tuple(signature(function).parameters.keys())
 
@@ -82,6 +83,7 @@ class Regression:
         Mostra os argumentos
         """
         output:str = f"FUNCTION: {self.function.__name__}"
+        output += f"\nLOSS FUNCTION({self.__loss_function.__name__}): {self.__error:0.08f}"
         output += f"\nREGRESSOR: {', '.join(self.regressor)}"
         if len(self.__lock) > 0:
             output += f"\nLOCK PARAMS: {', '.join(self.__lock)}"
@@ -189,7 +191,7 @@ class Regression:
                     y_predicted.append(self.function(**x_args, **args_temp))
 
                 # Resultado dos minimos quadrados
-                result = least_squares(y_predicted, y_expected)
+                result = self.__loss_function(y_predicted, y_expected)
 
                 # Atualizando melhores parâmetros para regressora
                 if not "best_result" in locals():
@@ -215,4 +217,5 @@ class Regression:
             precision /= 2
 
         # Salva o resultado
-        self.__args_function = best_args   
+        self.__args_function = best_args
+        self.__error = best_result
