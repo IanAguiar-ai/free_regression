@@ -2,12 +2,35 @@
 Regressão que aceita qualquer função para uma variável regressora
 
 Metodo:
-    Acha aleatóriamente os parâmetros
+    Acha aleatóriamente os parâmetros da função de regressão passada usando algum tipo de função de perda
 
 """
 from inspect import signature # Para pegar os argumentos de uma função
 from copy import deepcopy
 from random import random, seed
+
+
+def variance(vector:list) -> float:
+    """
+    Calcula a variância de forma mais enxuta e otimizada
+    Não usa do calculo da variância normal, sem a raiz no final
+    """
+    
+    def mean(vector:list) -> float:
+        """
+        Calcula a média
+        """
+        return sum(vector)/len(vector)
+
+    m = mean(vector)
+    return sum([(m - x)*(m - x) for x in vector])/len(vector)
+
+def least_squares(vector_1:list, vector_2:list) -> float:
+    """
+    Função de minimos quadrados
+    """
+    return sum([(vector_1[i] - vector_2[i])*(vector_1[i] - vector_2[i]) for i in range(len(vector_1))])
+
 
 class Regression:
     """
@@ -17,9 +40,9 @@ class Regression:
     - function: A função qual o usuário quer fazer a regressão, essa função deve sempre ter a variável regressora chamada de x
     
     """
-    __slots__ = ("function", "iterations", "params", "regressor", "__args_function", "__seed", "__lock")
+    __slots__ = ("function", "iterations", "params", "regressor", "__args_function", "__seed", "__lock", "__loss_function")
     
-    def __init__(self, function:"function", regressor:list = None) -> None:
+    def __init__(self, function:"function", regressor:list = None, loss_function:"function" = least_squares) -> None:
         """
         Inicializa a classe, as etapas são:
 
@@ -27,6 +50,7 @@ class Regression:
         - 
         """
         self.function:"function" = function
+        self.__loss_function = loss_function
         
         temp = tuple(signature(function).parameters.keys())
 
@@ -191,25 +215,4 @@ class Regression:
             precision /= 2
 
         # Salva o resultado
-        self.__args_function = best_args
-
-def variance(vector:list) -> float:
-    """
-    Calcula a variância de forma mais enxuta e otimizada
-    Não usa do calculo da variância normal, sem a raiz no final
-    """
-    
-    def mean(vector:list) -> float:
-        """
-        Calcula a média
-        """
-        return sum(vector)/len(vector)
-
-    m = mean(vector)
-    return sum([(m - x)*(m - x) for x in vector])/len(vector)
-
-def least_squares(vector_1:list, vector_2:list) -> float:
-    """
-    Função de minimos quadrados
-    """
-    return sum([(vector_1[i] - vector_2[i])*(vector_1[i] - vector_2[i]) for i in range(len(vector_1))])        
+        self.__args_function = best_args   
