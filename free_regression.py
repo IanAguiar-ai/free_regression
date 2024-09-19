@@ -90,11 +90,30 @@ class Regression:
             assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.function.__name__}"
             self.__lock[arg] = args[arg]
 
-    def prediction(self, **x_args) -> float:
+    def prediction(self, list_prediction:list = None, **x_args) -> float:
         """
         Faz a previsão de f(...) = y
+        x_args: Parametros regressores
         """
-        return self.function(**x_args, **self.__args_function)
+
+        if type(list_prediction) == list or type(list_prediction) == tuple: # Caso o usuário tenha passado uma série de valores para a predição
+            assert type(list_prediction[0]) == list or type(list_prediction[0]) == tuple, "If you want to pass a series of values​to predict, you should pass the list of lists of values with the regressor parameters"
+            assert min(map(len, list_prediction)) == max(map(len, list_prediction)) == len(self.regressor), f"Your list of lists must be {len(list_prediction)} by {len(self.regressor)} in size"
+
+            results = []
+            x_args = {}
+            for values in list_prediction:
+                for i in range(len(self.regressor)):
+                    x_args[self.regressor[i]] = values[i]
+                results.append(self.function(**x_args, **self.__args_function))
+                
+            return results
+        
+        else: # Caso o usuário tenha passado valores específicos para a predição
+            assert len(set(x_args.keys()) & set(self.__args_function.keys())) == 0, f"You cannot pass a parameter as a regressor that is already being used as a prediction parameter.\n  Regressor parameters: {', '.join(x_args.keys())}\n  Predictor parameters: {', '.join(self.__args_function.keys())}"
+            assert set(x_args.keys()) == set(self.regressor), f"Pass regressor parameters correctly\n  Regressor parameters passed: {', '.join(x_args.keys())}\n  Expected regressor parameters: {', '.join(self.regressor)}"
+
+            return self.function(**x_args, **self.__args_function)
 
     def run(self, data:[list], precision:float = 0.01) -> None:
         """

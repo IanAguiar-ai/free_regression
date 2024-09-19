@@ -54,3 +54,5 @@ if __name__ == "__main__":
 
     print(dado[3])
     print(teste_5.prediction(x_1 = 3, x_2 = 9))
+    print([x[-1] for x in dado])
+    print(teste_5.prediction([x[:-1] for x in dado]))
