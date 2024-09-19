@@ -31,6 +31,11 @@ def least_squares(vector_1:list, vector_2:list) -> float:
     """
     return sum([(vector_1[i] - vector_2[i])*(vector_1[i] - vector_2[i]) for i in range(len(vector_1))])
 
+def generic_function_separation(regressor_1:dict, regressor_2:dict, args_1:dict, args_2:dict, function_1:"function", function_2:"function") -> ("function", "function"):
+    """
+    Função genérica para a separação dos argumentos da mistura
+    """
+    return function_1(**regressor_1, **args_1), function_2(**regressor_2, **args_2)
 
 class Regression:
     """
@@ -40,7 +45,7 @@ class Regression:
     - function: A função qual o usuário quer fazer a regressão, essa função deve sempre ter a variável regressora chamada de x
     
     """
-    __slots__ = ("function", "iterations", "params", "regressor", "__args_function", "__seed", "__lock", "__loss_function", "__error")
+    __slots__ = ("iterations", "params", "regressor", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error")
     
     def __init__(self, function:"function", regressor:list = None, loss_function:"function" = least_squares) -> None:
         """
@@ -49,7 +54,7 @@ class Regression:
         -
         - 
         """
-        self.function:"function" = function
+        self.__function:"function" = function
         self.__loss_function:"function" = loss_function
         self.__error:float = None
         
@@ -78,12 +83,20 @@ class Regression:
         # Variáveis bloqueadas
         self.__lock = {}
 
+    def __eq__(self, obj) -> bool:
+        """
+        Confere se as funções de regressões são as mesmas
+        """
+        assert type(obj) == Regression, "Only Regression objects can be compared"
+        return True if self.__function == obj.__function else False
+
     def __repr__(self) -> str:
         """
         Mostra os argumentos
         """
-        output:str = f"FUNCTION: {self.function.__name__}"
-        output += f"\nLOSS FUNCTION({self.__loss_function.__name__}): {self.__error:0.08f}"
+        output:str = f"FUNCTION: {self.__function.__name__}"
+        if self.__error != None:
+            output += f"\nLOSS FUNCTION({self.__loss_function.__name__}): {self.__error:0.08f}"
         output += f"\nREGRESSOR: {', '.join(self.regressor)}"
         if len(self.__lock) > 0:
             output += f"\nLOCK PARAMS: {', '.join(self.__lock)}"
@@ -101,6 +114,13 @@ class Regression:
         assert index in self.params, f"The index '{index}' must exist in params '{', '.join(self.params)}'"
         return self.__args_function[index]
 
+    def __add__(self, obj) -> "Regression":
+        """
+        + para mistura
+        """
+        if type(obj) == Regression:
+            func_1, func_2 = generic_function_separation(self.regressor, self.__args_function, self.__function, obj.regressor, obj.__args_function, obj.__function)
+
     def set_seed(self, seed:int) -> None:
         """
         Coloca uma seed
@@ -113,7 +133,7 @@ class Regression:
         Atualiza as variáveis que devem estar travadas
         """
         for arg in args:
-            assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.function.__name__}"
+            assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.__function.__name__}"
             self.__lock[arg] = args[arg]
 
     def prediction(self, list_prediction:list = None, **x_args) -> float:
@@ -131,7 +151,7 @@ class Regression:
             for values in list_prediction:
                 for i in range(len(self.regressor)):
                     x_args[self.regressor[i]] = values[i]
-                results.append(self.function(**x_args, **self.__args_function))
+                results.append(self.__function(**x_args, **self.__args_function))
                 
             return results
         
@@ -139,7 +159,7 @@ class Regression:
             assert len(set(x_args.keys()) & set(self.__args_function.keys())) == 0, f"You cannot pass a parameter as a regressor that is already being used as a prediction parameter.\n  Regressor parameters: {', '.join(x_args.keys())}\n  Predictor parameters: {', '.join(self.__args_function.keys())}"
             assert set(x_args.keys()) == set(self.regressor), f"Pass regressor parameters correctly\n  Regressor parameters passed: {', '.join(x_args.keys())}\n  Expected regressor parameters: {', '.join(self.regressor)}"
 
-            return self.function(**x_args, **self.__args_function)
+            return self.__function(**x_args, **self.__args_function)
 
     def run(self, data:[list], precision:float = 0.01) -> None:
         """
@@ -187,7 +207,7 @@ class Regression:
                         x_args[self.regressor[i]] = x[i]
 
                     # Fazendo a predição
-                    y_predicted.append(self.function(**x_args, **args_temp))
+                    y_predicted.append(self.__function(**x_args, **args_temp))
 
                 # Resultado dos minimos quadrados
                 result = self.__loss_function(y_predicted, y_expected)

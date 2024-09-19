@@ -24,6 +24,15 @@ def funcao_errada(a:float, b:float, c:float):
 def regressao_2_regressores(x_1:float, x_2:float, a:float, b:float):
     return x_1*a + x_2*b**2
 
+def reg_1(x, a, b):
+    return a*x**3 + b*x**2
+
+def reg_2(x, c, d):
+    return c*x + d
+
+def reg_1_2(x, a, b, c, d):
+    return a*x**3 + b*x**2 + c*x + d
+
 # Classe de testes
 class Teste(unittest.TestCase):
     def teste_classe(self):
@@ -33,6 +42,7 @@ class Teste(unittest.TestCase):
         try:
             dado = [[0, 3], [1, 2], [1, 4], [2, 3]]
             teste_1 = Regression(regressao_simples)
+            print(f"{teste_1}\n")
             teste_1.run(dado)
             print(teste_1)
         except Exception as e:
@@ -157,6 +167,17 @@ class Teste(unittest.TestCase):
         with self.assertRaises(AssertionError):
             teste_5['param_nao_existente']
 
+        print(f"\n\n{'='*50}\nTestes de métodos especiais:")
+        print("\nTeste 8.1...")
+        
+        self.assertEqual(Regression(reg_1) == Regression(reg_1), True)
+        self.assertEqual(Regression(reg_1) == Regression(reg_2), False)
+
         
 if __name__ == "__main__":
-    unittest.main()
+    #unittest.main()
+    s_1 = Regression(reg_1)
+    s_2 = Regression(reg_2)
+    print(s_1 == Regression(reg_1))
+    s_1_2 = s_1 + s_2
+
