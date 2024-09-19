@@ -17,18 +17,26 @@ class Regression:
     - function: A função qual o usuário quer fazer a regressão, essa função deve sempre ter a variável regressora chamada de x
     
     """
-    __slots__ = ("function", "iterations", "params", "__args_function", "__seed")
+    __slots__ = ("function", "iterations", "params", "regressor", "__args_function", "__seed", "__lock")
     
-    def __init__(self, function:"function") -> None:
+    def __init__(self, function:"function", regressor:list = None) -> None:
         self.function:"function" = function
         
         temp = tuple(signature(function).parameters.keys())
-        assert "x" in temp, "The passed function must have the parameter 'x'"
+
+        # Definindo regressora
+        if regressor == None:
+            assert "x" in temp, "The passed function must have the parameter 'x' or explicitly specify the regressor with the parameter 'regressor'"
+            self.regressor = ["x"]
+        elif type(regressor) == int or type(regressor) == float:
+            self.regressor = [regressor]
+        else:
+            self.regressor = regressor
         
         self.__args_function:dict = {}
         self.params:list = []
         for parameter in temp:
-            if parameter != "x":
+            if parameter not in self.regressor:
                 self.params.append(parameter)
                 self.__args_function[parameter] = 1
         
@@ -50,8 +58,16 @@ class Regression:
         return self.__args_function[index]
 
     def set_seed(self, seed:int) -> None:
+        """
+        Coloca uma seed
+        """
         assert type(seed) == int, "The seed must be an integer(int)!"
         self.__seed = seed
+
+    def lock(self, **args) -> None:
+        """
+        Atualiza as variáveis que devem estar travadas
+        """
 
     def run(self, data:[list], precision:float = 0.01) -> None:
         """
@@ -62,17 +78,17 @@ class Regression:
         - step: Numero da precisão para achar os parâmetros esperados
         """
 
-        assert type(data) == list, f"The data must be a list of lists"
-        assert type(data[0]) == list, f"The data must be a list of lists"
-        assert len(data[0]) == 2, f"The list of lists must have an x and a y parameter, for example [[0, 4], [1, 3], [1, 3.4], [2, -1]]"
-        assert (k := list(map(len, data))) and max(k) == min(k), f"The data list must be the same size in all itens"
+        assert type(data) == list, "The data must be a list of lists"
+        assert type(data[0]) == list, "The data must be a list of lists"
+        assert len(data[0]) == len(self.regressor) + 1, "The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]"
+        assert (k := list(map(len, data))) and max(k) == min(k), "The data list must be the same size in all itens"
 
         # Iniciando a seed
         if self.__seed is not None:
             seed(seed)
         
         # Pegando y esperado
-        y_expected = [data[i][1] for i in range(len(data))]
+        y_expected = [data[i][-1] for i in range(len(data))]
 
         # Salvando argumentos iniciais para a função
         args_temp:dict = {}
@@ -88,8 +104,16 @@ class Regression:
                 
                 # y predito
                 y_predicted:list = []
-                for x, _ in data:
-                    y_predicted.append(self.function(x, **args_temp))
+                for *x, _ in data:
+
+                    # Separando as variáveis regressoras
+                    x_args:dict = {}
+                    for i in range(len(x)):
+                        x_args[self.regressor[i]] = x[i]
+                    #print(x_args, args_temp)
+
+                    # Fazendo a predição
+                    y_predicted.append(self.function(**x_args, **args_temp))
 
                 # Resultado dos minimos quadrados
                 result = least_squares(y_predicted, y_expected)
@@ -104,11 +128,12 @@ class Regression:
                     best_result:float = result
                     best_args = deepcopy(args_temp)
                     #print(f"ERRO: {best_result} | ARGUMENTOS {best_args}")
+                    #print(f"{y_predicted}\n{y_expected}")
                 else:
                     args_temp = deepcopy(best_args)
 
                 for parameter in self.__args_function.keys():
-                    #print(f"{args_temp[parameter]} -> ", end = "")
+                    #print(f"{parameter}: {args_temp[parameter]} -> ", end = "")
                     args_temp[parameter] += random()*precision - precision/2
                     #print(f"{args_temp[parameter]}")
 
