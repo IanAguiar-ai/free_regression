@@ -43,6 +43,7 @@ if __name__ == "__main__":
 
     dado = [[x, int(x*3 % 11), regressao_2_regressores(x, int(x*3 % 11), a = 3, b = 10)] for x in range(5)]
     teste_4 = Regression(regressao_2_regressores, regressor = ["x_1", "x_2"])
+    teste_4.lock(a = 3)
     teste_4.run(dado, precision = 0.001)
     print(teste_4)
 

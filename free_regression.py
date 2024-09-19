@@ -32,7 +32,8 @@ class Regression:
             self.regressor = [regressor]
         else:
             self.regressor = regressor
-        
+
+        # Argumentos da função
         self.__args_function:dict = {}
         self.params:list = []
         for parameter in temp:
@@ -43,11 +44,14 @@ class Regression:
         self.__seed = None
         self.iterations:int = 50 * len(self.__args_function.keys()) # Quanto mais parâmetros mais iterações eu precisso para que o valor mude
 
+        # Variáveis bloqueadas
+        self.__lock = {}
+
     def __repr__(self) -> str:
         """
         Mostra os argumentos
         """
-        return f"ARGS: {self.__args_function}"
+        return f"FUNCTION: {self.function.__name__}\nREGRESSOR: {self.regressor}\nPARAMS: {self.__args_function}\nLOCK PARAMS: {self.__lock}"
 
     def __getitem__(self, index:str) -> float:
         """
@@ -68,6 +72,9 @@ class Regression:
         """
         Atualiza as variáveis que devem estar travadas
         """
+        for arg in args:
+            assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.function.__name__}"
+            self.__lock[arg] = args[arg]
 
     def run(self, data:[list], precision:float = 0.01) -> None:
         """
@@ -93,7 +100,10 @@ class Regression:
         # Salvando argumentos iniciais para a função
         args_temp:dict = {}
         for parameter in self.__args_function.keys():
-            args_temp[parameter] = self.__args_function[parameter]
+            if parameter not in self.__lock.keys():
+                args_temp[parameter] = self.__args_function[parameter]
+            else:
+                args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
 
         precision_final, precision = precision/2, max(precision * 10, 1)
         while precision >= precision_final: #Vai diminuindo a variação da busca
@@ -133,9 +143,10 @@ class Regression:
                     args_temp = deepcopy(best_args)
 
                 for parameter in self.__args_function.keys():
-                    #print(f"{parameter}: {args_temp[parameter]} -> ", end = "")
-                    args_temp[parameter] += random()*precision - precision/2
-                    #print(f"{args_temp[parameter]}")
+                    if parameter not in self.__lock.keys():
+                        #print(f"{parameter}: {args_temp[parameter]} -> ", end = "")
+                        args_temp[parameter] += random()*precision - precision/2
+                        #print(f"{args_temp[parameter]}")
 
             # Aumenta a precisão
             precision /= 2
