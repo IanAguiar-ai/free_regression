@@ -250,7 +250,7 @@ class Regression:
 
             return self.__function(**x_args, **self.__args_function)
 
-    def run(self, data:[list], precision:float = 0.01) -> None:
+    def run(self, data:[list], precision:float = 0.001) -> None:
         """
         Faz a regressão
 
