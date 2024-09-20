@@ -15,12 +15,13 @@ def plot_expected(regression:"Regression", data:[list]) -> None:
     y1 = [values[1] for values in data]
     y2 = [regression.prediction(**{regression.regressor[0]: value}) for value in x]
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8, 6))
     ax.plot(x, y2, label = "Valores esperados", color = "blue", linestyle = "-")
     ax.scatter(x, y1, label = "Dados observados", color = "red")
-    ax.set_title("Dados Observados vs Valores Esperados")
-    ax.set_xlabel("X")
-    ax.set_ylabel("Y")
+    ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
+    ax.set_title("Dados Observados vs Valores Esperados", fontsize = 16, weight = "bold")
+    ax.set_xlabel("X", fontsize = 14)
+    ax.set_ylabel("Y", fontsize = 14)
     ax.legend()
     plt.show()
 
@@ -48,9 +49,6 @@ def plot_residual(regression:"Regression", data:[list]) -> None:
     ax.set_ylabel("Frequência", fontsize = 14)
     ax.set_xlim([min(bins), max(bins)])
     ax.legend()
-    ax.set_title("Histograma")
-    ax.set_xlabel("Valores")
-    ax.set_ylabel("Frequências")
     plt.show()
 
 if __name__ == "__main__":
