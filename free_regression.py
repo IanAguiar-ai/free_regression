@@ -97,12 +97,52 @@ class Regression:
         """
         + para mistura
         """
-        globals()[f"{self.__function.__name__}"] = self.__function
-        globals()[f"{obj.__function.__name__}"] = obj.__function
-        print(globals())
         return eval(self.generic_function(obj, operator = "+"))
 
+    def __add__(self, obj) -> "Regression":
+        """
+        + para mistura
+        """
+        return eval(self.generic_function(obj, operator = "+"))
+
+    def __sub__(self, obj) -> "Regression":
+        """
+        - para mistura
+        """
+        return eval(self.generic_function(obj, operator = "-"))
+
+    def  __mul__(self, obj) -> "Regression":
+        """
+        * para mistura
+        """
+        return eval(self.generic_function(obj, operator = "*"))
+
+    def __truediv__(self, obj) -> "Regression":
+        """
+        / para mistura
+        """
+        return eval(self.generic_function(obj, operator = "/"))
+
+    def __pow__(self, obj) -> "Regression":
+        """
+        ** para mistura
+        """
+        return eval(self.generic_function(obj, operator = "**"))
+
+    def operation(self, obj, operator:str) -> "Regression":
+        """
+        <operator> para mistura
+        """
+        return eval(self.generic_function(obj, operator = operator))
+
+
     def generic_function(self, obj:"Regression", operator:str) -> str:
+        """
+        Cria a função genérica e deixa como variável global as funções necessárias
+        """
+        globals()[f"{self.__function.__name__}"] = self.__function
+        globals()[f"{obj.__function.__name__}"] = obj.__function
+        
         all_parameters = list(set(self.regressor) | set(obj.regressor) | set(self.params) | set(obj.params))
         
         inputs_1 = ""

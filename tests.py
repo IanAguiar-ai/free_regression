@@ -173,21 +173,29 @@ class Teste(unittest.TestCase):
         self.assertEqual(Regression(reg_1) == Regression(reg_1), True)
         self.assertEqual(Regression(reg_1) == Regression(reg_2), False)
 
+        print(f"\n\n{'='*50}\nTestes de metodos especiais para modelos de mistura:")
+        print("\nTeste 9.1:")
+        try:
+            a1 = Regression(reg_1)
+            a2 = Regression(reg_2)
+            f = a1 + a2
+            print(f"\nModelo mistura:\n{f}")
+
+            dado = [[x, reg_1_2(x, a = 1, b = -3, c = -10, d = -20)] for x in range(10)]
+            f_esperado = Regression(reg_1_2)
+            f_esperado.run(dado, precision = 0.01)
+            print(f"\nEsperado:\n{f_esperado}")
+
+            f.lock(b = -3)
+            f.run(dado, precision = 0.01)
+            print(f"\nModelo:\n{f}")
+
+            print(f"\n{f_esperado.prediction([x[:-1] for x in dado])}")
+            print(f.prediction([x[:-1] for x in dado]))
+        except Exception as e:
+            self.fail(f"Teste com mistura: {e}")
+
         
 if __name__ == "__main__":
-    #unittest.main()
-    a1 = Regression(reg_1)
-    a2 = Regression(reg_2)
-    f = a1 + a2
-    print(f)
-
-    dado = [[x, reg_1_2(x, a = 7, b = 3, c = -5, d = -20)] for x in range(10)]
-    f_esperado = Regression(reg_1_2)
-    f_esperado.run(dado, precision = 0.01)
-    print(f_esperado)
-
-    f.run(dado, precision = 0.01)
-    print(f)
-
-    print(f_esperado.prediction([x[:-1] for x in dado]))
-    print(f.prediction([x[:-1] for x in dado]))
+    unittest.main()
+    
