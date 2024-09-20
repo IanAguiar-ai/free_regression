@@ -147,13 +147,23 @@ class Regression:
         """
         ** para mistura
         """
-        return eval(self.generic_function(obj, operator = "**"))
+        modified_class = eval(self.generic_function(obj, operator = "**"))
+        if type(self) == type(obj):
+            modified_class.__function.__name__ = f"{self.__function.__name__}_pow_{obj.__function.__name__}"
+        else:
+            modified_class.__function.__name__ = f"{self.__function.__name__}_pow_number"
+        return modified_class
 
     def operation(self, obj, operator:str) -> "Regression":
         """
         <operator> para mistura
         """
-        return eval(self.generic_function(obj, operator = operator))
+        modified_class = eval(self.generic_function(obj, operator = operator))
+        if type(self) == type(obj):
+            modified_class.__function.__name__ = f"{self.__function.__name__}_generic_{obj.__function.__name__}"
+        else:
+            modified_class.__function.__name__ = f"{self.__function.__name__}_generic_number"
+        return modified_class
 
 
     def generic_function(self, obj:"Regression", operator:str) -> str:
