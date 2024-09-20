@@ -2,33 +2,11 @@ from inspect import signature # Para pegar os argumentos de uma função
 from copy import deepcopy
 from random import random, seed
 
-
-def variance(vector:list) -> float:
-    """
-    Calcula a variância de forma mais enxuta e otimizada
-    Não usa do calculo da variância normal, sem a raiz no final
-    """
-    
-    def mean(vector:list) -> float:
-        """
-        Calcula a média
-        """
-        return sum(vector)/len(vector)
-
-    m = mean(vector)
-    return sum([(m - x)*(m - x) for x in vector])/len(vector)
-
 def least_squares(vector_1:list, vector_2:list) -> float:
     """
     Função de minimos quadrados
     """
     return sum([(vector_1[i] - vector_2[i])*(vector_1[i] - vector_2[i]) for i in range(len(vector_1))])
-
-def generic_function_separation(args_1:dict, args_2:dict, function_1:"function", function_2:"function") -> ("function", "function"):
-    """
-    Função genérica para a separação dos argumentos da mistura
-    """
-    return function_1(**args_1), function_2(**args_2)
 
 class Regression:
     """
@@ -114,6 +92,28 @@ class Regression:
         assert type(index) == str, "The index must be a character(chr)"
         assert index in self.params, f"The index '{index}' must exist in params '{', '.join(self.params)}'"
         return self.__args_function[index]
+
+    def __add__(self, obj) -> "Regression":
+        """
+        + para mistura
+        """
+        globals()[f"{self.__function.__name__}"] = self.__function
+        globals()[f"{obj.__function.__name__}"] = obj.__function
+        print(globals())
+        return eval(self.generic_function(obj, operator = "+"))
+
+    def generic_function(self, obj:"Regression", operator:str) -> str:
+        all_parameters = list(set(self.regressor) | set(obj.regressor) | set(self.params) | set(obj.params))
+        
+        inputs_1 = ""
+        for input_ in list(set(self.regressor) | set(self.params)):
+            inputs_1 += f"{input_} = {input_},"
+
+        inputs_2 = ""
+        for input_ in list(set(obj.regressor) | set(obj.params)):
+            inputs_2 += f"{input_} = {input_},"
+        
+        return f"Regression(lambda {', '.join(all_parameters)} : {self.__function.__name__}({inputs_1}) + {obj.__function.__name__}({inputs_2}))"
 
     def set_seed(self, seed:int) -> None:
         """

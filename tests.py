@@ -175,5 +175,19 @@ class Teste(unittest.TestCase):
 
         
 if __name__ == "__main__":
-    unittest.main()
+    #unittest.main()
+    a1 = Regression(reg_1)
+    a2 = Regression(reg_2)
+    f = a1 + a2
+    print(f)
 
+    dado = [[x, reg_1_2(x, a = 7, b = 3, c = -5, d = -20)] for x in range(10)]
+    f_esperado = Regression(reg_1_2)
+    f_esperado.run(dado, precision = 0.01)
+    print(f_esperado)
+
+    f.run(dado, precision = 0.01)
+    print(f)
+
+    print(f_esperado.prediction([x[:-1] for x in dado]))
+    print(f.prediction([x[:-1] for x in dado]))
