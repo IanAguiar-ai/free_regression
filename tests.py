@@ -27,8 +27,8 @@ def regressao_2_regressores(x_1:float, x_2:float, a:float, b:float):
 def reg_1(x, a, b):
     return a*x**3 + b*x**2
 
-def reg_2(x, c, d):
-    return c*x + d
+def reg_2(x, c):
+    return c*x
 
 def reg_1_2(x, a, b, c, d):
     return a*x**3 + b*x**2 + c*x + d
@@ -178,7 +178,7 @@ class Teste(unittest.TestCase):
         try:
             a1 = Regression(reg_1)
             a2 = Regression(reg_2)
-            f = a1 + a2
+            f = a1 + a2 - 20
             print(f"\nModelo mistura:\n{f}")
 
             dado = [[x, reg_1_2(x, a = 1, b = -3, c = -10, d = -20)] for x in range(10)]

@@ -103,25 +103,45 @@ class Regression:
         """
         + para mistura
         """
-        return eval(self.generic_function(obj, operator = "+"))
+        modified_class = eval(self.generic_function(obj, operator = "+"))
+        if type(self) == type(obj):
+            modified_class.__function.__name__ = f"{self.__function.__name__}_add_{obj.__function.__name__}"
+        else:
+            modified_class.__function.__name__ = f"{self.__function.__name__}_add_number"
+        return modified_class
 
     def __sub__(self, obj) -> "Regression":
         """
         - para mistura
         """
-        return eval(self.generic_function(obj, operator = "-"))
+        modified_class = eval(self.generic_function(obj, operator = "-"))
+        if type(self) == type(obj):
+            modified_class.__function.__name__ = f"{self.__function.__name__}_sub_{obj.__function.__name__}"
+        else:
+            modified_class.__function.__name__ = f"{self.__function.__name__}_sub_number"
+        return modified_class
 
     def  __mul__(self, obj) -> "Regression":
         """
         * para mistura
         """
-        return eval(self.generic_function(obj, operator = "*"))
+        modified_class = eval(self.generic_function(obj, operator = "*"))
+        if type(self) == type(obj):
+            modified_class.__function.__name__ = f"{self.__function.__name__}_mul_{obj.__function.__name__}"
+        else:
+            modified_class.__function.__name__ = f"{self.__function.__name__}_mul_number"
+        return modified_class
 
     def __truediv__(self, obj) -> "Regression":
         """
         / para mistura
         """
-        return eval(self.generic_function(obj, operator = "/"))
+        modified_class = eval(self.generic_function(obj, operator = "/"))
+        if type(self) == type(obj):
+            modified_class.__function.__name__ = f"{self.__function.__name__}_truediv_{obj.__function.__name__}"
+        else:
+            modified_class.__function.__name__ = f"{self.__function.__name__}_truediv_number"
+        return modified_class
 
     def __pow__(self, obj) -> "Regression":
         """
@@ -140,20 +160,36 @@ class Regression:
         """
         Cria a função genérica e deixa como variável global as funções necessárias
         """
-        globals()[f"{self.__function.__name__}"] = self.__function
-        globals()[f"{obj.__function.__name__}"] = obj.__function
-        
-        all_parameters = list(set(self.regressor) | set(obj.regressor) | set(self.params) | set(obj.params))
-        
-        inputs_1 = ""
-        for input_ in list(set(self.regressor) | set(self.params)):
-            inputs_1 += f"{input_} = {input_},"
 
-        inputs_2 = ""
-        for input_ in list(set(obj.regressor) | set(obj.params)):
-            inputs_2 += f"{input_} = {input_},"
-        
-        return f"Regression(lambda {', '.join(all_parameters)} : {self.__function.__name__}({inputs_1}) + {obj.__function.__name__}({inputs_2}))"
+        if type(obj) == int or type(obj) == float:
+            globals()[f"{self.__function.__name__}"] = self.__function
+            
+            all_parameters = list(set(self.regressor) | set(self.params))
+            all_regressors = list(self.regressor)
+            
+            inputs_1 = ""
+            for input_ in list(set(self.regressor) | set(self.params)):
+                inputs_1 += f"{input_} = {input_},"            
+            return f"Regression(lambda {', '.join(all_parameters)} : {self.__function.__name__}({inputs_1}) {operator} {obj}, regressor = {all_regressors})"
+
+        else:
+            assert type(obj) == type(self), f"{obj} must be of type class 'Regression'"
+            
+            globals()[f"{self.__function.__name__}"] = self.__function
+            globals()[f"{obj.__function.__name__}"] = obj.__function
+            
+            all_parameters = list(set(self.regressor) | set(obj.regressor) | set(self.params) | set(obj.params))
+            all_regressors = list(set(self.regressor) | set(obj.regressor))
+            
+            inputs_1 = ""
+            for input_ in list(set(self.regressor) | set(self.params)):
+                inputs_1 += f"{input_} = {input_},"
+
+            inputs_2 = ""
+            for input_ in list(set(obj.regressor) | set(obj.params)):
+                inputs_2 += f"{input_} = {input_},"
+            
+            return f"Regression(lambda {', '.join(all_parameters)} : {self.__function.__name__}({inputs_1}) {operator} {obj.__function.__name__}({inputs_2}), regressor = {all_regressors})"
 
     def set_seed(self, seed:int) -> None:
         """
