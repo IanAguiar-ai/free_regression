@@ -24,9 +24,9 @@ class Regression:
     - function: A função qual o usuário quer fazer a regressão, essa função deve sempre ter a variável regressora chamada de x
     
     """
-    __slots__ = ("iterations", "params", "regressor", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error")
+    __slots__ = ("iterations", "params", "regressors", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error")
     
-    def __init__(self, function:"function", regressor:list = None, loss_function:"function" = least_squares) -> None:
+    def __init__(self, function:"function", regressors:list = None, loss_function:"function" = least_squares) -> None:
         """
         Inicializa a classe, as etapas são:
 
@@ -40,19 +40,19 @@ class Regression:
         temp = tuple(signature(function).parameters.keys())
 
         # Definindo regressora
-        if regressor == None:
-            assert "x" in temp, "The passed function must have the parameter 'x' or explicitly specify the regressor with the parameter 'regressor'"
-            self.regressor = ["x"]
-        elif type(regressor) == int or type(regressor) == float:
-            self.regressor = [regressor]
+        if regressors == None:
+            assert "x" in temp, "The passed function must have the parameter 'x' or explicitly specify the regressors with the parameter 'regressors'"
+            self.regressors = ["x"]
+        elif type(regressors) == int or type(regressors) == float:
+            self.regressors = [regressors]
         else:
-            self.regressor = regressor
+            self.regressors = regressors
 
         # Argumentos da função
         self.__args_function:dict = {}
         self.params:list = []
         for parameter in temp:
-            if parameter not in self.regressor:
+            if parameter not in self.regressors:
                 self.params.append(parameter)
                 self.__args_function[parameter] = 1
         
@@ -76,14 +76,20 @@ class Regression:
         output:str = f"FUNCTION: {self.__function.__name__}"
         if self.__error != None:
             output += f"\nLOSS FUNCTION({self.__loss_function.__name__}): {self.__error:0.08f}"
-        output += f"\nREGRESSOR: {', '.join(self.regressor)}"
+        output += f"\nregressors: {', '.join(self.regressors)}"
         if len(self.__lock) > 0:
             output += f"\nLOCK PARAMS: {', '.join(self.__lock)}"
         output += "\nPARAMS:"
         for arg in self.__args_function.keys():
             output += f"\n  {arg} = {self.__args_function[arg]:0.08f}"
         return output
-        
+
+    def __len__(self) -> list:
+        """
+        Retorna a dimensão sendo:
+            dim_regressorses
+        """
+        return len(self.regressors)
 
     def __getitem__(self, index:str) -> float:
         """
@@ -93,11 +99,14 @@ class Regression:
         assert index in self.params, f"The index '{index}' must exist in params '{', '.join(self.params)}'"
         return self.__args_function[index]
 
-    def __add__(self, obj) -> "Regression":
+    def __setitem__(self, index:str, value:float) -> float:
         """
-        + para mistura
+        Da um lock em um parâmetro específico
         """
-        return eval(self.generic_function(obj, operator = "+"))
+        assert type(index) == str, "The index must be a character(chr)"
+        assert index in self.params, f"The index '{index}' must exist in params '{', '.join(self.params)}'"
+        assert type(value) == int or type(value) == float, f"<value> must to be a int or float not a {type(value)}"
+        self.lock(**{index:value})
 
     def __add__(self, obj) -> "Regression":
         """
@@ -174,13 +183,13 @@ class Regression:
         if type(obj) == int or type(obj) == float:
             globals()[f"{self.__function.__name__}"] = self.__function
             
-            all_parameters = list(set(self.regressor) | set(self.params))
-            all_regressors = list(self.regressor)
+            all_parameters = list(set(self.regressors) | set(self.params))
+            all_regressorss = list(self.regressors)
             
             inputs_1 = ""
-            for input_ in list(set(self.regressor) | set(self.params)):
+            for input_ in list(set(self.regressors) | set(self.params)):
                 inputs_1 += f"{input_} = {input_},"            
-            return f"Regression(lambda {', '.join(all_parameters)} : {self.__function.__name__}({inputs_1}) {operator} {obj}, regressor = {all_regressors})"
+            return f"Regression(lambda {', '.join(all_parameters)} : {self.__function.__name__}({inputs_1}) {operator} {obj}, regressors = {all_regressorss})"
 
         else:
             assert type(obj) == type(self), f"{obj} must be of type class 'Regression'"
@@ -188,18 +197,18 @@ class Regression:
             globals()[f"{self.__function.__name__}"] = self.__function
             globals()[f"{obj.__function.__name__}"] = obj.__function
             
-            all_parameters = list(set(self.regressor) | set(obj.regressor) | set(self.params) | set(obj.params))
-            all_regressors = list(set(self.regressor) | set(obj.regressor))
+            all_parameters = list(set(self.regressors) | set(obj.regressors) | set(self.params) | set(obj.params))
+            all_regressorss = list(set(self.regressors) | set(obj.regressors))
             
             inputs_1 = ""
-            for input_ in list(set(self.regressor) | set(self.params)):
+            for input_ in list(set(self.regressors) | set(self.params)):
                 inputs_1 += f"{input_} = {input_},"
 
             inputs_2 = ""
-            for input_ in list(set(obj.regressor) | set(obj.params)):
+            for input_ in list(set(obj.regressors) | set(obj.params)):
                 inputs_2 += f"{input_} = {input_},"
             
-            return f"Regression(lambda {', '.join(all_parameters)} : {self.__function.__name__}({inputs_1}) {operator} {obj.__function.__name__}({inputs_2}), regressor = {all_regressors})"
+            return f"Regression(lambda {', '.join(all_parameters)} : {self.__function.__name__}({inputs_1}) {operator} {obj.__function.__name__}({inputs_2}), regressors = {all_regressorss})"
 
     def set_seed(self, seed:int) -> None:
         """
@@ -219,25 +228,25 @@ class Regression:
     def prediction(self, list_prediction:list = None, **x_args) -> float:
         """
         Faz a previsão de f(...) = y
-        x_args: Parametros regressores
+        x_args: Parametros regressorses
         """
 
         if type(list_prediction) == list or type(list_prediction) == tuple: # Caso o usuário tenha passado uma série de valores para a predição
-            assert type(list_prediction[0]) == list or type(list_prediction[0]) == tuple, "If you want to pass a series of values​to predict, you should pass the list of lists of values with the regressor parameters"
-            assert min(map(len, list_prediction)) == max(map(len, list_prediction)) == len(self.regressor), f"Your list of lists must be {len(list_prediction)} by {len(self.regressor)} in size"
+            assert type(list_prediction[0]) == list or type(list_prediction[0]) == tuple, "If you want to pass a series of values​to predict, you should pass the list of lists of values with the regressors parameters"
+            assert min(map(len, list_prediction)) == max(map(len, list_prediction)) == len(self.regressors), f"Your list of lists must be {len(list_prediction)} by {len(self.regressors)} in size"
 
             results = []
             x_args = {}
             for values in list_prediction:
-                for i in range(len(self.regressor)):
-                    x_args[self.regressor[i]] = values[i]
+                for i in range(len(self.regressors)):
+                    x_args[self.regressors[i]] = values[i]
                 results.append(self.__function(**x_args, **self.__args_function))
                 
             return results
         
         else: # Caso o usuário tenha passado valores específicos para a predição
-            assert len(set(x_args.keys()) & set(self.__args_function.keys())) == 0, f"You cannot pass a parameter as a regressor that is already being used as a prediction parameter.\n  Regressor parameters: {', '.join(x_args.keys())}\n  Predictor parameters: {', '.join(self.__args_function.keys())}"
-            assert set(x_args.keys()) == set(self.regressor), f"Pass regressor parameters correctly\n  Regressor parameters passed: {', '.join(x_args.keys())}\n  Expected regressor parameters: {', '.join(self.regressor)}"
+            assert len(set(x_args.keys()) & set(self.__args_function.keys())) == 0, f"You cannot pass a parameter as a regressors that is already being used as a prediction parameter.\n  regressors parameters: {', '.join(x_args.keys())}\n  Predictor parameters: {', '.join(self.__args_function.keys())}"
+            assert set(x_args.keys()) == set(self.regressors), f"Pass regressors parameters correctly\n  regressors parameters passed: {', '.join(x_args.keys())}\n  Expected regressors parameters: {', '.join(self.regressors)}"
 
             return self.__function(**x_args, **self.__args_function)
 
@@ -252,7 +261,7 @@ class Regression:
 
         assert type(data) == list, "The data must be a list of lists"
         assert type(data[0]) == list, "The data must be a list of lists"
-        assert len(data[0]) == len(self.regressor) + 1, "The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]"
+        assert len(data[0]) == len(self.regressors) + 1, "The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]"
         assert (k := list(map(len, data))) and max(k) == min(k), "The data list must be the same size in all itens"
         assert type(precision) == int or type(precision) == float, "Precision has to be a float or int"
 
@@ -284,7 +293,7 @@ class Regression:
                     # Separando as variáveis regressoras
                     x_args:dict = {}
                     for i in range(len(x)):
-                        x_args[self.regressor[i]] = x[i]
+                        x_args[self.regressors[i]] = x[i]
 
                     # Fazendo a predição
                     y_predicted.append(self.__function(**x_args, **args_temp))

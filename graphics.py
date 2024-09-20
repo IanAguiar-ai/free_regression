@@ -6,14 +6,14 @@ def plot_expected(regression:"Regression", data:[list]) -> None:
     """
     Plot que compara os valores preditos e esperados
     """
-    assert len(regression.regressor) == 1, "This graph only works if you have only one regressor"
+    assert len(regression.regressors) == 1, "This graph only works if you have only one regressors"
     assert type(data) == list or type(data) == tuple, "The <data> must be a list"
     assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
     assert len(data[0]) == 2, "The <data[n]> has to be 2 elements"
     
     x = [values[0] for values in data]
     y1 = [values[1] for values in data]
-    y2 = [regression.prediction(**{regression.regressor[0]: value}) for value in x]
+    y2 = [regression.prediction(**{regression.regressors[0]: value}) for value in x]
 
     fig, ax = plt.subplots(figsize=(8, 6))
     ax.plot(x, y2, label = "Valores esperados", color = "blue", linestyle = "-")
@@ -29,14 +29,14 @@ def plot_residual(regression:"Regression", data:[list]) -> None:
     """
     Plot que mostra a distribuição dos residuos
     """
-    assert len(regression.regressor) == 1, "This graph only works if you have only one regressor"
+    assert len(regression.regressors) == 1, "This graph only works if you have only one regressors"
     assert type(data) == list or type(data) == tuple, "The <data> must be a list"
     assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
     assert len(data[0]) == 2, "The <data[n]> has to be 2 elements"
     
     x = [values[0] for values in data]
     y1 = [values[1] for values in data]
-    y2 = [regression.prediction(**{regression.regressor[0]: value}) for value in x]
+    y2 = [regression.prediction(**{regression.regressors[0]: value}) for value in x]
     y_dif = [y1[i] - y2[i] for i in range(len(data))]
 
     fig, ax = plt.subplots(figsize=(8, 6))

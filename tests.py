@@ -86,7 +86,7 @@ class Teste(unittest.TestCase):
         print("\nTeste 2.1:")
         try:
             dado = [[x, int(x*3 % 11), regressao_2_regressores(x, int(x*3 % 11), a = 3, b = 10)] for x in range(5)]
-            teste_4 = Regression(regressao_2_regressores, regressor = ["x_1", "x_2"])
+            teste_4 = Regression(regressao_2_regressores, regressors = ["x_1", "x_2"])
             teste_4.lock(a = 3)
             teste_4.run(dado, precision = 0.001)
             print(teste_4)
@@ -96,7 +96,7 @@ class Teste(unittest.TestCase):
         print("\nTeste 2.2:")
         try:
             dado = [[x, int(x*3 % 11), regressao_2_regressores(x, int(x*3 % 11), a = 3, b = 10)] for x in range(5)]
-            teste_5 = Regression(regressao_2_regressores, regressor = ["x_1", "x_2"])
+            teste_5 = Regression(regressao_2_regressores, regressors = ["x_1", "x_2"])
             teste_5.run(dado, precision = 0.001)
             print(teste_5)
         except Exception as e:
@@ -124,7 +124,7 @@ class Teste(unittest.TestCase):
 
         print("\nTeste 4.2...")
         with self.assertRaises(AssertionError):
-            teste_6 = Regression(regressao_2_regressores, regressor = ["x_1", "x_2"])
+            teste_6 = Regression(regressao_2_regressores, regressors = ["x_1", "x_2"])
             teste_6.run([1, 2, 3])
 
         print("\nTeste 4.3...")
@@ -137,7 +137,7 @@ class Teste(unittest.TestCase):
 
         print(f"\n\n{'='*50}\nTestes de excessões lock:")
         print("\nTeste 5.1...")
-        teste_7 = Regression(regressao_2_regressores, regressor = ["x_1", "x_2"])
+        teste_7 = Regression(regressao_2_regressores, regressors = ["x_1", "x_2"])
         with self.assertRaises(AssertionError):
             teste_7.lock(x_1 = 2)
 
@@ -169,9 +169,22 @@ class Teste(unittest.TestCase):
 
         print(f"\n\n{'='*50}\nTestes de métodos especiais:")
         print("\nTeste 8.1...")
-        
         self.assertEqual(Regression(reg_1) == Regression(reg_1), True)
+
+        print("\nTeste 8.2...")
         self.assertEqual(Regression(reg_1) == Regression(reg_2), False)
+
+        print("\nTeste 8.3...")
+        with self.assertRaises(AssertionError):
+            teste_5['param_nao_existente'] = 3
+
+        print("\nTeste 8.4...")
+        t_1 = Regression(reg_1)
+        self.assertEqual(len(t_1), 1)
+
+        print("\nTeste 8.5...")
+        t_2 = Regression(regressao_2_regressores, regressors = ["x_1", "x_2"])
+        self.assertEqual(len(t_2), 2)
 
         print(f"\n\n{'='*50}\nTestes de metodos especiais para modelos de mistura:")
         print("\nTeste 9.1:")
@@ -186,7 +199,7 @@ class Teste(unittest.TestCase):
             f_esperado.run(dado, precision = 0.01)
             print(f"\nEsperado:\n{f_esperado}")
 
-            f.lock(b = -3)
+            f['b'] = -3
             f.run(dado, precision = 0.01)
             print(f"\nModelo:\n{f}")
 
@@ -198,4 +211,3 @@ class Teste(unittest.TestCase):
         
 if __name__ == "__main__":
     unittest.main()
-    
