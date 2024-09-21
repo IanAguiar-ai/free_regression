@@ -101,12 +101,12 @@ class Regression:
 
     def __setitem__(self, index:str, value:float) -> float:
         """
-        Da um lock em um parâmetro específico
+        Inicia um valor em um ponto especifico
         """
         assert type(index) == str, "The index must be a character(chr)"
         assert index in self.params, f"The index '{index}' must exist in params '{', '.join(self.params)}'"
         assert type(value) == int or type(value) == float, f"<value> must to be a int or float not a {type(value)}"
-        self.lock(**{index:value})
+        self.change(**{index:value})
 
     def __add__(self, obj) -> "Regression":
         """
@@ -224,6 +224,14 @@ class Regression:
         for arg in args:
             assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.__function.__name__}"
             self.__lock[arg] = args[arg]
+
+    def change(self, **args) -> None:
+        """
+        Troca um valor para que o chute inicial dele seja diferente
+        """
+        for arg in args:
+            assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.__function.__name__}"
+            self.__args_function[arg] = args[arg]
 
     def prediction(self, list_prediction:list = None, **x_args) -> float:
         """

@@ -199,7 +199,8 @@ class Teste(unittest.TestCase):
             f_esperado.run(dado, precision = 0.01)
             print(f"\nEsperado:\n{f_esperado}")
 
-            f['b'] = -3
+            f['b'] = -3.5
+            f.change(a = 1.5, c = -10.5)
             f.run(dado, precision = 0.01)
             print(f"\nModelo:\n{f}")
 
