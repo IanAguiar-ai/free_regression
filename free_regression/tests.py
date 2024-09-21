@@ -3,14 +3,15 @@ from free_regression import Regression
 
 # Biblioteca de teste
 import unittest
+from sklearn.datasets import load_iris
 
-def regressao_simples(x:float, a:float, b:float):
+def regressao_simples(x:float, a:float, b:float) -> float:
     return a*x + b
 
-def regressao_2(x:float, a:float, b:float, c:float):
+def regressao_2(x:float, a:float, b:float, c:float) -> float:
     return a*x**2 + b*x + c
 
-def regressao_nao_continua(x:float, a:float):
+def regressao_nao_continua(x:float, a:float) -> float:
     if x < 10:
         return -1 * x * a
     elif x > 15:
@@ -18,20 +19,39 @@ def regressao_nao_continua(x:float, a:float):
     else:
         return x
 
-def funcao_errada(a:float, b:float, c:float):
+def funcao_errada(a:float, b:float, c:float) -> float:
     return a. b, c
 
-def regressao_2_regressores(x_1:float, x_2:float, a:float, b:float):
+def regressao_2_regressores(x_1:float, x_2:float, a:float, b:float) -> float:
     return x_1*a + x_2*b**2
 
-def reg_1(x, a, b):
+def reg_1(x:float, a:float, b:float) -> float:
     return a*x**3 + b*x**2
 
-def reg_2(x, c):
+def reg_2(x:float, c:float) -> float:
     return c*x
 
-def reg_1_2(x, a, b, c, d):
+def reg_1_2(x:float, a:float, b:float, c:float, d:float) -> float:
     return a*x**3 + b*x**2 + c*x + d
+
+def regressao_2_betas(x1:float, x2:float, b1:float, b2:float) -> float:
+    return b1*x1 + b2*x2
+
+def regressao_4_betas(x1:float, x2:float, b1:float, b2:float, b3:float, b4:float) -> float:
+    return b1*x1 + b2*x2 + b3*x1**2 + b4*x2**2
+
+def relu(x:float) -> float:
+    if x > 0:
+        return x
+    return x/10
+
+def sigmoide(x:float) -> float:
+    return 1/(1 + 2.71**(-x))
+
+def mlp(x1:float, x2:float, b_0:float, b_1:float, b_2:float, b1:float, b2:float, b3:float, b4:float, b5:float, b6:float) -> float:
+    x1_1 = relu(b_0 + x1*b1 + x2*+b2)
+    x2_1 = relu(b_0 + x1*b3 + x2*+b4)
+    return relu(b_1 + x1_1*b5 + x2_1*b6)
 
 # Classe de testes
 class Teste(unittest.TestCase):
@@ -213,6 +233,35 @@ class Teste(unittest.TestCase):
         except Exception as e:
             self.fail(f"Teste com mistura: {e}")
 
+        print(f"\n\n{'='*50}\nTestes com o banco de dados iris:")
+        print("\nTeste 10.1:")
+        try:
+            iris = load_iris()
+            iris = [list(x[:3]) for x in iris.data]
+            
+            modelo_iris = Regression(regressao_2_betas, regressors = ['x1', 'x2'])
+            modelo_iris.run(iris)
+
+            print(f"\n{modelo_iris}")
+
+            modelo_iris_2 = Regression(regressao_4_betas, regressors = ['x1', 'x2'])
+            modelo_iris_2.run(iris, precision = 0.1)
+
+            print(f"\n{modelo_iris_2}")
+
+            modelo_iris_3 = Regression(mlp, regressors = ['x1', 'x2'])
+            modelo_iris_3.run(iris, precision = 0.1)
+
+            print(f"\n{modelo_iris_3}")
+
+            print(f"\nComparando com os valores reais:\n{'MODELO 1':12}|{'MODELO 2':12}|{'MODELO 3':12}|{'ESPERADO':12}")
+            for *x, y in iris:
+                print(f"{modelo_iris.prediction([x])[0]:12.04f}|{modelo_iris_2.prediction([x])[0]:12.04f}|{modelo_iris_3.prediction([x])[0]:12.04f}|{y:12.04f}")
+         
+        except Exception as e:
+            self.fail(f"Não foi possível completar o teste com o banco de dados iris: {e}")
+
         
 if __name__ == "__main__":
     unittest.main()
+       
