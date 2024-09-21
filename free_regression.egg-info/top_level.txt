@@ -1,1 +1,1 @@
-free_regression_library
+free_regression
