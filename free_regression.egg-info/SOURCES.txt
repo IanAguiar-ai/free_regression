@@ -1,0 +1,11 @@
+README.md
+setup.py
+free_regression.egg-info/PKG-INFO
+free_regression.egg-info/SOURCES.txt
+free_regression.egg-info/dependency_links.txt
+free_regression.egg-info/requires.txt
+free_regression.egg-info/top_level.txt
+free_regression_library/__init__.py
+free_regression_library/free_regression.py
+free_regression_library/graphics.py
+free_regression_library/tests.py
