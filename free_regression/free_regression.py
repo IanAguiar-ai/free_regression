@@ -77,7 +77,7 @@ class Regression:
         output:str = f"FUNCTION: {self.__function.__name__}"
         if self.__error != None:
             output += f"\nLOSS FUNCTION({self.__loss_function.__name__}): {self.__error:0.08f}"
-        output += f"\nregressors: {', '.join(self.regressors)}"
+        output += f"\nREGRESSORS: {', '.join(self.regressors)}"
         if len(self.__lock) > 0:
             output += f"\nLOCK PARAMS: {', '.join(self.__lock)}"
         output += "\nPARAMS:"
