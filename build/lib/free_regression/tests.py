@@ -135,6 +135,10 @@ class Teste(unittest.TestCase):
         with self.assertRaises(AssertionError):
             teste_6.run(dado, precision = [2])
 
+        print("\nTeste 4.5...")
+        with self.assertRaises(AssertionError):
+            Regression(lambda x: x + 1)
+
         print(f"\n\n{'='*50}\nTestes de excessões lock:")
         print("\nTeste 5.1...")
         teste_7 = Regression(regressao_2_regressores, regressors = ["x_1", "x_2"])

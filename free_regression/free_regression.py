@@ -28,16 +28,17 @@ class Regression:
     
     def __init__(self, function:"function", regressors:list = None, loss_function:"function" = least_squares) -> None:
         """
-        Inicializa a classe, as etapas são:
-
-        -
-        - 
+        Inicializa a classe
         """
+        assert callable(function), f"<function> is a {type(function)} not a function"
+        assert callable(loss_function), f"<loss_function> is a {type(loss_function)} not a function"
+        
         self.__function:"function" = function
         self.__loss_function:"function" = loss_function
         self.__error:float = None
         
         temp = tuple(signature(function).parameters.keys())
+        assert len(temp) >= 2, "Your function must have at least two parameters. Example f(x, b) = x*b = y"
 
         # Definindo regressora
         if regressors == None:
