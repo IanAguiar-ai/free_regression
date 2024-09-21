@@ -50,8 +50,8 @@ def sigmoide(x:float) -> float:
 
 def mlp(x1:float, x2:float, b_0:float, b_1:float, b_2:float, b1:float, b2:float, b3:float, b4:float, b5:float, b6:float) -> float:
     x1_1 = relu(b_0 + x1*b1 + x2*+b2)
-    x2_1 = relu(b_0 + x1*b3 + x2*+b4)
-    return relu(b_1 + x1_1*b5 + x2_1*b6)
+    x2_1 = relu(b_1 + x1*b3 + x2*+b4)
+    return relu(b_2 + x1_1*b5 + x2_1*b6)
 
 # Classe de testes
 class Teste(unittest.TestCase):
