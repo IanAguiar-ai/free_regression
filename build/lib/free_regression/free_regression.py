@@ -268,8 +268,8 @@ class Regression:
         - step: Numero da precisão para achar os parâmetros esperados
         """
 
-        assert type(data) == list, "The data must be a list of lists"
-        assert type(data[0]) == list, "The data must be a list of lists"
+        assert type(data) == list, f"The data must be a list of lists not {type(data)}"
+        assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"
         assert len(data[0]) == len(self.regressors) + 1, "The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]"
         assert (k := list(map(len, data))) and max(k) == min(k), "The data list must be the same size in all itens"
         assert type(precision) == int or type(precision) == float, "Precision has to be a float or int"

@@ -1,8 +1,10 @@
 README.md
 setup.py
 free_regression/__init__.py
+free_regression/data.py
 free_regression/free_regression.py
 free_regression/graphics.py
+free_regression/models_regression.py
 free_regression/tests.py
 free_regression.egg-info/PKG-INFO
 free_regression.egg-info/SOURCES.txt
