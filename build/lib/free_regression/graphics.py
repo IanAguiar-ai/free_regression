@@ -4,7 +4,12 @@ import numpy as np
 
 def plot_expected(regression:"Regression", data:[list]) -> None:
     """
-    Plot que compara os valores preditos e esperados
+    Plot que compara os valores preditos e esperados.
+    Só funciona quando existe apenas um regressor e um valor esperado.
+
+    Args:
+        regression (Regression): Classe 'Regression' da função a ser plotada como preditora.
+        data (list(list)): Dados, lista de listas sendo do tamanho nx2.
     """
     assert len(regression.regressors) == 1, "This graph only works if you have only one regressors"
     assert type(data) == list or type(data) == tuple, "The <data> must be a list"
@@ -30,17 +35,20 @@ def plot_expected(regression:"Regression", data:[list]) -> None:
 
 def plot_residual(regression:"Regression", data:[list]) -> None:
     """
-    Plot que mostra a distribuição dos residuos
+    Plot que mostra a distribuição dos resíduos.
+
+    Args:
+        regression (Regression): Classe 'Regression' da função a ser plotada como preditora.
+        data (list(list)): Dados, lista de listas sendo do tamanho nx2.
     """
-    assert len(regression.regressors) == 1, "This graph only works if you have only one regressors"
     assert type(data) == list or type(data) == tuple, "The <data> must be a list"
     assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
-    assert len(data[0]) == 2, "The <data[n]> has to be 2 elements"
+    assert len(regression.regressors) == len(data[0]) - 1, f"{len(regression.regressors)} regressors were indicated but {len(data[0]) - 1} appears in the data"
     
-    x = [values[0] for values in data]
-    y1 = [values[1] for values in data]
-    y2 = [regression.prediction(**{regression.regressors[0]: value}) for value in x]
-    y_dif = [y1[i] - y2[i] for i in range(len(data))]
+    x = [values[:-1] for values in data]
+    y1 = [values[-1] for values in data]
+    y2 = [regression.prediction([value]) for value in x]
+    y_dif = [y1[i] - y2[i][0] for i in range(len(data))]
 
     fig, ax = plt.subplots(figsize=(8, 6))
     n, bins, patches = ax.hist(y_dif, bins = int(len(y_dif)**(1/2)*1.5), color = "skyblue", edgecolor = "gray", alpha = 0.7)
@@ -58,8 +66,11 @@ if __name__ == "__main__":
     from free_regression import Regression
     from random import random
 
-    def regressao_2(x:float, a:float, b:float, c:float):
+    def regressao_2(x:float, a:float, b:float, c:float) -> float:
         return a*x**2 + b*x + c
+
+    def reg_2b(x1:float, x2:float, b1:float, b2:float) -> float:
+        return x1*b1 + x2*b2
 
     dado = [[x, regressao_2(x, a = 15, b = -7, c = -4) + random()*100-50] for x in range(30)]
     teste = Regression(regressao_2)
@@ -68,3 +79,14 @@ if __name__ == "__main__":
 
     plot_expected(teste, dado)
     plot_residual(teste, dado)
+
+    dado = []
+    for i in range(20):
+        a = int(random()*i*5)
+        b = int(random()*i*5)
+        dado.append([a, b, a*7.5 + b*(-2.4) + random()*i - i/2])
+    teste_2 = Regression(reg_2b, ["x1", "x2"])
+    teste_2.run(dado)
+    print(teste_2)
+
+    plot_residual(teste_2, dado)

@@ -4,9 +4,15 @@ Funções para criação de regressões
 
 def generate_regression(regressors:int, degree:int = 1) -> ("function", list):
     """
-    Gera uma regressão com o grau pedido
+    Gera uma regressão com o grau pedido.
+    Retorna a função e os regressores.
 
-    Retorna a função e os regressores
+    Args:
+        regressors (list): Lista de nomes dos regressores.
+        degree (int): Grau da regressão, padrão é 1.
+
+    Returns:
+        function: Função de regressão
     """
     assert type(regressors) == int, "<regressors> must be an integer"
     assert type(degree) == int, "<degree> must be an integer"
@@ -24,11 +30,17 @@ def generate_regression(regressors:int, degree:int = 1) -> ("function", list):
     final_function.__name__ = f"regression_with_{regressors}_regressors_and_{degree}_degrees"
     return final_function, ['x_' + str(i) for i in range(1, regressors + 1)]
 
-def generate_mlp(regressors:int, neurons:int) -> ("function", list):
+def generate_mlp(regressors:int, neurons:int = 1) -> ("function", list):
     """
-    Gera um MLP com a quantidade de regressors e neurons pedidos
-    
-    Retorna a função MLP e os nomes dos regressores
+    Gera um MLP com a quantidade de regressors e neurons pedidos.
+    Retorna a função MLP e os nomes dos regressores.
+
+    Args:
+        regressors (list): Lista de nomes dos regressores.
+        neurons (int): Quantidade de neurônios na camada intermediaria, padrão é 1.
+
+    Returns:
+        function: Função MLP (Mult Layer Perceptron)
     """
     assert type(regressors) == int, "<regressors> must be an integer"
     assert type(neurons) == int, "<neurons> must be an integer"

@@ -10,7 +10,7 @@ def least_squares(vector_1:list, vector_2:list) -> float:
 
 class Regression:
     """
-    Classe de regressão que aceita qualquer função como regressora
+    Classe de regressão que aceita qualquer função como regressora.
 
     Metodo:
         Acha aleatóriamente os parâmetros da função de regressão passada usando algum tipo de função de perda.
@@ -20,15 +20,16 @@ class Regression:
         4. Se ele não melhora em <iterations> iterações, ele divide precision por 2 e volta para o passo (2);
         5. Salva o erro e os parâmetros ótimos que podem ser acessados pelo usuário. 
 
-    Input(s):
-    - function: A função qual o usuário quer fazer a regressão, essa função deve sempre ter a variável regressora chamada de x
-    
+    Args:
+        function (function): A função qual o usuário quer fazer a regressão, essa função deve sempre ter a variável regressora chamada de x.
+        regressors (list): Lista de regressores, não é precisso passar se a função tiver apenas um parâmetro regressor e ele se chame 'x'.
+        loss_function (function): Função de perda, é a função 'least squares' mas pode ser qualquer uma passada pelo usuário.
     """
     __slots__ = ("iterations", "params", "regressors", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error")
     
     def __init__(self, function:"function", regressors:list = None, loss_function:"function" = least_squares) -> None:
         """
-        Inicializa a classe
+        Inicializa a classe.
         """
         assert callable(function), f"<function> is a {type(function)} not a function"
         assert callable(loss_function), f"<loss_function> is a {type(loss_function)} not a function"
@@ -65,14 +66,14 @@ class Regression:
 
     def __eq__(self, obj) -> bool:
         """
-        Confere se as funções de regressões são as mesmas
+        Confere se as funções de regressões são as mesmas.
         """
         assert type(obj) == Regression, "Only Regression objects can be compared"
         return True if self.__function == obj.__function else False
 
     def __repr__(self) -> str:
         """
-        Mostra os argumentos
+        Mostra os argumentos da classe.
         """
         output:str = f"FUNCTION: {self.__function.__name__}"
         if self.__error != None:
@@ -94,7 +95,7 @@ class Regression:
 
     def __getitem__(self, index:str) -> float:
         """
-        Mostra o argumento especifico pedido
+        Mostra o argumento especifico pedido.
         """
         assert type(index) == str, "The index must be a character(chr)"
         assert index in self.params, f"The index '{index}' must exist in params '{', '.join(self.params)}'"
@@ -102,7 +103,7 @@ class Regression:
 
     def __setitem__(self, index:str, value:float) -> float:
         """
-        Inicia um valor em um ponto especifico
+        Inicia um valor em um ponto especifico.
         """
         assert type(index) == str, "The index must be a character(chr)"
         assert index in self.params, f"The index '{index}' must exist in params '{', '.join(self.params)}'"
@@ -111,9 +112,10 @@ class Regression:
 
     def __add__(self, obj) -> "Regression":
         """
-        + para mistura
+        + para mistura.
+        self + obj
         """
-        modified_class = eval(self.generic_function(obj, operator = "+"))
+        modified_class = eval(self.__generic_function(obj, operator = "+"))
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_add_{obj.__function.__name__}"
         else:
@@ -122,9 +124,10 @@ class Regression:
 
     def __sub__(self, obj) -> "Regression":
         """
-        - para mistura
+        - para mistura.
+        self - obj
         """
-        modified_class = eval(self.generic_function(obj, operator = "-"))
+        modified_class = eval(self.__generic_function(obj, operator = "-"))
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_sub_{obj.__function.__name__}"
         else:
@@ -133,9 +136,10 @@ class Regression:
 
     def  __mul__(self, obj) -> "Regression":
         """
-        * para mistura
+        * para mistura.
+        self * obj
         """
-        modified_class = eval(self.generic_function(obj, operator = "*"))
+        modified_class = eval(self.__generic_function(obj, operator = "*"))
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_mul_{obj.__function.__name__}"
         else:
@@ -144,9 +148,10 @@ class Regression:
 
     def __truediv__(self, obj) -> "Regression":
         """
-        / para mistura
+        / para mistura.
+        self / obj
         """
-        modified_class = eval(self.generic_function(obj, operator = "/"))
+        modified_class = eval(self.__generic_function(obj, operator = "/"))
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_truediv_{obj.__function.__name__}"
         else:
@@ -155,20 +160,28 @@ class Regression:
 
     def __pow__(self, obj) -> "Regression":
         """
-        ** para mistura
+        ** para mistura.
+        self ** obj
         """
-        modified_class = eval(self.generic_function(obj, operator = "**"))
+        modified_class = eval(self.__generic_function(obj, operator = "**"))
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_pow_{obj.__function.__name__}"
         else:
             modified_class.__function.__name__ = f"{self.__function.__name__}_pow_number"
         return modified_class
 
+    def loss_function(self, function:"function") -> None:
+        """
+        Muda a função de perda usada para a regressão.
+        """
+        self.__loss_function:"function" = function
+
     def operation(self, obj, operator:str) -> "Regression":
         """
-        <operator> para mistura
+        <operator> para mistura.
+        self <operador> obj
         """
-        modified_class = eval(self.generic_function(obj, operator = operator))
+        modified_class = eval(self.__generic_function(obj, operator = operator))
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_generic_{obj.__function.__name__}"
         else:
@@ -176,9 +189,9 @@ class Regression:
         return modified_class
 
 
-    def generic_function(self, obj:"Regression", operator:str) -> str:
+    def __generic_function(self, obj:"Regression", operator:str) -> str:
         """
-        Cria a função genérica e deixa como variável global as funções necessárias
+        Cria a função genérica e deixa como variável global as funções necessárias.
         """
 
         if type(obj) == int or type(obj) == float:
@@ -213,14 +226,14 @@ class Regression:
 
     def set_seed(self, seed:int) -> None:
         """
-        Coloca uma seed
+        Coloca uma seed.
         """
         assert type(seed) == int, "The seed must be an integer(int)!"
         self.__seed = seed
 
     def lock(self, **args) -> None:
         """
-        Atualiza as variáveis que devem estar travadas
+        Atualiza as variáveis que devem estar travadas.
         """
         for arg in args:
             assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.__function.__name__}"
@@ -228,7 +241,7 @@ class Regression:
 
     def change(self, **args) -> None:
         """
-        Troca um valor para que o chute inicial dele seja diferente
+        Troca um valor para que o chute inicial dele seja diferente.
         """
         for arg in args:
             assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.__function.__name__}"
@@ -236,7 +249,7 @@ class Regression:
 
     def change_all(self, value:float) -> None:
         """
-        Troca todos os valores para que o chute inicial dele seja diferente
+        Troca todos os valores para que o chute inicial dele seja diferente.
         """
         assert type(value) == int or type(value) == float, f"<value> must to be a float or int not {type(value)}"
         for arg in self.__args_function.keys():
@@ -244,8 +257,14 @@ class Regression:
 
     def prediction(self, list_prediction:list = None, **x_args) -> float:
         """
-        Faz a previsão de f(...) = y
-        x_args: Parametros regressorses
+        Faz a previsão de f(...) = y.
+
+        Args:
+            list_prediction (list): É uma lista de listas, faz a predição com esses valores.
+            x_args (**dict): Faz a predição de acordo com os valores pedidos.
+
+        Returns:
+            float: Valor predito.
         """
 
         if type(list_prediction) == list or type(list_prediction) == tuple: # Caso o usuário tenha passado uma série de valores para a predição
@@ -269,11 +288,11 @@ class Regression:
 
     def run(self, data:[list], precision:float = 0.001) -> None:
         """
-        Faz a regressão
+        Faz a regressão.
 
-        Recebe:
-        - data: lista de listas com x e y
-        - step: Numero da precisão para achar os parâmetros esperados
+        Args:
+            data(list(list)): lista de listas com x e y.
+            precision(float): Numero da precisão para achar os parâmetros esperados.
         """
 
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"

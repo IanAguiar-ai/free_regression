@@ -1,0 +1,68 @@
+\hypertarget{namespacefree__regression_1_1models__regression}{}\doxysection{Refência do Namespace free\+\_\+regression.\+models\+\_\+regression}
+\label{namespacefree__regression_1_1models__regression}\index{free\_regression.models\_regression@{free\_regression.models\_regression}}
+\doxysubsection*{Funções}
+\begin{DoxyCompactItemize}
+\item 
+(\char`\"{}function\char`\"{}, list) \mbox{\hyperlink{namespacefree__regression_1_1models__regression_a66bbd3c18bfea9c1919c02dc9c460c8e}{generate\+\_\+regression}} (int regressors, int degree=1)
+\item 
+(\char`\"{}function\char`\"{}, list) \mbox{\hyperlink{namespacefree__regression_1_1models__regression_a6a4663b4b416b446df65891269151d70}{generate\+\_\+mlp}} (int regressors, int neurons=1)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variáveis}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{namespacefree__regression_1_1models__regression_a29f67a36ba121c993a9d664ed4fea3ae}\label{namespacefree__regression_1_1models__regression_a29f67a36ba121c993a9d664ed4fea3ae}} 
+{\bfseries teste\+\_\+1} = \mbox{\hyperlink{classfree__regression_1_1free__regression_1_1Regression}{Regression}}($\ast$\mbox{\hyperlink{namespacefree__regression_1_1models__regression_a66bbd3c18bfea9c1919c02dc9c460c8e}{generate\+\_\+regression}}(regressors = 2, degree = 2))
+\item 
+\mbox{\Hypertarget{namespacefree__regression_1_1models__regression_a8c8763f96808aff43f4e6d9d34adbf3c}\label{namespacefree__regression_1_1models__regression_a8c8763f96808aff43f4e6d9d34adbf3c}} 
+{\bfseries mlp\+\_\+func}
+\item 
+\mbox{\Hypertarget{namespacefree__regression_1_1models__regression_a456493e89df91ca91a977e9eb0905d1d}\label{namespacefree__regression_1_1models__regression_a456493e89df91ca91a977e9eb0905d1d}} 
+{\bfseries regressors}
+\item 
+\mbox{\Hypertarget{namespacefree__regression_1_1models__regression_a34e3c838ec566f0433167c5644e638a5}\label{namespacefree__regression_1_1models__regression_a34e3c838ec566f0433167c5644e638a5}} 
+{\bfseries neurons}
+\item 
+\mbox{\Hypertarget{namespacefree__regression_1_1models__regression_a01ff41f4f25067b3963dab0b2d1d4d85}\label{namespacefree__regression_1_1models__regression_a01ff41f4f25067b3963dab0b2d1d4d85}} 
+{\bfseries teste\+\_\+2} = \mbox{\hyperlink{classfree__regression_1_1free__regression_1_1Regression}{Regression}}(mlp\+\_\+func, regressors)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Descrição detalhada}
+\begin{DoxyVerb}Funções para criação de regressões
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Funções}
+\mbox{\Hypertarget{namespacefree__regression_1_1models__regression_a6a4663b4b416b446df65891269151d70}\label{namespacefree__regression_1_1models__regression_a6a4663b4b416b446df65891269151d70}} 
+\index{free\_regression.models\_regression@{free\_regression.models\_regression}!generate\_mlp@{generate\_mlp}}
+\index{generate\_mlp@{generate\_mlp}!free\_regression.models\_regression@{free\_regression.models\_regression}}
+\doxysubsubsection{\texorpdfstring{generate\_mlp()}{generate\_mlp()}}
+{\footnotesize\ttfamily  (\char`\"{}function\char`\"{}, list) free\+\_\+regression.\+models\+\_\+regression.\+generate\+\_\+mlp (\begin{DoxyParamCaption}\item[{int}]{regressors,  }\item[{int }]{neurons = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Gera um MLP com a quantidade de regressors e neurons pedidos.
+Retorna a função MLP e os nomes dos regressores.
+
+Args:
+    regressors (list): Lista de nomes dos regressores.
+    neurons (int): Quantidade de neurônios na camada intermediaria, padrão é 1.
+
+Returns:
+    function: Função MLP (Mult Layer Perceptron)
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacefree__regression_1_1models__regression_a66bbd3c18bfea9c1919c02dc9c460c8e}\label{namespacefree__regression_1_1models__regression_a66bbd3c18bfea9c1919c02dc9c460c8e}} 
+\index{free\_regression.models\_regression@{free\_regression.models\_regression}!generate\_regression@{generate\_regression}}
+\index{generate\_regression@{generate\_regression}!free\_regression.models\_regression@{free\_regression.models\_regression}}
+\doxysubsubsection{\texorpdfstring{generate\_regression()}{generate\_regression()}}
+{\footnotesize\ttfamily  (\char`\"{}function\char`\"{}, list) free\+\_\+regression.\+models\+\_\+regression.\+generate\+\_\+regression (\begin{DoxyParamCaption}\item[{int}]{regressors,  }\item[{int }]{degree = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Gera uma regressão com o grau pedido.
+Retorna a função e os regressores.
+
+Args:
+    regressors (list): Lista de nomes dos regressores.
+    degree (int): Grau da regressão, padrão é 1.
+
+Returns:
+    function: Função de regressão
+\end{DoxyVerb}
+ 

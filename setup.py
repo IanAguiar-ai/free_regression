@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = "1.0.4"
+VERSION = "1.0.5"
 DESCRIPTION = "Construtor de regressão genérico."
 LONG_DESCRIPTION = ""
 
@@ -21,7 +21,7 @@ setup(
     long_description_content_type="text/markdown",
     long_description=long_description,
     packages=find_packages(),
-    install_requires=["matplotlib"],
+    install_requires=["matplotlib", "numpy"],
     keywords=["python", "regression"],
     classifiers=[
         "Development Status :: 1 - Planning",
