@@ -234,6 +234,14 @@ class Regression:
             assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.__function.__name__}"
             self.__args_function[arg] = args[arg]
 
+    def change_all(self, value:float) -> None:
+        """
+        Troca todos os valores para que o chute inicial dele seja diferente
+        """
+        assert type(value) == int or type(value) == int, f"<value> must to be a float or int not {type(value)}"
+        for arg in self.__args_function.keys():
+            self.__args_function[arg] = value
+
     def prediction(self, list_prediction:list = None, **x_args) -> float:
         """
         Faz a previsão de f(...) = y
