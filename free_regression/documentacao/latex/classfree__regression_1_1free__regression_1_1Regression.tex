@@ -25,6 +25,10 @@ float \mbox{\hyperlink{classfree__regression_1_1free__regression_1_1Regression_a
 \item 
 \char`\"{}Regression\char`\"{} \mbox{\hyperlink{classfree__regression_1_1free__regression_1_1Regression_af4a120604a64032285609711a3c48afc}{\+\_\+\+\_\+pow\+\_\+\+\_\+}} (self, obj)
 \item 
+bool \mbox{\hyperlink{classfree__regression_1_1free__regression_1_1Regression_af9236b96ee3d4aa36bc163415501868c}{save}} (self, str name)
+\item 
+bool \mbox{\hyperlink{classfree__regression_1_1free__regression_1_1Regression_a120d6446354a88b74204475f04985326}{open}} (self, str name)
+\item 
 None \mbox{\hyperlink{classfree__regression_1_1free__regression_1_1Regression_acf24b713e994e633c499b3556316e749}{loss\+\_\+function}} (self, \char`\"{}function\char`\"{} function)
 \item 
 \char`\"{}Regression\char`\"{} \mbox{\hyperlink{classfree__regression_1_1free__regression_1_1Regression_a571cf5161179db6253cce9763cb329bb}{operation}} (self, obj, str operator)
@@ -197,6 +201,14 @@ self / obj
 
 \begin{DoxyVerb}Muda a função de perda usada para a regressão.
 \end{DoxyVerb}
+ \mbox{\Hypertarget{classfree__regression_1_1free__regression_1_1Regression_a120d6446354a88b74204475f04985326}\label{classfree__regression_1_1free__regression_1_1Regression_a120d6446354a88b74204475f04985326}} 
+\index{free\_regression.free\_regression.Regression@{free\_regression.free\_regression.Regression}!open@{open}}
+\index{open@{open}!free\_regression.free\_regression.Regression@{free\_regression.free\_regression.Regression}}
+\doxysubsubsection{\texorpdfstring{open()}{open()}}
+{\footnotesize\ttfamily  bool free\+\_\+regression.\+free\+\_\+regression.\+Regression.\+open (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{str}]{name }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Abre os argumentos de memória em um arquivo chamado <name>.memory
+\end{DoxyVerb}
  \mbox{\Hypertarget{classfree__regression_1_1free__regression_1_1Regression_a571cf5161179db6253cce9763cb329bb}\label{classfree__regression_1_1free__regression_1_1Regression_a571cf5161179db6253cce9763cb329bb}} 
 \index{free\_regression.free\_regression.Regression@{free\_regression.free\_regression.Regression}!operation@{operation}}
 \index{operation@{operation}!free\_regression.free\_regression.Regression@{free\_regression.free\_regression.Regression}}
@@ -232,6 +244,14 @@ Returns:
 Args:
     data(list(list)): lista de listas com x e y.
     precision(float): Numero da precisão para achar os parâmetros esperados.
+\end{DoxyVerb}
+ \mbox{\Hypertarget{classfree__regression_1_1free__regression_1_1Regression_af9236b96ee3d4aa36bc163415501868c}\label{classfree__regression_1_1free__regression_1_1Regression_af9236b96ee3d4aa36bc163415501868c}} 
+\index{free\_regression.free\_regression.Regression@{free\_regression.free\_regression.Regression}!save@{save}}
+\index{save@{save}!free\_regression.free\_regression.Regression@{free\_regression.free\_regression.Regression}}
+\doxysubsubsection{\texorpdfstring{save()}{save()}}
+{\footnotesize\ttfamily  bool free\+\_\+regression.\+free\+\_\+regression.\+Regression.\+save (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{str}]{name }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Salva os argumentos de memória em um arquivo chamado <name>.memory
 \end{DoxyVerb}
  \mbox{\Hypertarget{classfree__regression_1_1free__regression_1_1Regression_ad3a5ce6481dc8c8c5e6672947d6934ac}\label{classfree__regression_1_1free__regression_1_1Regression_ad3a5ce6481dc8c8c5e6672947d6934ac}} 
 \index{free\_regression.free\_regression.Regression@{free\_regression.free\_regression.Regression}!set\_seed@{set\_seed}}

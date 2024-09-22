@@ -170,6 +170,20 @@ class Regression:
             modified_class.__function.__name__ = f"{self.__function.__name__}_pow_number"
         return modified_class
 
+    def save(self, name:str) -> bool:
+        """
+        Salva os argumentos de memória em um arquivo chamado <name>.memory
+        """
+        with open(f"{name}.memory", "w") as arq:
+            arq.write(f"{self.__args_function}")
+
+    def open(self, name:str) -> bool:
+        """
+        Abre os argumentos de memória em um arquivo chamado <name>.memory
+        """
+        with open(f"{name}.memory", "r") as arq:
+            self.__args_function = eval(arq.read())
+
     def loss_function(self, function:"function") -> None:
         """
         Muda a função de perda usada para a regressão.

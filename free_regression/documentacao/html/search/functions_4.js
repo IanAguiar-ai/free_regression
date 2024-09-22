@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['operation_50',['operation',['../classfree__regression_1_1free__regression_1_1Regression.html#a571cf5161179db6253cce9763cb329bb',1,'free_regression::free_regression::Regression']]]
+  ['open_52',['open',['../classfree__regression_1_1free__regression_1_1Regression.html#a120d6446354a88b74204475f04985326',1,'free_regression::free_regression::Regression']]],
+  ['operation_53',['operation',['../classfree__regression_1_1free__regression_1_1Regression.html#a571cf5161179db6253cce9763cb329bb',1,'free_regression::free_regression::Regression']]]
 ];
