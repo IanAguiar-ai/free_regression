@@ -238,7 +238,7 @@ class Regression:
         """
         Troca todos os valores para que o chute inicial dele seja diferente
         """
-        assert type(value) == int or type(value) == int, f"<value> must to be a float or int not {type(value)}"
+        assert type(value) == int or type(value) == float, f"<value> must to be a float or int not {type(value)}"
         for arg in self.__args_function.keys():
             self.__args_function[arg] = value
 
