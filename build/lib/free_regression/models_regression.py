@@ -60,7 +60,6 @@ def generate_mlp(regressors:int, neurons:int) -> ("function", list):
     function:str = f"def mlp_with_{regressors}_regressors_and_{neurons}_neurons({', '.join(sorted(list(all_parameters)))}):\n\t" + function
     function += f"\nglobals()['mlp_with_{regressors}_regressors_and_{neurons}_neurons'] = mlp_with_{regressors}_regressors_and_{neurons}_neurons"
     final_function = exec(function)
-    print(function)
 
     return globals()[f'mlp_with_{regressors}_regressors_and_{neurons}_neurons'], [f"x{i}" for i in range(regressors)]
 
