@@ -60,6 +60,7 @@ def generate_mlp(regressors:int, neurons:int) -> ("function", list):
     function:str = f"def mlp_with_{regressors}_regressors_and_{neurons}_neurons({', '.join(sorted(list(all_parameters)))}):\n\t" + function
     function += f"\nglobals()['mlp_with_{regressors}_regressors_and_{neurons}_neurons'] = mlp_with_{regressors}_regressors_and_{neurons}_neurons"
     final_function = exec(function)
+    print(function)
 
     return globals()[f'mlp_with_{regressors}_regressors_and_{neurons}_neurons'], [f"x{i}" for i in range(regressors)]
 
@@ -72,6 +73,6 @@ if __name__ == "__main__":
     print(teste_1.prediction(x_1 = 1, x_2 = 4))
     print(teste_1.prediction(x_1 = 6, x_2 = 3))
 
-    mlp_func, regressors = generate_mlp(regressors = 2, neurons = 3)
+    mlp_func, regressors = generate_mlp(regressors = 2, neurons = 2)
     teste_2 = Regression(mlp_func, regressors)
     teste_2.run([[1, 4, 5], [6, 3, 2]])

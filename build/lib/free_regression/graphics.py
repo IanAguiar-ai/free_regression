@@ -16,8 +16,11 @@ def plot_expected(regression:"Regression", data:[list]) -> None:
     y2 = [regression.prediction(**{regression.regressors[0]: value}) for value in x]
 
     fig, ax = plt.subplots(figsize=(8, 6))
-    ax.plot(x, y2, label = "Valores esperados", color = "blue", linestyle = "-")
-    ax.scatter(x, y1, label = "Dados preditos", color = "red")
+    if sorted(list(set(x))) == x:
+        ax.plot(x, y1, label = "Valores esperados", color = "blue", linestyle = "-")
+    else:
+        ax.scatter(x, y1, label = "Valores esperados", color = "blue")
+    ax.scatter(x, y2, label = "Dados preditos", color = "red")
     ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
     ax.set_title("Dados Observados vs Valores Esperados", fontsize = 16, weight = "bold")
     ax.set_xlabel("X", fontsize = 14)
