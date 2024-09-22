@@ -53,13 +53,16 @@ def generate_mlp(regressors:int, neurons:int = 1) -> ("function", list):
     for i in range(neurons):
         function += f"x_{i} = max("
         all_parameters.add(f"x_{i}")
+        temp_function = f"("
         for j in range(regressors):
             function += f"b_{i}_{j}*x{j} + "
+            temp_function += f"b_{i}_{j}*x{j} + "
             all_parameters.add(f"b_{i}_{j}")
             all_parameters.add(f"x{j}")
         function += f"b_{i}"
+        temp_function += f"b_{i})/10"
         all_parameters.add(f"b_{i}")
-        function += f", 0)\n\t"
+        function += f", {temp_function})\n\t"
 
     # Solução
     function += f"return "
