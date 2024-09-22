@@ -35,3 +35,5 @@ A documentação gerada pelo Doxygen pode ser acessada [aqui](https://github.com
 ## Função de perda
 
 ## Gráficos
+
+## Reutilização
