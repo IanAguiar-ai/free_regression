@@ -245,12 +245,13 @@ class Teste(unittest.TestCase):
             print(f"\n{modelo_iris}")
 
             modelo_iris_2 = Regression(regressao_4_betas, regressors = ['x1', 'x2'])
-            modelo_iris_2.run(iris, precision = 0.1)
+            modelo_iris_2.run(iris, precision = 0.01)
 
             print(f"\n{modelo_iris_2}")
 
             modelo_iris_3 = Regression(mlp, regressors = ['x1', 'x2'])
-            modelo_iris_3.run(iris, precision = 0.1)
+            modelo_iris_3.change_all(0)
+            modelo_iris_3.run(iris, precision = 0.01)
 
             print(f"\n{modelo_iris_3}")
 

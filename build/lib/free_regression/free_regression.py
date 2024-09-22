@@ -265,9 +265,17 @@ class Regression:
         """
         Troca todos os valores para que o chute inicial dele seja diferente.
         """
-        assert type(value) == int or type(value) == float, f"<value> must to be a float or int not {type(value)}"
-        for arg in self.__args_function.keys():
-            self.__args_function[arg] = value
+        assert type(value) == int or type(value) == float or type(value) == list or type(value) == tuple, f"<value> must to be a float or int not {type(value)}"
+
+        if type(value) == list or type(value) == tuple:
+            assert len(value) == 2, f"If <value> has to be 2 values, [min, max]"
+            
+            for arg in self.__args_function.keys():
+                self.__args_function[arg] = random()*(max(value) - min(value)) - min(value)
+
+        else:
+            for arg in self.__args_function.keys():
+                    self.__args_function[arg] = value
 
     def prediction(self, list_prediction:list = None, **x_args) -> float:
         """
@@ -330,7 +338,7 @@ class Regression:
             else:
                 args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
 
-        precision_final, precision = precision/2, max(precision * 10, 1)
+        precision_final, precision = precision/2, precision * 100
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
             while with_no_iteration < self.iterations:
@@ -366,7 +374,7 @@ class Regression:
                 for parameter in self.__args_function.keys():
                     if parameter not in self.__lock.keys():
                         args_temp[parameter] += random()*precision - precision/2
-
+                        
             # Aumenta a precisão
             precision /= 2
 

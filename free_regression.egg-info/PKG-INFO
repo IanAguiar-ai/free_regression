@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: free-regression
-Version: 1.0.7
+Version: 1.0.8
 Summary: Construtor de regressão genérico.
 Home-page: UNKNOWN
 Author: ['Ian dos Anjos']
@@ -54,5 +54,7 @@ A documentação gerada pelo Doxygen pode ser acessada [aqui](https://github.com
 ## Função de perda
 
 ## Gráficos
+
+## Reutilização
 
 
