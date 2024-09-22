@@ -33,7 +33,7 @@ def plot_expected(regression:"Regression", data:[list]) -> None:
     ax.legend()
     plt.show()
 
-def plot_residual(regression:"Regression", data:[list]) -> None:
+def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), percentile:list = [2.5, 97.5]) -> None:
     """
     Plot que mostra a distribuição dos resíduos.
 
@@ -50,19 +50,25 @@ def plot_residual(regression:"Regression", data:[list]) -> None:
     y2 = [regression.prediction([value]) for value in x]
     y_dif = [y1[i] - y2[i][0] for i in range(len(data))]
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    n, bins, patches = ax.hist(y_dif, bins=int(len(y_dif)**(1/2)*1.5), color="skyblue", edgecolor="gray", alpha=0.7, density=True)
+    fig, ax = plt.subplots(figsize = size)
+    
+    n, bins, patches = ax.hist(y_dif, bins=int(len(y_dif)**(1/2)*1.5), color = "skyblue", edgecolor = "gray", alpha = 0.7, density=True)
     n_percent = n * 100 / np.sum(n)
     ax.clear()
-    ax.bar(bins[:-1], n_percent, width=np.diff(bins), align="edge", color="skyblue", edgecolor="gray", alpha=0.7)
+    ax.bar(bins[:-1], n_percent, width=np.diff(bins), align = "edge", color = "skyblue", edgecolor = "gray", alpha = 0.7)
+    lower_bound = np.percentile(y_dif, percentile[0])
+    upper_bound = np.percentile(y_dif, percentile[1])
     mean_residual = np.mean(y_dif)
-    ax.axvline(mean_residual, color="red", linestyle="--", linewidth=2, label=f"Média dos resíduos: {mean_residual:.2f}")
-    ax.grid(True, which="both", linestyle="--", linewidth=0.7)
-    ax.set_title("Distribuição dos Resíduos", fontsize=16, weight="bold")
-    ax.set_xlabel("Resíduos", fontsize=14)
-    ax.set_ylabel("Frequência (%)", fontsize=14)
+    ax.axvline(mean_residual, color = "red", linestyle = "--", linewidth=2, label=f"Média dos resíduos: {mean_residual:.2f}")
+    ax.axvline(lower_bound, color = "green", linestyle = "--", linewidth=2, label=f"Percentil {percentile[0]}%: {lower_bound:.2f}")
+    ax.axvline(upper_bound, color = "green", linestyle = "--", linewidth=2, label=f"Percentil {percentile[1]}%: {upper_bound:.2f}")
+    ax.grid(True, which = "both", linestyle = "--", linewidth=0.7)
+    ax.set_title("Distribuição dos Resíduos", fontsize = 16, weight = "bold")
+    ax.set_xlabel("Resíduos", fontsize = 14)
+    ax.set_ylabel("Frequência (%)", fontsize = 14)
     ax.set_xlim([min(bins), max(bins)])
     ax.legend()
+    
     plt.show()
 
 if __name__ == "__main__":
