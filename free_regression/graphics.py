@@ -22,12 +22,12 @@ def plot_expected(regression:"Regression", data:[list]) -> None:
 
     fig, ax = plt.subplots(figsize=(8, 6))
     if sorted(list(set(x))) == x:
-        ax.plot(x, y1, label = "Valores Observados", color = "blue", linestyle = "-")
+        ax.plot(x, y1, label = "Dados Observados", color = "blue", linestyle = "-")
     else:
-        ax.scatter(x, y1, label = "Valores observados", color = "blue")
-    ax.scatter(x, y2, label = "Dados preditos", color = "red")
+        ax.scatter(x, y1, label = "Dados observados", color = "blue")
+    ax.scatter(x, y2, label = "Valores preditos", color = "red")
     ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
-    ax.set_title("Dados Observados vs Valores Observados", fontsize = 16, weight = "bold")
+    ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
     ax.set_xlabel("X", fontsize = 14)
     ax.set_ylabel("Y", fontsize = 14)
     ax.legend()
