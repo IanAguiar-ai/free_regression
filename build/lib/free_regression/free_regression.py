@@ -325,7 +325,7 @@ class Regression:
 
         # Iniciando a seed
         if self.__seed is not None:
-            seed(seed)
+            seed(self.__seed)
 
         # Pegando y esperado
         y_expected = [data[i][-1] for i in range(len(data))]

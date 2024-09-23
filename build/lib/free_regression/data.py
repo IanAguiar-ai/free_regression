@@ -25,7 +25,7 @@ class DataRegression(Representation):
     """
     def __init__(self):
         self.name:str = ""
-        self.columns:list = []
+        self.columns:list = ['idade', 'altura']
         self.data:dict = {"nome_coluna_1":[],
                           "nome_coluna_2":[],
                           "nome_coluna_3":[]}
