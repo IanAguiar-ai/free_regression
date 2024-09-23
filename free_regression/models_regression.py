@@ -19,15 +19,16 @@ def generate_regression(regressors:int, degree:int = 1) -> ("function", list):
     assert regressors > 0, "<regressors> must be at least 1"
     assert degree > 0, "<degree> must be at least 1"
  
-    function:str = f"lambda {', '.join(['x_' + str(i) for i in range(1, regressors + 1)])}, {', '.join(['b_' + str(i) for i in range(1, regressors*degree + 1)])}: "
+    function:str = f"lambda {', '.join(['x_' + str(i) for i in range(1, regressors + 1)])}, {', '.join(['b_' + str(i) for i in range(1, regressors*degree + 1)])}, b: "
     final_beta = 1
     for beta_degree in range(1, degree + 1):
         for beta in range(1, regressors + 1):
             function += f"b_{final_beta}*x_{beta}**{beta_degree} + "
             final_beta += 1
-    function:str = function[:-3]
+    function:str = function + "b"
     final_function = eval(function)
     final_function.__name__ = f"regression_with_{regressors}_regressors_and_{degree}_degrees"
+    
     return final_function, ['x_' + str(i) for i in range(1, regressors + 1)]
 
 def generate_mlp(regressors:int, neurons:int = 1) -> ("function", list):
