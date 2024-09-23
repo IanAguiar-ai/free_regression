@@ -7,7 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = "1.0.9"
+VERSION = "1.0.10"
 DESCRIPTION = "Construtor de regressão genérico."
 LONG_DESCRIPTION = ""
 
@@ -15,7 +15,7 @@ LONG_DESCRIPTION = ""
 setup(
     name="free_regression",
     version=VERSION,
-    author=["Ian dos Anjos"],
+    author=["Ian dos Anjos", "Arthur Magalhões", "João Roberto", "Henrique de Souza"],
     author_email="<iannaianjos@gmail.com>",
     description=DESCRIPTION,
     long_description_content_type="text/markdown",
