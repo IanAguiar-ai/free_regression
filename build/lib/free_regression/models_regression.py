@@ -60,7 +60,7 @@ def generate_mlp(regressors:int, neurons:int = 1) -> ("function", list):
             all_parameters.add(f"b_{i}_{j}")
             all_parameters.add(f"x{j}")
         function += f"b_{i}"
-        temp_function += f"b_{i})/10"
+        temp_function += f"b_{i})/100"
         all_parameters.add(f"b_{i}")
         function += f", {temp_function})\n\t"
 
