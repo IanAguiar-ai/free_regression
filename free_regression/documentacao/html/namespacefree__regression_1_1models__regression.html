@@ -81,6 +81,8 @@ Funções</h2></td></tr>
 <tr class="separator:a66bbd3c18bfea9c1919c02dc9c460c8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a4663b4b416b446df65891269151d70"><td class="memItemLeft" align="right" valign="top">(&quot;function&quot;, list)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefree__regression_1_1models__regression.html#a6a4663b4b416b446df65891269151d70">generate_mlp</a> (int regressors, int neurons=1)</td></tr>
 <tr class="separator:a6a4663b4b416b446df65891269151d70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b85bf7fa47be55bf7ec15ab6054acbd"><td class="memItemLeft" align="right" valign="top">(&quot;function&quot;, list)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefree__regression_1_1models__regression.html#a5b85bf7fa47be55bf7ec15ab6054acbd">generate_mlp_classifier</a> (int regressors, int neurons=1)</td></tr>
+<tr class="separator:a5b85bf7fa47be55bf7ec15ab6054acbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variáveis</h2></td></tr>
@@ -111,6 +113,43 @@ Variáveis</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"> (&quot;function&quot;, list) free_regression.models_regression.generate_mlp </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>regressors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &#160;</td>
+          <td class="paramname"><em>neurons</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Gera um MLP com a quantidade de regressors e neurons pedidos.
+Retorna a função MLP e os nomes dos regressores.
+
+Args:
+    regressors (list): Lista de nomes dos regressores.
+    neurons (int): Quantidade de neurônios na camada intermediaria, padrão é 1.
+
+Returns:
+    function: Função MLP (Mult Layer Perceptron)
+</pre> 
+</div>
+</div>
+<a id="a5b85bf7fa47be55bf7ec15ab6054acbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b85bf7fa47be55bf7ec15ab6054acbd">&#9670;&nbsp;</a></span>generate_mlp_classifier()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> (&quot;function&quot;, list) free_regression.models_regression.generate_mlp_classifier </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>regressors</em>, </td>

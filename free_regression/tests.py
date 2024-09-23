@@ -240,17 +240,20 @@ class Teste(unittest.TestCase):
             iris = [list(x[:3]) for x in iris.data]
             
             modelo_iris = Regression(regressao_2_betas, regressors = ['x1', 'x2'])
+            modelo_iris.set_seed(2024)
             modelo_iris.run(iris)
 
             print(f"\n{modelo_iris}")
 
             modelo_iris_2 = Regression(regressao_4_betas, regressors = ['x1', 'x2'])
+            modelo_iris_2.set_seed(2024)
             modelo_iris_2.run(iris, precision = 0.01)
 
             print(f"\n{modelo_iris_2}")
 
             modelo_iris_3 = Regression(mlp, regressors = ['x1', 'x2'])
             modelo_iris_3.change_all(0)
+            modelo_iris_3.set_seed(2024)
             modelo_iris_3.run(iris, precision = 0.01)
 
             print(f"\n{modelo_iris_3}")
