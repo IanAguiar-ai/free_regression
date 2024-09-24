@@ -290,11 +290,11 @@ def perda_modificada(v_1:list, v_2:list) -> float:
 	Função de perda que da mais pesso para perdas para valores abaixo do observado
 	"""
 	perda = 0
-    for i in range(len(v_1)):
-    	if v_1 > v2:
-    		perda += (v1 - v2)**2
-    	else:
-    		perda += (v2 - v1)/10
+	for i in range(len(v_1)):
+		if v_1 > v2:
+			perda += (v1[i] - v2[i])**2
+		else:
+			perda += (v2[i] - v1[i])/10
     return perda    	
 
 
