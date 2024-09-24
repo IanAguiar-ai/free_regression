@@ -22,7 +22,7 @@ def plot_expected(regression:"Regression", data:[list], size:list = (8, 6)) -> N
     dif = sorted(x)
     dif = min([dif[i+1] - dif[i] for i in range(len(dif) - 1)])
     while x_new[-1] < max(x):
-        x_new.append(x_new[-1] + dif)
+        x_new.append(x_new[-1] + max(dif, (max(x) - min(x))/200))
     y2 = [regression.prediction(**{regression.regressors[0]: value}) for value in x_new]
 
     fig, ax = plt.subplots(figsize = size)
