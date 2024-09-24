@@ -54,6 +54,14 @@ A classe principal que o usuário deve usar é a *Regression* que recebe como ar
 
 - **loss_function**: Função de perda para achar o mínimo local, por padrão é uma função de mínimos quadrados.
 
+Ainda na classe principal, as variáveis que o usuário tem acesso são:
+
+- **.params**: Parametros que serão achados;
+
+- **.regressors**: Variáveis regressoras;
+
+- **.iterations**: Número de iterações mínimas para convergência.
+
 ## Criando regressores
 
 O usuário pode criar regressores de duas formas, ou usando as funções prontas ou criando seus próprios regressores.
@@ -373,6 +381,15 @@ meu_modelo_1 << meu_modelo_2
 
 Nesse caso acima, o valor do parâmetro *b* do *meu_modelo_2* é passado para o *meu_modelo_1*.
 
+### Setar *seed*
+
+A função **.set_seed** da classe *Regression* recebe um número inteiro e seta a *seed* do processo, garantindo reprodutibilidade. Exemplo:
+
+```
+meu_modelo = Regressao(func_1)
+meu_modelo.set_seed(1)
+```
+
 ## Manipulação de dados
 
 Existe funções, que auxiliam o usuário a tratar os dados, por exemplo, a função **to_dummy**, essa função recebe uma lista de listas onde algumas colunas são categóricas, e desde que, nas variáveis categóricas apareçam todas as categorias, ele cria colunas dummys novas, para cada categoria em ordem alfabetica por coluna categórica. Exemplo:
@@ -437,6 +454,6 @@ Dado o método de convergência, é muito fácil a regressão ficar presa em mí
 
 ...
 
-## regressão/treinamento de forma dividida
+## Regressão/treinamento de forma dividida
 
 ...
