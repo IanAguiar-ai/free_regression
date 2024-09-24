@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_expected(regression:"Regression", data:[list]) -> None:
+def plot_expected(regression:"Regression", data:[list], size:list = (8, 6)) -> None:
     """
     Plot que compara os valores preditos e observados.
     Só funciona quando existe apenas um regressor e um valor esperado.
@@ -18,14 +18,19 @@ def plot_expected(regression:"Regression", data:[list]) -> None:
     
     x = [values[0] for values in data]
     y1 = [values[1] for values in data]
-    y2 = [regression.prediction(**{regression.regressors[0]: value}) for value in x]
+    x_new = [min(x)]
+    dif = sorted(x)
+    dif = min([dif[i+1] - dif[i] for i in range(len(dif) - 1)])
+    while x_new[-1] < max(x):
+        x_new.append(x_new[-1] + dif)
+    y2 = [regression.prediction(**{regression.regressors[0]: value}) for value in x_new]
 
-    fig, ax = plt.subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize = size)
     if sorted(list(set(x))) == x:
         ax.plot(x, y1, label = "Dados Observados", color = "blue", linestyle = "-")
     else:
         ax.scatter(x, y1, label = "Dados observados", color = "blue")
-    ax.scatter(x, y2, label = "Valores preditos", color = "red")
+    ax.plot(x_new, y2, label = "Dados Observados", color = "red", linestyle = "-")
     ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
     ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
     ax.set_xlabel("X", fontsize = 14)
@@ -82,6 +87,7 @@ if __name__ == "__main__":
         return x1*b1 + x2*b2
 
     dado = [[x, regressao_2(x, a = 15, b = -7, c = -4) + random()*100-50] for x in range(30)]
+    dado = [[random()*i/100, random()*i/100] for i in range(40)]
     teste = Regression(regressao_2)
     teste.run(dado)
     print(teste)
