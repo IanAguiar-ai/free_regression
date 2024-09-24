@@ -245,7 +245,7 @@ meu_modelo_final = meu_modelo_parte_1 + meu_modelo_parte_1 - 20
 print(f"Modelo mistura: {meu_modelo_final}")
 ```
 
-Perceba que no caso acima ficamos com $a*x^3 + b*x^2 + c*x - 20$.
+Perceba que no caso acima ficamos com $ a*x^3 + b*x^2 + c*x - 20 $.
 
 É possível fazer modelos de mistura com os operadores '+', '-', '*', '/', '**'. Se o usuário quiser usar um operador diferente basta usar a função **.operation** da classe *Regression*, por exemplo:
 
@@ -267,7 +267,7 @@ meu_modelo_final = meu_modelo_parte_1.operation(meu_modelo_parte_1, operator = "
 print(f"Modelo mistura: {meu_modelo_final}")
 ```
 
-Atenção, fique atento que a mistura é feita da esquerda para a direita, por exemplo, $a + b / c$ é sempre $(a + b)/c$ e não $a + (b/c)$.
+Atenção, fique atento que a mistura é feita da esquerda para a direita, por exemplo, $ a + b / c $ é sempre $ (a + b)/c $ e não $ a + (b/c) $.
 
 ## Função de perda
 
@@ -337,7 +337,7 @@ def func_1(x, a, b):
 	
 def func_2(x, b, c):
 	return c*x + b
-	
+
 # Fanzendo a mistura das regressões
 meu_modelo_1 = Regressao(func_1)
 meu_modelo_2 = Regressao(func_2)
@@ -345,7 +345,7 @@ meu_modelo_2 = Regressao(func_2)
 meu_modelo_1 << meu_modelo_2
 ```
 
-Nesse caso acima, o o valor do parâmetro *b* do *meu_modelo_2* é passado para o *meu_modelo_1*.
+Nesse caso acima, o valor do parâmetro *b* do *meu_modelo_2* é passado para o *meu_modelo_1*.
 
 ## Manipulação de dados
 
