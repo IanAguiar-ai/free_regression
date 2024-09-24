@@ -133,13 +133,82 @@ print(meu_modelo_regressor)
 
 ### Parâmetros de regressão
 
-Além da regressão simples, pode ser feito várias mudanças nos parâmetros afim de controlar mais a regressão. Alguns desses parâmetros são
+Além da regressão simples, pode ser feito várias mudanças nos parâmetros afim de controlar mais a regressão. Algumas dessas funções imbutidas na classe *Regression* são:
 
-1. change
-2. change_all
-3. lock
+1. **.change**: Recebe cada parâmetro que deve ser mudado e o valor a ser mudado;
+
+2. **.change_all**: Recebe um valor float que é colocado em todos os parâmetros válidos;
+
+3. **.lock**: Recebe cada parâmetro que deve ser travado e o valor em que ele deve ser travado, depois disso, esses parâmetros não são mais trabalhados na regressão pois eles estão bloqueados.
+
+Um exemplo do **.change**:
+
+```
+# Criando a função
+def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
+	return x*b1**2 + x*b2 + b3
+
+# Criando a instancia da classe
+meu_modelo_regressor = Regression(minha_funcao)
+
+# Antes da modificação
+print(f"Antes:\n{meu_modelo_regressor}\n")
+
+# Mudando os betas
+meu_modelo_regressor.change(b1 = 2, b2 = 1.1, b3 = 15)
+print(f"Depois do change:\n{meu_modelo_regressor}\n")
+```
+
+Um exemplo do **.change_all**:
+
+```
+# Criando a função
+def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
+	return x*b1**2 + x*b2 + b3
+
+# Criando a instancia da classe
+meu_modelo_regressor = Regression(minha_funcao)
+
+# Antes da modificação
+print(f"Antes:\n{meu_modelo_regressor}\n")
+
+# Mudando os betas
+meu_modelo_regressor.change_all(10)
+print(f"Depois do change:\n{meu_modelo_regressor}\n")
+```
+
+Um exemplo do **.lock**:
+
+```
+# Criando a função
+def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
+	return x*b1**2 + x*b2 + b3
+
+# Criando a instancia da classe
+meu_modelo_regressor = Regression(minha_funcao)
+
+# Antes da modificação
+print(f"Antes:\n{meu_modelo_regressor}\n")
+
+# Mudando os betas
+meu_modelo_regressor.change_all(b3 = 20)
+print(f"Depois do lock:\n{meu_modelo_regressor}\n")
+
+# Fazendo a regressão
+meu_modelo_regressor.run(seus_dados)
+print(f"Depois do lock e do run:\n{meu_modelo_regressor}\n")
+# Perceba que as variáveis que estão bloqueadas não mudam mesmo depois da regressão
+```
+
+O **.change** e o **.change_all** servem para iniciar a regressão de outro lugar, por padrão todos os valores começam em 0.1. O usuário ficando travado em um minimo local indesejado pode mudar tanto todos os parâmetros quanto parâmetros específicos.
+
+O **.lock** pode ser usado para travar um intercepto por exemplo.
+
+O uso dessas técnicas requer um conhecimento um pouco maior da função de regressão usada.
 
 ## Predição
+
+Depois do usuário fazer a regressão, é interessante que ele possa prever valores desconhecidos, para isso ele deve usar a função **.prediction** da classe *Regression*.
 
 ## Misturas
 
@@ -154,5 +223,9 @@ Além da regressão simples, pode ser feito várias mudanças nos parâmetros af
 # Limitação da biblioteca
 
 Dado o método de convergência, é muito fácil a regressão ficar presa em mínimos locais, então tenha atenção ao usar o gerador de MLP.
+
+# Dicas
+
+## Pré-regressão/treinamento e regressão/treinamento de forma dividida
 
 

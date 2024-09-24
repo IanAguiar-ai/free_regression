@@ -56,7 +56,7 @@ class Regression:
         for parameter in temp:
             if parameter not in self.regressors:
                 self.params.append(parameter)
-                self.__args_function[parameter] = 1
+                self.__args_function[parameter] = 0.1
         
         self.__seed = None
         self.iterations:int = 50 * len(self.__args_function.keys()) # Quanto mais parâmetros mais iterações eu precisso para que o valor mude
