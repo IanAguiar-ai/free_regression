@@ -245,7 +245,7 @@ meu_modelo_final = meu_modelo_parte_1 + meu_modelo_parte_1 - 20
 print(f"Modelo mistura: {meu_modelo_final}")
 ```
 
-Perceba que no caso acima ficamos com $ a*x^3 + b*x^2 + c*x - 20 $.
+Perceba que no caso acima ficamos com $ax^3 + bx^2 + cx - 20$.
 
 É possível fazer modelos de mistura com os operadores '+', '-', '*', '/', '**'. Se o usuário quiser usar um operador diferente basta usar a função **.operation** da classe *Regression*, por exemplo:
 
@@ -267,7 +267,7 @@ meu_modelo_final = meu_modelo_parte_1.operation(meu_modelo_parte_1, operator = "
 print(f"Modelo mistura: {meu_modelo_final}")
 ```
 
-Atenção, fique atento que a mistura é feita da esquerda para a direita, por exemplo, $ a + b / c $ é sempre $ (a + b)/c $ e não $ a + (b/c) $.
+Atenção, fique atento que a mistura é feita da esquerda para a direita, por exemplo, $a + b / c$ é sempre $(a + b)/c$ e não $a + (b/c)$.
 
 ## Função de perda
 
@@ -349,7 +349,31 @@ Nesse caso acima, o valor do parâmetro *b* do *meu_modelo_2* é passado para o 
 
 ## Manipulação de dados
 
+Existe funções, que auxiliam o usuário a tratar os dados, por exemplo, a função **to_dummy**, essa função recebe uma lista de listas onde algumas colunas são categóricas, e desde que, nas variáveis categóricas apareçam todas as categorias, ele cria colunas dummys novas, para cada categoria em ordem alfabetica por coluna categórica. Exemplo:
+
+```
+dados = [[1, "a", 5, "1"],
+         [3, "b", 6, "2"],
+         [0, "a", 4, "1"],
+         [6, "c", 3, "2"],
+         [4, "a", 4, "2"],]
+
+print(to_dummy(dados))
+```
+
+Retorna:
+
+```
+[[1, 5, 1, 0, 0, 1, 0],
+ [3, 6, 0, 1, 0, 0, 1],
+ [0, 4, 1, 0, 0, 1, 0],
+ [6, 3, 0, 0, 1, 0, 1],
+ [4, 4, 1, 0, 0, 0, 1]]
+```
+
 ## Gráficos
+
+...
 
 # Limitação da biblioteca
 

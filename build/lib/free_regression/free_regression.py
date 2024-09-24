@@ -191,14 +191,14 @@ class Regression:
         """
         Salva os argumentos de memória em um arquivo chamado <name>.memory
         """
-        with open(f"{name}.memory", "w") as arq:
+        with open(f"{name.replace('.memory', '')}.memory", "w") as arq:
             arq.write(f"{self.__args_function}")
 
     def open(self, name:str) -> bool:
         """
         Abre os argumentos de memória em um arquivo chamado <name>.memory
         """
-        with open(f"{name}.memory", "r") as arq:
+        with open(f"{name.replace('.memory', '')}.memory", "r") as arq:
             self.__args_function = eval(arq.read())
 
     def loss_function(self, function:"function") -> None:

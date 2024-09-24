@@ -5,6 +5,9 @@ Dados para testes
 def to_dummy(data:list) -> list:
     """
     Função que pega uma lista de listas e passa as colunas categoricas para numéricas binárias
+
+    Args:
+        data: Lista de listas com os dados do usuário
     """
     assert type(data) == list, "<data> has to be a list"
     assert type(data[0]) == list, "<data[n]> has to be a list"
