@@ -170,6 +170,23 @@ class Regression:
             modified_class.__function.__name__ = f"{self.__function.__name__}_pow_number"
         return modified_class
 
+    def __rshift__(self, obj) -> None:
+        """
+        Passa os parâmetros de:
+        self para obj
+        """
+        assert type(obj) == Regression, "This operation only allows another instance of the Regression class"
+        for arg in self.__args_function.keys():
+            if arg in obj.__args_function.keys():
+                obj.__args_function[arg] = self.__args_function[arg]
+
+    def __lshift__(self, obj) -> None:
+        """
+        Passa os parâmetros de:
+        obj para self
+        """
+        obj.__rshift__(self)
+
     def save(self, name:str) -> bool:
         """
         Salva os argumentos de memória em um arquivo chamado <name>.memory

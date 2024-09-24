@@ -247,6 +247,8 @@ class Teste(unittest.TestCase):
 
             modelo_iris_2 = Regression(regressao_4_betas, regressors = ['x1', 'x2'])
             modelo_iris_2.set_seed(2024)
+            modelo_iris_2 << modelo_iris
+            print(modelo_iris_2)
             modelo_iris_2.run(iris, precision = 0.01)
 
             print(f"\n{modelo_iris_2}")
