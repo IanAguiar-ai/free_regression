@@ -23,11 +23,11 @@ Construtor de regressão genérico.
 
 Com está biblioteca o usuário é capaz de:
 
-1. Criar regressoras 'tradicionais';
+1. Criar regressões 'tradicionais';
 
-2. Criar regressoras próprias;
+2. Criar regressões próprias;
 
-3. Manipular as regressoras.
+3. Manipular as regressões.
 
 # Download
 
@@ -146,7 +146,7 @@ Um exemplo do **.change**:
 ```
 # Criando a função
 def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
-	return x*b1**2 + x*b2 + b3
+	return b1*x**2 + x*b2 + b3
 
 # Criando a instancia da classe
 meu_modelo_regressor = Regression(minha_funcao)
@@ -164,7 +164,7 @@ Um exemplo do **.change_all**:
 ```
 # Criando a função
 def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
-	return x*b1**2 + x*b2 + b3
+	return b1*x**2 + x*b2 + b3
 
 # Criando a instancia da classe
 meu_modelo_regressor = Regression(minha_funcao)
@@ -182,7 +182,7 @@ Um exemplo do **.lock**:
 ```
 # Criando a função
 def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
-	return x*b1**2 + x*b2 + b3
+	return b1*x**2 + x*b2 + b3
 
 # Criando a instancia da classe
 meu_modelo_regressor = Regression(minha_funcao)
@@ -208,11 +208,121 @@ O uso dessas técnicas requer um conhecimento um pouco maior da função de regr
 
 ## Predição
 
-Depois do usuário fazer a regressão, é interessante que ele possa prever valores desconhecidos, para isso ele deve usar a função **.prediction** da classe *Regression*.
+Depois do usuário fazer a regressão, é interessante que ele possa prever valores desconhecidos, para isso ele deve usar a função **.prediction** da classe *Regression*. Um exemplo do uso pode ser visto logo abaixo:
+
+```
+# Criando a função
+def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
+	return b1*x**2 + x*b2 + b3
+
+# Criando a instancia da classe
+meu_modelo_regressor = Regression(minha_funcao)
+
+# Fazendo a regressão
+meu_modelo_regressor.run(seus_dados)
+
+# Predição
+resposta = meu_modelo_regressor.prediction(x = 4)
+print(f"Predição para x = 4: {resposta}")
+```
+
+```
+# Criando a função
+def minha_funcao(x1:float, x2:float, b1:float, b2:float, b3:float) -> float:
+	return x1*b1 + x2*b2 + b3
+
+# Criando a instancia da classe
+meu_modelo_regressor = Regression(minha_funcao, regressors = ["x1", "x2"])
+
+# Fazendo a regressão
+meu_modelo_regressor.run(seus_dados)
+
+# Predição
+resposta = meu_modelo_regressor.prediction(x1 = 2, x2 = 1.2)
+print(f"Predição para x1 = 2 e x2 = 1.2: {resposta}")
+```
 
 ## Misturas
 
+É possível fazer a mistura de funções de regressão, por exemplo:
+
+```
+# Criando as funções para a mistura
+
+def parte_1(x, a, b):
+	return a*x**3 + b*x**2
+	
+def parte_2(x, c):
+	return c*x
+	
+# Fanzendo a mistura das regressões
+meu_modelo_parte_1 = Regressao(parte_1)
+meu_modelo_parte_2 = Regressao(parte_2)
+
+meu_modelo_final = meu_modelo_parte_1 + meu_modelo_parte_1 - 20
+
+print(f"Modelo mistura: {meu_modelo_final}")
+```
+
+Perceba que no caso acima ficamos com $a*x^3 + b*x^2 + c*x - 20$.
+
+É possível fazer modelos de mistura com os operadores '+', '-', '*', '/', '**'. Se o usuário quiser usar um operador diferente basta usar a função **.operation** da classe *Regression*, por exemplo:
+
+```
+# Criando as funções para a mistura
+
+def parte_1(x, a, b):
+	return a*x**3 + b*x**2
+	
+def parte_2(x, c):
+	return c*x
+	
+# Fanzendo a mistura das regressões
+meu_modelo_parte_1 = Regressao(parte_1)
+meu_modelo_parte_2 = Regressao(parte_2)
+
+meu_modelo_final = meu_modelo_parte_1.operation(meu_modelo_parte_1, operator = "%")
+
+print(f"Modelo mistura: {meu_modelo_final}")
+```
+
+Atenção, fique atento que a mistura é feita da esquerda para a direita, por exemplo, $a + b / c$ é sempre $(a + b)/c$ e não $a + (b/c)$.
+
 ## Função de perda
+
+A função de perda é por padrão uma função de mínimos quadrados, em específico essa:
+
+```
+def least_squares(vector_1:list, vector_2:list) -> float:
+    """
+    Função de minimos quadrados
+    """
+    return sum([(vector_1[i] - vector_2[i])*(vector_1[i] - vector_2[i]) for i in range(len(vector_1))])
+```
+
+Mas se o usuário seguir o padrão de criar uma função de perda que usa os dois vetores passados, sendo o vetor dos valores observados e preditos nessa ordem, é possível mudar a função de perda com a função **.loss_function** da classe *Regression*, por exemplo:
+
+```
+# Criando função de perda
+def perda_modificada(v_1:list, v_2:list) -> float:
+	"""
+	Função de perda que da mais pesso para perdas para valores abaixo do observado
+	"""
+	perda = 0
+    for i in range(len(v_1)):
+    	if v_1 > v2:
+    		perda += (v1 - v2)**2
+    	else:
+    		perda += (v2 - v1)/10
+    return perda    	
+
+
+# Definindo a função criada como a loss_function
+meu_modelo.loss_function(perda_modificada)
+
+# Fazer a regressão com a função de perda modificada
+meu_modelo.run(seus_dados)
+```
 
 ## Manipulação de dados
 
