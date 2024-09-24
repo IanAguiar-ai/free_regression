@@ -345,6 +345,8 @@ meu_modelo_2 = Regressao(func_2)
 meu_modelo_1 << meu_modelo_2
 ```
 
+Nesse caso acima, o o valor do parâmetro *b* do *meu_modelo_2* é passado para o *meu_modelo_1*.
+
 ## Manipulação de dados
 
 ## Gráficos
