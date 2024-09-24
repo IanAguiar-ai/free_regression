@@ -1,9 +1,9 @@
 Metadata-Version: 2.1
 Name: free-regression
-Version: 1.0.9
+Version: 1.0.10
 Summary: Construtor de regressão genérico.
 Home-page: UNKNOWN
-Author: ['Ian dos Anjos']
+Author: ['Ian dos Anjos', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
 Author-email: <iannaianjos@gmail.com>
 License: UNKNOWN
 Keywords: python,regression

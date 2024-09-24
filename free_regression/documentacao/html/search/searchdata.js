@@ -3,7 +3,7 @@ var indexSectionsWithContent =
   0: "_cdfgloprst",
   1: "drt",
   2: "f",
-  3: "_cgloprs"
+  3: "_cgloprst"
 };
 
 var indexSectionNames =

@@ -95,10 +95,10 @@ def generate_mlp_classifier(regressors:int, neurons:int = 1) -> ("function", lis
     assert neurons > 0, "<neurons> must be at least 1"
 
     all_parameters:set = set()
-    function:str = ""
+    function:str = "try:\n\t"
     # Camada intemediaria
     for i in range(neurons):
-        function += f"x_{i} = "
+        function += f"\tx_{i} = "
         all_parameters.add(f"x_{i}")
         temp_function = f"("
         for j in range(regressors):
@@ -110,7 +110,7 @@ def generate_mlp_classifier(regressors:int, neurons:int = 1) -> ("function", lis
         function += f"1/(1 - 2.7182818**(-{temp_function}))\n\t"
 
     # Solução
-    function += f"try:\n\t\treturn 1/(1 - 2.7182818**(-"
+    function += f"\treturn 1/(1 - 2.7182818**(-"
     for i in range(neurons):
         function += f"b__{i}*x_{i} + "
         all_parameters.add(f"b__{i}")
@@ -133,5 +133,6 @@ if __name__ == "__main__":
 
     mlp_func, regressors = generate_mlp_classifier(regressors = 2, neurons = 2)
     teste_2 = Regression(mlp_func, regressors)
+    teste_2.change_all(0.1)
     teste_2.run([[1, 4, 0], [6, 3, 1]])
     print(teste_2.prediction([[1, 4], [6, 3]]))
