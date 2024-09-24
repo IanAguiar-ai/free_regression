@@ -16,6 +16,32 @@ Com está biblioteca o usuário é capaz de:
 pip install git+https://github.com/IanAguiar-ai/free_regression
 ```
 
+# Importação
+
+Para importar a classe principal:
+
+```
+from free_regression import Regression
+```
+
+Para importar os geradores de funções:
+
+```
+from free_regression import generate_regression, generate_mlp, generate_mlp_classifier
+```
+
+Para importar as funções de geradoras de imagens:
+
+```
+from free_regression import plot_expected, plot_residual
+```
+
+Para importar as funções de manipulação de dados:
+
+```
+from free_regression import to_dummy
+```
+
 # Documentação das classes e funções
 
 A documentação gerada pelo Doxygen pode ser acessada [aqui](https://github.com/IanAguiar-ai/free_regression/blob/main/free_regression/documentacao/html/annotated.html).
