@@ -373,7 +373,24 @@ Retorna:
 
 ## Gráficos
 
-...
+### *plot_expected*
+
+Função que recebe:
+	regression: Instancia da classe *Regression*;
+	data: Dados em lista de lista;
+	size: Tamanho da figura.
+	
+Plot simples que compara os valores observado com os valores preditos. Se os valores observados puderem ser representados como uma série a função o fará, caso contrário apresentará os dados observados com pontos.
+
+### *plot_residual*
+
+Função que recebe:
+	regression: Instancia da classe *Regression*;
+	data: Dados em lista de lista;
+	size: Tamanho da figura;
+	percentile: Lista com dois percentis que serão apresentados no plot. 
+
+Faz um histograma com a distribuição do resíduo.
 
 # Limitação da biblioteca
 
@@ -381,4 +398,12 @@ Dado o método de convergência, é muito fácil a regressão ficar presa em mí
 
 # Dicas
 
-## Pré-regressão/treinamento e regressão/treinamento de forma dividida
+...
+
+## Pré-regressão/treinamento
+
+...
+
+## regressão/treinamento de forma dividida
+
+...
