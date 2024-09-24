@@ -172,7 +172,7 @@ meu_modelo_regressor = Regression(minha_funcao)
 print(f"Antes:\n{meu_modelo_regressor}\n")
 
 # Mudando os betas
-meu_modelo_regressor.change_all(b3 = 20)
+meu_modelo_regressor.lock(b3 = 20)
 print(f"Depois do lock:\n{meu_modelo_regressor}\n")
 
 # Fazendo a regressão
@@ -305,11 +305,49 @@ meu_modelo.loss_function(perda_modificada)
 meu_modelo.run(seus_dados)
 ```
 
+## Reutilização
+
+### Salvando e reutilizando parâmetros
+
+Assim que a regressão é feita, é possível salvar os parâmetros, basta usar a função **.save** da classe *Regression*, por exemplo:
+
+```
+# Depois de treinar o modelo...
+
+# Salvando
+meu_modelo.save(name = "nome_do_modelo")
+```
+
+Isso vai salvar na mesma pasta em que o código python estiver sendo usado, um arquivo *.memory* que pode ser pego posteriormente por uma instancia da classe *Regression* construida da mesma forma:
+
+```
+# Depois de reconstruir o modelo...
+
+# Puxar os parâmetros
+meu_modelo.open(name = "nome_do_modelo") # Não é preciso colocar o ".memory" no final do nome do modelo
+```
+
+### Passando parâmetros de uma instancia para a outra
+
+É possível passar parâmetros em comum de uma instancia para a outra, por exemplo:
+
+```
+def func_1(x, a, b):
+	return a*x**3 + b*x**2
+	
+def func_2(x, b, c):
+	return c*x + b
+	
+# Fanzendo a mistura das regressões
+meu_modelo_1 = Regressao(func_1)
+meu_modelo_2 = Regressao(func_2)
+
+meu_modelo_1 << meu_modelo_2
+```
+
 ## Manipulação de dados
 
 ## Gráficos
-
-## Reutilização
 
 # Limitação da biblioteca
 
