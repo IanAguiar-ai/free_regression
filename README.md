@@ -38,9 +38,9 @@ Se o usuário quiser usar um regressor próprio ele tem algumas opções como:
 
 - **generate_regression**: Para regressão linear, recebe dois parâmetros, *regressors* e *degree*;
 
-- **generate_mlp**: Para gerar Mult Layer Perceptron, recebe dois parâmetros, *regressors* e *neurons*, usa de uma ReLU para gerar a descontinuidade;
+- **generate_mlp**: Para gerar Multi Layer Perceptron, recebe dois parâmetros, *regressors* e *neurons*, usa de uma ReLU para gerar a descontinuidade;
 
-- **generate_mlp_classifier**: Para gerar Mult Layer Perceptron, recebe dois parâmetros, *regressors* e *neurons*.
+- **generate_mlp_classifier**: Para gerar Multi Layer Perceptron, recebe dois parâmetros, *regressors* e *neurons*, usa uma sigmoide para gerar a descontinuidade;
 
 Todas essas funções retornam dois parâmetros, a própria função e a lista de regressores.
 
@@ -295,7 +295,7 @@ def perda_modificada(v_1:list, v_2:list) -> float:
 			perda += (v1[i] - v2[i])**2
 		else:
 			perda += (v2[i] - v1[i])/10
-    return perda    	
+	return perda    	
 
 
 # Definindo a função criada como a loss_function
