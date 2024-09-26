@@ -94,8 +94,7 @@ Se o usuário desejar utilizar um regressor próprio, ele possui algumas opçõe
 
 Todas essas funções retornam dois elementos: a função em si e a lista de regressores.
 
-
-Exemplo de uso:Para importar as funções de manipulação de dados:
+Para importar as funções de manipulação de dados:
 
 ```
 from free_regression import to_dummy
@@ -125,6 +124,7 @@ print(meu_modelo['str_nome_do_regressor'])
 
 Você pode criar regressores próprios para realizar a regressão, basta definir a função. Por exemplo:
 
+Com regressor implicito
 ```
 def minha_funcao(x:float, b1:float, b2:float) -> float:
 	return x*b1 + b2
@@ -134,8 +134,7 @@ print(meu_modelo_regressor) # Para ver as propriedades do modelo
 meu_modelo_regressor.run(seus_dados) # Para começar a regressão
 ```
 
-Essa versão corrige e formaliza a explicação de como criar regressores personalizados, mantendo a clareza e a simplicidade.
-
+Com regressor explicito
 ```
 def minha_funcao(h:float, b1:float, b2:float) -> float:
 	return h*b1 + b2
