@@ -27,7 +27,7 @@ Para importar os geradores de funções:
 from free_regression import generate_regression, generate_mlp, generate_mlp_classifier
 ```
 
-Para importar as funções geradoras de imagens:
+Para importar as funçõMedidasDeMassaes geradoras de imagens:
 
 ```
 from free_regression import plot_expected, plot_residual
@@ -55,6 +55,24 @@ Além disso, na classe principal, as variáveis às quais o usuário tem acesso 
 - **.regressors**: Variáveis regressoras;
 - **.iterations**: Número mínimo de iterações para convergência.
 
+## Dados próprios
+
+A biblioteca conta com dois conjuntos de dados para testes:
+
+- **MedidasDeMassa**: Dados numéricos para as colunas *Age, Hips , LegLength, TotalHeight*;
+
+- **ProdutividadeTrabalhoRemoto**: Dados numéricos com variável preditora categórica, as colunas são ...;
+
+Para usar esses dados:
+
+```
+seus_dados = MedidasDeMassa()
+print(seus_dados)
+
+colunas = seus_dados.columns
+coluna_age = seus_dados['Age']
+dados_no_formato_para_a_biblioteca = seus_dados.data_list
+```
 
 ## Criando regressores
 
