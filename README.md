@@ -39,6 +39,12 @@ Para importar as funções de manipulação de dados:
 from free_regression import to_dummy
 ```
 
+Para importar os dados de teste:
+
+```
+from free_regression import MedidasDeMassa, ProdutividadeTrabalhoRemoto
+```
+
 # Documentação das classes e funções
 
 A documentação gerada pelo Doxygen pode ser acessada [aqui](https://github.com/IanAguiar-ai/free_regression/blob/main/free_regression/documentacao/html/annotated.html).
@@ -89,7 +95,11 @@ Se o usuário desejar utilizar um regressor próprio, ele possui algumas opçõe
 Todas essas funções retornam dois elementos: a função em si e a lista de regressores.
 
 
-Exemplo de uso:
+Exemplo de uso:Para importar as funções de manipulação de dados:
+
+```
+from free_regression import to_dummy
+```
 
 ```
 funcao, regressores = generate_regression(regressors = 3, degree = 2)
