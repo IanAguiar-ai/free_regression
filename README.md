@@ -112,6 +112,15 @@ meu_modelo_regressor = Regression(*generate_regression(regressors = 3, degree = 
 meu_modelo.run(seus_dados) # Para começar a regressão
 ```
 
+Para ver o resultado da regressão:
+
+```
+print(meu_modelo_regressor)
+
+# Ou para ver os regressores individualmente
+print(meu_modelo['str_nome_do_regressor'])
+```
+
 ### Regressores próprios
 
 Você pode criar regressores próprios para realizar a regressão, basta definir a função. Por exemplo:
@@ -191,6 +200,11 @@ print(f"Antes:\n{meu_modelo_regressor}\n")
 # Mudando os betas
 meu_modelo_regressor.change(b1 = 2, b2 = 1.1, b3 = 15)
 print(f"Depois do change:\n{meu_modelo_regressor}\n")
+
+# Ou ainda pode mudar usando
+meu_modelo_regressor['b1'] = 2
+meu_modelo_regressor['b2'] = 1.1
+meu_modelo_regressor['b3'] = 15
 ```
 
 Exemplo do **.change_all**:
