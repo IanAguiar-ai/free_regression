@@ -89,7 +89,9 @@ class Representation:
         """
         Pega uma lista da coluna
         """
-        if type(index) == int and index <= len(self.columns):
+        if type(index) == slice and index.start == None and index.stop == None:
+            return self.data_list
+        elif type(index) == int and index <= len(self.columns):
             index = self.columns[index]
                         
         assert index in self.data.keys(), f"Not exist colum '{index}' in data"
@@ -147,6 +149,7 @@ class ProdutividadeTrabalhoRemoto(Representation):
 
 if __name__ == "__main__":
     meus_dados = MedidasDeMassa()
+    print(meus_dados[:])
 ##    print(teste_1)
 ##    #print(teste_1['algo'])
 ##

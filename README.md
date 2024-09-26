@@ -78,6 +78,10 @@ print(seus_dados)
 colunas = seus_dados.columns
 coluna_age = seus_dados['Age']
 dados_no_formato_para_a_biblioteca = seus_dados.data_list
+
+# Ou ainda
+
+dados_no_formato_para_a_biblioteca = seus_dados[:]
 ```
 
 ## Criando regressores
