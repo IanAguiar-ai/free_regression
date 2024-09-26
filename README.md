@@ -27,7 +27,7 @@ Para importar os geradores de funções:
 from free_regression import generate_regression, generate_mlp, generate_mlp_classifier
 ```
 
-Para importar as funçõMedidasDeMassaes geradoras de imagens:
+Para importar as funções geradoras de imagens:
 
 ```
 from free_regression import plot_expected, plot_residual
