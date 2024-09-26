@@ -1,9 +1,10 @@
 # Biblioteca autoral
 from free_regression import Regression
+from data import MedidasDeMassa
+from models_regression import generate_regression
 
 # Biblioteca de teste
 import unittest
-from sklearn.datasets import load_iris
 
 def regressao_simples(x:float, a:float, b:float) -> float:
     return a*x + b
@@ -52,6 +53,9 @@ def mlp(x1:float, x2:float, b_0:float, b_1:float, b_2:float, b1:float, b2:float,
     x1_1 = relu(b_0 + x1*b1 + x2*+b2)
     x2_1 = relu(b_1 + x1*b3 + x2*+b4)
     return relu(b_2 + x1_1*b5 + x2_1*b6)
+
+def regressao_logistica(x1, x2, x3, b1, b2, b3) -> float:
+    return 1/(1-2.718182**(x1*b1 + x2*b2 + x3*b3))
 
 # Classe de testes
 class Teste(unittest.TestCase):
@@ -236,8 +240,9 @@ class Teste(unittest.TestCase):
         print(f"\n\n{'='*50}\nTestes com o banco de dados iris:")
         print("\nTeste 10.1:")
         try:
-            iris = load_iris()
-            iris = [list(x[:3]) for x in iris.data]
+            iris = MedidasDeMassa()
+            iris = iris.data_list
+            iris = [list(x[:3]) for x in iris]
             
             modelo_iris = Regression(regressao_2_betas, regressors = ['x1', 'x2'])
             modelo_iris.set_seed(2024)
@@ -264,6 +269,18 @@ class Teste(unittest.TestCase):
             for *x, y in iris:
                 print(f"{modelo_iris.prediction([x])[0]:12.04f}|{modelo_iris_2.prediction([x])[0]:12.04f}|{modelo_iris_3.prediction([x])[0]:12.04f}|{y:12.04f}")
          
+        except Exception as e:
+            self.fail(f"Não foi possível completar o teste com o banco de dados iris: {e}")
+
+        print("\nTeste 11.1:")
+        try:
+            dados = MedidasDeMassa()
+            
+            modelo = Regression(*generate_regression(3, 1))
+            modelo.set_seed(2024)
+            modelo.run(dados.data_list, precision = .5)
+            print(modelo)
+
         except Exception as e:
             self.fail(f"Não foi possível completar o teste com o banco de dados iris: {e}")
 

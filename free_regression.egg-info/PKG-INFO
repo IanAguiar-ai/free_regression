@@ -1,13 +1,10 @@
 Metadata-Version: 2.1
 Name: free-regression
-Version: 1.0.12
+Version: 1.0.13
 Summary: Construtor de regressão genérico.
-Home-page: UNKNOWN
 Author: ['Ian dos Anjos', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
 Author-email: <iannaianjos@gmail.com>
-License: UNKNOWN
 Keywords: python,regression
-Platform: UNKNOWN
 Classifier: Development Status :: 1 - Planning
 Classifier: Intended Audience :: Developers
 Classifier: Programming Language :: Python :: 3
@@ -19,15 +16,12 @@ Description-Content-Type: text/markdown
 
 # free_regression
 
-Construtor de regressão genérico.
-
-Com está biblioteca o usuário é capaz de:
+Construtor de Regressão Genérico. Com esta biblioteca, o usuário é capaz de:
 
 1. Criar regressões 'tradicionais';
-
-2. Criar regressões próprias;
-
+2. Criar regressões personalizadas;
 3. Manipular as regressões.
+
 
 # Download
 
@@ -35,33 +29,63 @@ Com está biblioteca o usuário é capaz de:
 pip install git+https://github.com/IanAguiar-ai/free_regression
 ```
 
+# Importação
+
+Para importar a classe principal:
+
+```
+from free_regression import Regression
+```
+
+Para importar os geradores de funções:
+
+```
+from free_regression import generate_regression, generate_mlp, generate_mlp_classifier
+```
+
+Para importar as funções geradoras de imagens:
+
+```
+from free_regression import plot_expected, plot_residual
+```
+
+Para importar as funções de manipulação de dados:
+
+```
+from free_regression import to_dummy
+```
+
 # Documentação das classes e funções
 
 A documentação gerada pelo Doxygen pode ser acessada [aqui](https://github.com/IanAguiar-ai/free_regression/blob/main/free_regression/documentacao/html/annotated.html).
 
-A classe principal que o usuário deve usar é a *Regression* que recebe como argumentos:
+A classe principal que o usuário deve utilizar é a **Regression**, que recebe como argumentos:
 
-- **function**: Função de regressão que o usuário quer usar;
+- **function**: Função de regressão que o usuário deseja utilizar;
+- **regressors**: Lista de strings que especifica os regressores utilizados. Não é necessário passar este parâmetro se a função possuir apenas o parâmetro *x* como regressor, por exemplo, *def f(x, b1, b2)*;
+- **loss_function**: Função de perda para encontrar o mínimo local. Por padrão, utiliza-se a função de mínimos quadrados.
 
-- **regressors**: Lista de strings que explicita os regressores usados, não precisa ser passada se a função tem apenas o parâmetro *x* como regressor, por exemplo, *def f(x, b1, b2)*;
+Além disso, na classe principal, as variáveis às quais o usuário tem acesso são:
 
-- **loss_function**: Função de perda para achar o mínimo local, por padrão é uma função de mínimos quadrados.
+- **.params**: Parâmetros que serão encontrados;
+- **.regressors**: Variáveis regressoras;
+- **.iterations**: Número mínimo de iterações para convergência.
+
 
 ## Criando regressores
 
-O usuário pode criar regressores de duas formas, ou usando as funções prontas ou criando seus próprios regressores.
+O usuário pode criar regressores de duas formas: utilizando as funções prontas ou desenvolvendo seus próprios regressores.
 
 ### Geração de regressores (geradores)
 
-Se o usuário quiser usar um regressor próprio ele tem algumas opções como:
+Se o usuário desejar utilizar um regressor próprio, ele possui algumas opções, como:
 
-- **generate_regression**: Para regressão linear, recebe dois parâmetros, *regressors* e *degree*;
+- **generate_regression**: Para regressão linear, recebe dois parâmetros: *regressors* e *degree*;
+- **generate_mlp**: Para gerar um Multi Layer Perceptron, recebe dois parâmetros: *regressors* e *neurons*, utilizando ReLU para gerar a descontinuidade;
+- **generate_mlp_classifier**: Para gerar um Multi Layer Perceptron classificador, recebe dois parâmetros: *regressors* e *neurons*, utilizando uma função sigmoide para gerar a descontinuidade.
 
-- **generate_mlp**: Para gerar Multi Layer Perceptron, recebe dois parâmetros, *regressors* e *neurons*, usa de uma ReLU para gerar a descontinuidade;
+Todas essas funções retornam dois elementos: a função em si e a lista de regressores.
 
-- **generate_mlp_classifier**: Para gerar Multi Layer Perceptron, recebe dois parâmetros, *regressors* e *neurons*, usa uma sigmoide para gerar a descontinuidade;
-
-Todas essas funções retornam dois parâmetros, a própria função e a lista de regressores.
 
 Exemplo de uso:
 
@@ -78,7 +102,7 @@ meu_modelo.run(seus_dados) # Para começar a regressão
 
 ### Regressores próprios
 
-Você pode criar regressores próprios para fazer a regressão, basta definir a função, por exemplo:
+Você pode criar regressores próprios para realizar a regressão, basta definir a função. Por exemplo:
 
 ```
 def minha_funcao(x:float, b1:float, b2:float) -> float:
@@ -89,7 +113,7 @@ print(meu_modelo_regressor) # Para ver as propriedades do modelo
 meu_modelo_regressor.run(seus_dados) # Para começar a regressão
 ```
 
-Nesse exemplo acima ele entende que a variável regressora é *x*, mas se não for *x* você deve explicitar ela, por exemplo:
+Essa versão corrige e formaliza a explicação de como criar regressores personalizados, mantendo a clareza e a simplicidade.
 
 ```
 def minha_funcao(h:float, b1:float, b2:float) -> float:
@@ -106,15 +130,13 @@ Comandos para fazer a regressão.
 
 ### Regressão direta
 
-Para fazer uma regressão com a biblioteca, o usuário precisa seguir os seguintes passos:
+Para realizar uma regressão com a biblioteca, o usuário deve seguir os seguintes passos:
 
-1. Ter decidido ou criado a função de regressão que será usada;
+1. Definir ou criar a função de regressão que será utilizada;
+2. Preparar os dados que serão usados na regressão. Os dados devem ser organizados em uma lista de listas, onde a última coluna corresponde ao valor esperado e as outras colunas são reservadas para os *x_n* (variáveis regressoras);
+3. Executar o comando `.run(seus_dados)` na instância da classe **Regression**.
 
-2. Ter os dados que serão usados para a regressão, os dados devem ser passados em uma lista de listas onde a ultima coluna é o valor esperado e os outros valores é reservado para os x_n (variáveis regressoras).
-
-3. Dar o comando *.run(seus_dados)* na instancia da classe *Regression*.
-
-Em código, o passo a passo se traduz em:
+Em código, o passo a passo seria assim:
 
 ```
 # Passo 1
@@ -133,15 +155,15 @@ print(meu_modelo_regressor)
 
 ### Parâmetros de regressão
 
-Além da regressão simples, pode ser feito várias mudanças nos parâmetros afim de controlar mais a regressão. Algumas dessas funções imbutidas na classe *Regression* são:
+Além da regressão simples, é possível realizar diversas alterações nos parâmetros a fim de controlar melhor o processo de regressão. Algumas das funções embutidas na classe *Regression* são:
 
-1. **.change**: Recebe cada parâmetro que deve ser mudado e o valor a ser mudado;
+1. **.change**: Recebe cada parâmetro a ser modificado e o valor correspondente a essa alteração.
 
-2. **.change_all**: Recebe um valor float que é colocado em todos os parâmetros válidos;
+2. **.change_all**: Recebe um valor do tipo float que é aplicado a todos os parâmetros válidos.
 
-3. **.lock**: Recebe cada parâmetro que deve ser travado e o valor em que ele deve ser travado, depois disso, esses parâmetros não são mais trabalhados na regressão pois eles estão bloqueados.
+3. **.lock**: Recebe cada parâmetro a ser bloqueado e o valor em que ele deve ser fixado. Após essa operação, esses parâmetros não são mais considerados na regressão, pois estão bloqueados.
 
-Um exemplo do **.change**:
+A seguir, apresentamos um exemplo da função **.change**:
 
 ```
 # Criando a função
@@ -159,7 +181,7 @@ meu_modelo_regressor.change(b1 = 2, b2 = 1.1, b3 = 15)
 print(f"Depois do change:\n{meu_modelo_regressor}\n")
 ```
 
-Um exemplo do **.change_all**:
+Exemplo do **.change_all**:
 
 ```
 # Criando a função
@@ -177,7 +199,7 @@ meu_modelo_regressor.change_all(10)
 print(f"Depois do change:\n{meu_modelo_regressor}\n")
 ```
 
-Um exemplo do **.lock**:
+Exemplo do **.lock**:
 
 ```
 # Criando a função
@@ -200,15 +222,16 @@ print(f"Depois do lock e do run:\n{meu_modelo_regressor}\n")
 # Perceba que as variáveis que estão bloqueadas não mudam mesmo depois da regressão
 ```
 
-O **.change** e o **.change_all** servem para iniciar a regressão de outro lugar, por padrão todos os valores começam em 0.1. O usuário ficando travado em um minimo local indesejado pode mudar tanto todos os parâmetros quanto parâmetros específicos.
+O **.change** e o **.change_all** servem para iniciar a regressão a partir de um ponto diferente, sendo que, por padrão, todos os valores começam em 0.1. Caso o usuário fique preso em um mínimo local indesejado, ele pode modificar tanto todos os parâmetros quanto parâmetros específicos.
 
-O **.lock** pode ser usado para travar um intercepto por exemplo.
+O **.lock** pode ser utilizado para travar, por exemplo, um intercepto.
 
-O uso dessas técnicas requer um conhecimento um pouco maior da função de regressão usada.
+O uso dessas técnicas requer um conhecimento um pouco mais aprofundado sobre a função de regressão utilizada.
+
 
 ## Predição
 
-Depois do usuário fazer a regressão, é interessante que ele possa prever valores desconhecidos, para isso ele deve usar a função **.prediction** da classe *Regression*. Um exemplo do uso pode ser visto logo abaixo:
+Após o usuário realizar a regressão, é interessante que ele possa prever valores desconhecidos. Para isso, ele deve utilizar a função **.prediction** da classe *Regression*. Um exemplo de uso pode ser visto a seguir:
 
 ```
 # Criando a função
@@ -264,9 +287,10 @@ meu_modelo_final = meu_modelo_parte_1 + meu_modelo_parte_1 - 20
 print(f"Modelo mistura: {meu_modelo_final}")
 ```
 
-Perceba que no caso acima ficamos com $ax^3 + bx^2 + cx - 20$.
+Perceba que, no caso acima, obtemos \( ax^3 + bx^2 + cx - 20 \).
 
-É possível fazer modelos de mistura com os operadores '+', '-', '*', '/', '**'. Se o usuário quiser usar um operador diferente basta usar a função **.operation** da classe *Regression*, por exemplo:
+É possível criar modelos de mistura utilizando os operadores '+', '-', '*', '/', e '**'. Se o usuário desejar usar um operador diferente, basta utilizar a função **.operation** da classe *Regression*. Por exemplo:
+
 
 ```
 # Criando as funções para a mistura
@@ -286,11 +310,11 @@ meu_modelo_final = meu_modelo_parte_1.operation(meu_modelo_parte_1, operator = "
 print(f"Modelo mistura: {meu_modelo_final}")
 ```
 
-Atenção, fique atento que a mistura é feita da esquerda para a direita, por exemplo, $a + b / c$ é sempre $(a + b)/c$ e não $a + (b/c)$.
+Atenção: observe que a mistura é feita da esquerda para a direita. Por exemplo, \( a + b / c \) é sempre \( (a + b) / c \) e não \( a + (b / c) \).
 
 ## Função de perda
 
-A função de perda é por padrão uma função de mínimos quadrados, em específico essa:
+A função de perda é, por padrão, uma função de mínimos quadrados, sendo essa a sua forma específica:
 
 ```
 def least_squares(vector_1:list, vector_2:list) -> float:
@@ -300,7 +324,7 @@ def least_squares(vector_1:list, vector_2:list) -> float:
     return sum([(vector_1[i] - vector_2[i])*(vector_1[i] - vector_2[i]) for i in range(len(vector_1))])
 ```
 
-Mas se o usuário seguir o padrão de criar uma função de perda que usa os dois vetores passados, sendo o vetor dos valores observados e preditos nessa ordem, é possível mudar a função de perda com a função **.loss_function** da classe *Regression*, por exemplo:
+Contudo, se o usuário seguir o padrão de criar uma função de perda que utiliza os dois vetores passados—sendo o vetor dos valores observados e o vetor dos valores preditos nessa ordem—é possível alterar a função de perda com a função **.loss_function** da classe *Regression*. Por exemplo:
 
 ```
 # Criando função de perda
@@ -328,7 +352,7 @@ meu_modelo.run(seus_dados)
 
 ### Salvando e reutilizando parâmetros
 
-Assim que a regressão é feita, é possível salvar os parâmetros, basta usar a função **.save** da classe *Regression*, por exemplo:
+Assim que a regressão é realizada, é possível salvar os parâmetros. Para isso, basta utilizar a função **.save** da classe *Regression*. Por exemplo:
 
 ```
 # Depois de treinar o modelo...
@@ -337,7 +361,7 @@ Assim que a regressão é feita, é possível salvar os parâmetros, basta usar 
 meu_modelo.save(name = "nome_do_modelo")
 ```
 
-Isso vai salvar na mesma pasta em que o código python estiver sendo usado, um arquivo *.memory* que pode ser pego posteriormente por uma instancia da classe *Regression* construida da mesma forma:
+Isso salvará, na mesma pasta em que o código Python estiver sendo executado, um arquivo *.memory*, que pode ser acessado posteriormente por uma instância da classe *Regression* construída da mesma forma:
 
 ```
 # Depois de reconstruir o modelo...
@@ -348,7 +372,7 @@ meu_modelo.open(name = "nome_do_modelo") # Não é preciso colocar o ".memory" n
 
 ### Passando parâmetros de uma instancia para a outra
 
-É possível passar parâmetros em comum de uma instancia para a outra, por exemplo:
+É possível transferir parâmetros comuns de uma instância para outra. Por exemplo:
 
 ```
 def func_1(x, a, b):
@@ -364,11 +388,20 @@ meu_modelo_2 = Regressao(func_2)
 meu_modelo_1 << meu_modelo_2
 ```
 
-Nesse caso acima, o valor do parâmetro *b* do *meu_modelo_2* é passado para o *meu_modelo_1*.
+No caso acima, o valor do parâmetro *b* do *meu_modelo_2* é transferido para o *meu_modelo_1*.
+
+### Setar *seed*
+
+A função **.set_seed** da classe *Regression* recebe um número inteiro e define a *seed* do processo, garantindo reprodutibilidade. Exemplo:
+
+```
+meu_modelo = Regressao(func_1)
+meu_modelo.set_seed(1)
+```
 
 ## Manipulação de dados
 
-Existe funções, que auxiliam o usuário a tratar os dados, por exemplo, a função **to_dummy**, essa função recebe uma lista de listas onde algumas colunas são categóricas, e desde que, nas variáveis categóricas apareçam todas as categorias, ele cria colunas dummys novas, para cada categoria em ordem alfabetica por coluna categórica. Exemplo:
+Existem funções que auxiliam o usuário no tratamento dos dados. Por exemplo, a função **to_dummy**. Essa função recebe uma lista de listas, onde algumas colunas são categóricas, e, desde que todas as categorias estejam presentes nas variáveis categóricas, ela cria novas colunas dummy para cada categoria, em ordem alfabética, por coluna categórica. Exemplo:
 
 ```
 dados = [[1, "a", 5, "1"],
@@ -392,14 +425,52 @@ Retorna:
 
 ## Gráficos
 
-...
+### *plot_expected*
+
+Função que recebe:
+
+- **regression**: Instância da classe *Regression*;
+- **data**: Dados em lista de listas;
+- **size**: Tamanho da figura.
+
+Esta função gera um plot simples que compara os valores observados com os valores preditos. Se os valores observados puderem ser representados como uma série, a função o fará; caso contrário, apresentará os dados observados como pontos.
+
+### *plot_residual*
+
+Função que recebe:
+
+- **regression**: Instância da classe *Regression*;
+- **data**: Dados em lista de listas;
+- **size**: Tamanho da figura;
+- **percentile**: Lista com dois percentis que serão apresentados no plot.
+
+Esta função gera um histograma com a distribuição dos resíduos.
 
 # Limitação da biblioteca
 
-Dado o método de convergência, é muito fácil a regressão ficar presa em mínimos locais, então tenha atenção ao usar o gerador de MLP.
+Dado o método de convergência, é muito fácil que a regressão fique presa em mínimos locais. Portanto, tenha atenção ao usar o gerador de MLP.
 
 # Dicas
 
-## Pré-regressão/treinamento e regressão/treinamento de forma dividida
+## Pré-regressão/treinamento
 
+Se uma regressão não está apresentando boa precisão ou demora demais para chegar ao resultado esperado, é possível realizar uma regressão com maior precisão e, em seguida, com menor precisão. Por exemplo:
+
+```
+meu_modelo = Regression(*generate_regression(regressors = 2, degree = 1))
+
+meu_modelo.run(seus_dados, precision = 1)
+meu_modelo.run(seus_dados, precision = 0.001)
+```
+
+## Regressão/treinamento de forma dividida
+
+O usuário ainda pode dividir os dados e treinar um modelo de cada vez. Isso faz sentido se o usuário deseja, por exemplo, modelar uma ação, aprendendo todo o histórico dela, e depois refazer a regressão com os últimos 30 dias, a fim de obter um viés mais recente da ação. Por exemplo:
+
+```
+meu_modelo = Regression(*generate_regression(regressors = 2, degree = 1))
+
+meu_modelo.run(seus_dados[:])
+meu_modelo.run(seus_dados[-30:])
+```
 
