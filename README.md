@@ -442,11 +442,23 @@ print(to_dummy(dados))
 Retorna:
 
 ```
-[[1, 5, 1, 0, 0, 1, 0],
- [3, 6, 0, 1, 0, 0, 1],
- [0, 4, 1, 0, 0, 1, 0],
- [6, 3, 0, 0, 1, 0, 1],
- [4, 4, 1, 0, 0, 0, 1]]
+[[1, 5, 1, 0, 1],
+ [3, 6, 0, 1, 0],
+ [0, 4, 1, 0, 1],
+ [6, 3, 0, 0, 0],
+ [4, 4, 1, 0, 0]]
+```
+
+Antes existia 4 colunas, as colunas 0 e 2 são numéricas e as colunas 1 e 3 são categóricas, a função **to_dummy** pega a lista, apaga as colunas categóricas, e concatena essas colunas tiradas como *dummys* no final da lista.
+
+A dimensão da coluna que era 4 agora se torna 1(numerica 0) + 1(numerica 2) + 2(dummy coluna 1, que tinha 3 categorias) + 1(dummy coluna 3 que tinha 2 categorias) = 5. Perceba que a nova dimensão dos dados é:
+
+```
+numericas = 2 # colunas
+categorica_1 = ['a', 'b', 'c']
+categorica_1 = ['1', '2']
+
+total = numericas + (len(categorica_1) - 1) (len(categorica_2) - 1)
 ```
 
 ## Gráficos
