@@ -89,6 +89,9 @@ class Representation:
         """
         Pega uma lista da coluna
         """
+        if type(index) == int and index <= len(self.columns):
+            index = self.columns[index]
+                        
         assert index in self.data.keys(), f"Not exist colum '{index}' in data"
         return self.data[index]
 

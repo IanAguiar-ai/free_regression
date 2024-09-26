@@ -1,10 +1,13 @@
 Metadata-Version: 2.1
 Name: free-regression
-Version: 1.0.13
+Version: 1.0.14
 Summary: Construtor de regressão genérico.
+Home-page: UNKNOWN
 Author: ['Ian dos Anjos', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
 Author-email: <iannaianjos@gmail.com>
+License: UNKNOWN
 Keywords: python,regression
+Platform: UNKNOWN
 Classifier: Development Status :: 1 - Planning
 Classifier: Intended Audience :: Developers
 Classifier: Programming Language :: Python :: 3
@@ -55,6 +58,12 @@ Para importar as funções de manipulação de dados:
 from free_regression import to_dummy
 ```
 
+Para importar os dados de teste:
+
+```
+from free_regression import MedidasDeMassa, ProdutividadeTrabalhoRemoto
+```
+
 # Documentação das classes e funções
 
 A documentação gerada pelo Doxygen pode ser acessada [aqui](https://github.com/IanAguiar-ai/free_regression/blob/main/free_regression/documentacao/html/annotated.html).
@@ -71,6 +80,24 @@ Além disso, na classe principal, as variáveis às quais o usuário tem acesso 
 - **.regressors**: Variáveis regressoras;
 - **.iterations**: Número mínimo de iterações para convergência.
 
+## Dados próprios
+
+A biblioteca conta com dois conjuntos de dados para testes:
+
+- **MedidasDeMassa**: Dados numéricos para as colunas *Age, Hips , LegLength, TotalHeight*;
+
+- **ProdutividadeTrabalhoRemoto**: Dados numéricos com variável preditora categórica, as colunas são ...;
+
+Para usar esses dados:
+
+```
+seus_dados = MedidasDeMassa()
+print(seus_dados)
+
+colunas = seus_dados.columns
+coluna_age = seus_dados['Age']
+dados_no_formato_para_a_biblioteca = seus_dados.data_list
+```
 
 ## Criando regressores
 
@@ -86,8 +113,11 @@ Se o usuário desejar utilizar um regressor próprio, ele possui algumas opçõe
 
 Todas essas funções retornam dois elementos: a função em si e a lista de regressores.
 
+Para importar as funções de manipulação de dados:
 
-Exemplo de uso:
+```
+from free_regression import to_dummy
+```
 
 ```
 funcao, regressores = generate_regression(regressors = 3, degree = 2)
@@ -100,10 +130,20 @@ meu_modelo_regressor = Regression(*generate_regression(regressors = 3, degree = 
 meu_modelo.run(seus_dados) # Para começar a regressão
 ```
 
+Para ver o resultado da regressão:
+
+```
+print(meu_modelo_regressor)
+
+# Ou para ver os regressores individualmente
+print(meu_modelo['str_nome_do_regressor'])
+```
+
 ### Regressores próprios
 
 Você pode criar regressores próprios para realizar a regressão, basta definir a função. Por exemplo:
 
+Com regressor implicito
 ```
 def minha_funcao(x:float, b1:float, b2:float) -> float:
 	return x*b1 + b2
@@ -113,8 +153,7 @@ print(meu_modelo_regressor) # Para ver as propriedades do modelo
 meu_modelo_regressor.run(seus_dados) # Para começar a regressão
 ```
 
-Essa versão corrige e formaliza a explicação de como criar regressores personalizados, mantendo a clareza e a simplicidade.
-
+Com regressor explicito
 ```
 def minha_funcao(h:float, b1:float, b2:float) -> float:
 	return h*b1 + b2
@@ -179,6 +218,11 @@ print(f"Antes:\n{meu_modelo_regressor}\n")
 # Mudando os betas
 meu_modelo_regressor.change(b1 = 2, b2 = 1.1, b3 = 15)
 print(f"Depois do change:\n{meu_modelo_regressor}\n")
+
+# Ou ainda pode mudar usando
+meu_modelo_regressor['b1'] = 2
+meu_modelo_regressor['b2'] = 1.1
+meu_modelo_regressor['b3'] = 15
 ```
 
 Exemplo do **.change_all**:
@@ -416,11 +460,23 @@ print(to_dummy(dados))
 Retorna:
 
 ```
-[[1, 5, 1, 0, 0, 1, 0],
- [3, 6, 0, 1, 0, 0, 1],
- [0, 4, 1, 0, 0, 1, 0],
- [6, 3, 0, 0, 1, 0, 1],
- [4, 4, 1, 0, 0, 0, 1]]
+[[1, 5, 1, 0, 1],
+ [3, 6, 0, 1, 0],
+ [0, 4, 1, 0, 1],
+ [6, 3, 0, 0, 0],
+ [4, 4, 1, 0, 0]]
+```
+
+Antes existia 4 colunas, as colunas 0 e 2 são numéricas e as colunas 1 e 3 são categóricas, a função **to_dummy** pega a lista, apaga as colunas categóricas, e concatena essas colunas tiradas como *dummys* no final da lista.
+
+A dimensão da coluna que era 4 agora se torna 1(numerica 0) + 1(numerica 2) + 2(dummy coluna 1, que tinha 3 categorias) + 1(dummy coluna 3 que tinha 2 categorias) = 5. Perceba que a nova dimensão dos dados é:
+
+```
+numericas = 2 # colunas
+categorica_1 = ['a', 'b', 'c']
+categorica_1 = ['1', '2']
+
+total = numericas + (len(categorica_1) - 1) (len(categorica_2) - 1)
 ```
 
 ## Gráficos
@@ -473,4 +529,6 @@ meu_modelo = Regression(*generate_regression(regressors = 2, degree = 1))
 meu_modelo.run(seus_dados[:])
 meu_modelo.run(seus_dados[-30:])
 ```
+
+
 
