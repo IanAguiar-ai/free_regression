@@ -36,7 +36,7 @@ from free_regression import plot_expected, plot_residual
 Para importar as funções de manipulação de dados:
 
 ```
-from free_regression import to_dummy
+from free_regression import to_dummy, transpose
 ```
 
 Para importar os dados de teste:
