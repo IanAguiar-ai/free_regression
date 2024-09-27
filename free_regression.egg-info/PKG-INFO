@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: free-regression
-Version: 1.0.14
+Version: 1.0.15
 Summary: Construtor de regressão genérico.
 Author: ['Ian dos Anjos', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
 Author-email: <iannaianjos@gmail.com>
@@ -52,7 +52,7 @@ from free_regression import plot_expected, plot_residual
 Para importar as funções de manipulação de dados:
 
 ```
-from free_regression import to_dummy
+from free_regression import to_dummy, transpose
 ```
 
 Para importar os dados de teste:
