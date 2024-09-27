@@ -30,7 +30,7 @@ def plot_expected(regression:"Regression", data:[list], size:list = (8, 6)) -> N
         ax.plot(x, y1, label = "Dados Observados", color = "blue", linestyle = "-")
     else:
         ax.scatter(x, y1, label = "Dados observados", color = "blue")
-    ax.plot(x_new, y2, label = "Valores preditos", color = "red", linestyle = "--")
+    ax.plot(x_new, y2, label = "Valores Preditos", color = "red", linestyle = "--")
     ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
     ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
     ax.set_xlabel("X", fontsize = 14)
