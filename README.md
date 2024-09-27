@@ -468,7 +468,7 @@ total = numericas + (len(categorica_1) - 1) (len(categorica_2) - 1)
 
 ...
 
-### normalize*
+### *normalize*
 
 ...
 
