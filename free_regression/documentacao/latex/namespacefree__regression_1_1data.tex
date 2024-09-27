@@ -14,6 +14,8 @@ class \mbox{\hyperlink{classfree__regression_1_1data_1_1ProdutividadeTrabalhoRem
 \item 
 list \mbox{\hyperlink{namespacefree__regression_1_1data_a6d2d3b765edbb7dc4016762a6c95253b}{read\+\_\+csv}} (str csv, data=\{\char`\"{}medidas\+\_\+de\+\_\+massa\char`\"{}\+:medidas\+\_\+de\+\_\+massa, \char`\"{}trabalho\+\_\+remoto\char`\"{}\+:trabalho\+\_\+remoto\})
 \item 
+list \mbox{\hyperlink{namespacefree__regression_1_1data_a57bc4656c182a3dbfeb386ddca557aa7}{normalize}} (list data, bool only\+\_\+y=False)
+\item 
 list \mbox{\hyperlink{namespacefree__regression_1_1data_a9e1147ab1d0e3ddef6e34ca78885a9c6}{transpose}} (list data)
 \item 
 \mbox{\Hypertarget{namespacefree__regression_1_1data_a5930478d83818165fdeb9ff84582c9bc}\label{namespacefree__regression_1_1data_a5930478d83818165fdeb9ff84582c9bc}} 
@@ -33,8 +35,11 @@ string {\bfseries trabalho\+\_\+remoto}
 \mbox{\Hypertarget{namespacefree__regression_1_1data_a411538afbd83cab06d1131b0271041c4}\label{namespacefree__regression_1_1data_a411538afbd83cab06d1131b0271041c4}} 
 {\bfseries meus\+\_\+dados} = \mbox{\hyperlink{classfree__regression_1_1data_1_1MedidasDeMassa}{Medidas\+De\+Massa}}()
 \item 
-list \mbox{\hyperlink{namespacefree__regression_1_1data_a5c30def0564dd3242ddeaaeeb6740fde}{dados}}
-\begin{DoxyCompactList}\small\item\em print(teste\+\_\+1) \#print(teste\+\_\+1\mbox{[}\textquotesingle{}algo\textquotesingle{}\mbox{]}) \end{DoxyCompactList}\end{DoxyCompactItemize}
+list \mbox{\hyperlink{namespacefree__regression_1_1data_a3bbe84ad57f57d773b8fdde82741a9f2}{dados}}
+\begin{DoxyCompactList}\small\item\em print(teste\+\_\+1) \#print(teste\+\_\+1\mbox{[}\textquotesingle{}algo\textquotesingle{}\mbox{]}) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{namespacefree__regression_1_1data_a6a02d6d5fbbecf019acca7b375f13b60}\label{namespacefree__regression_1_1data_a6a02d6d5fbbecf019acca7b375f13b60}} 
+list {\bfseries resp} = \mbox{\hyperlink{namespacefree__regression_1_1data_a57bc4656c182a3dbfeb386ddca557aa7}{normalize}}(\mbox{\hyperlink{namespacefree__regression_1_1data_a5288bc315239ce8c269afc3765a13141}{to\+\_\+dummy}}(\mbox{\hyperlink{namespacefree__regression_1_1data_a3bbe84ad57f57d773b8fdde82741a9f2}{dados}}), only\+\_\+y = True)
+\end{DoxyCompactItemize}
 
 
 \doxysubsection{Descrição detalhada}
@@ -43,7 +48,15 @@ list \mbox{\hyperlink{namespacefree__regression_1_1data_a5c30def0564dd3242ddeaae
  
 
 \doxysubsection{Funções}
-\mbox{\Hypertarget{namespacefree__regression_1_1data_a6d2d3b765edbb7dc4016762a6c95253b}\label{namespacefree__regression_1_1data_a6d2d3b765edbb7dc4016762a6c95253b}} 
+\mbox{\Hypertarget{namespacefree__regression_1_1data_a57bc4656c182a3dbfeb386ddca557aa7}\label{namespacefree__regression_1_1data_a57bc4656c182a3dbfeb386ddca557aa7}} 
+\index{free\_regression.data@{free\_regression.data}!normalize@{normalize}}
+\index{normalize@{normalize}!free\_regression.data@{free\_regression.data}}
+\doxysubsubsection{\texorpdfstring{normalize()}{normalize()}}
+{\footnotesize\ttfamily  list free\+\_\+regression.\+data.\+normalize (\begin{DoxyParamCaption}\item[{list}]{data,  }\item[{bool }]{only\+\_\+y = {\ttfamily False} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Normaliza a lista de listas, o usuário pode pedir para normalizar apenas a variável resposta com only_y
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacefree__regression_1_1data_a6d2d3b765edbb7dc4016762a6c95253b}\label{namespacefree__regression_1_1data_a6d2d3b765edbb7dc4016762a6c95253b}} 
 \index{free\_regression.data@{free\_regression.data}!read\_csv@{read\_csv}}
 \index{read\_csv@{read\_csv}!free\_regression.data@{free\_regression.data}}
 \doxysubsubsection{\texorpdfstring{read\_csv()}{read\_csv()}}
@@ -73,7 +86,7 @@ Args:
  
 
 \doxysubsection{Variáveis}
-\mbox{\Hypertarget{namespacefree__regression_1_1data_a5c30def0564dd3242ddeaaeeb6740fde}\label{namespacefree__regression_1_1data_a5c30def0564dd3242ddeaaeeb6740fde}} 
+\mbox{\Hypertarget{namespacefree__regression_1_1data_a3bbe84ad57f57d773b8fdde82741a9f2}\label{namespacefree__regression_1_1data_a3bbe84ad57f57d773b8fdde82741a9f2}} 
 \index{free\_regression.data@{free\_regression.data}!dados@{dados}}
 \index{dados@{dados}!free\_regression.data@{free\_regression.data}}
 \doxysubsubsection{\texorpdfstring{dados}{dados}}
@@ -82,7 +95,7 @@ Args:
 {\bfseries Valor inicial\+:}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{1 =  [[1, \textcolor{stringliteral}{"{}a"{}}, 5, \textcolor{stringliteral}{"{}1"{}}],}
-\DoxyCodeLine{2              [3, \textcolor{stringliteral}{"{}b"{}}, 6, \textcolor{stringliteral}{"{}2"{}}],}
+\DoxyCodeLine{2              [-\/3, \textcolor{stringliteral}{"{}b"{}}, 6, \textcolor{stringliteral}{"{}2"{}}],}
 \DoxyCodeLine{3              [0, \textcolor{stringliteral}{"{}a"{}}, 4, \textcolor{stringliteral}{"{}1"{}}],}
 \DoxyCodeLine{4              [6, \textcolor{stringliteral}{"{}c"{}}, 3, \textcolor{stringliteral}{"{}2"{}}],}
 \DoxyCodeLine{5              [4, \textcolor{stringliteral}{"{}a"{}}, 4, \textcolor{stringliteral}{"{}2"{}}],]}

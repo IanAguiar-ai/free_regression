@@ -89,6 +89,8 @@ Componentes</h2></td></tr>
 Funções</h2></td></tr>
 <tr class="memitem:a6d2d3b765edbb7dc4016762a6c95253b"><td class="memItemLeft" align="right" valign="top">list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefree__regression_1_1data.html#a6d2d3b765edbb7dc4016762a6c95253b">read_csv</a> (str csv, data={&quot;medidas_de_massa&quot;:medidas_de_massa, &quot;trabalho_remoto&quot;:trabalho_remoto})</td></tr>
 <tr class="separator:a6d2d3b765edbb7dc4016762a6c95253b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57bc4656c182a3dbfeb386ddca557aa7"><td class="memItemLeft" align="right" valign="top">list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefree__regression_1_1data.html#a57bc4656c182a3dbfeb386ddca557aa7">normalize</a> (list data, bool only_y=False)</td></tr>
+<tr class="separator:a57bc4656c182a3dbfeb386ddca557aa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e1147ab1d0e3ddef6e34ca78885a9c6"><td class="memItemLeft" align="right" valign="top">list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefree__regression_1_1data.html#a9e1147ab1d0e3ddef6e34ca78885a9c6">transpose</a> (list data)</td></tr>
 <tr class="separator:a9e1147ab1d0e3ddef6e34ca78885a9c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5930478d83818165fdeb9ff84582c9bc"><td class="memItemLeft" align="right" valign="top"><a id="a5930478d83818165fdeb9ff84582c9bc"></a>
@@ -108,13 +110,45 @@ string&#160;</td><td class="memItemRight" valign="bottom"><b>trabalho_remoto</b>
 <tr class="memitem:a411538afbd83cab06d1131b0271041c4"><td class="memItemLeft" align="right" valign="top"><a id="a411538afbd83cab06d1131b0271041c4"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>meus_dados</b> = <a class="el" href="classfree__regression_1_1data_1_1MedidasDeMassa.html">MedidasDeMassa</a>()</td></tr>
 <tr class="separator:a411538afbd83cab06d1131b0271041c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c30def0564dd3242ddeaaeeb6740fde"><td class="memItemLeft" align="right" valign="top">list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefree__regression_1_1data.html#a5c30def0564dd3242ddeaaeeb6740fde">dados</a></td></tr>
-<tr class="memdesc:a5c30def0564dd3242ddeaaeeb6740fde"><td class="mdescLeft">&#160;</td><td class="mdescRight">print(teste_1) #print(teste_1['algo'])  <a href="namespacefree__regression_1_1data.html#a5c30def0564dd3242ddeaaeeb6740fde">Mais...</a><br /></td></tr>
-<tr class="separator:a5c30def0564dd3242ddeaaeeb6740fde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3bbe84ad57f57d773b8fdde82741a9f2"><td class="memItemLeft" align="right" valign="top">list&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefree__regression_1_1data.html#a3bbe84ad57f57d773b8fdde82741a9f2">dados</a></td></tr>
+<tr class="memdesc:a3bbe84ad57f57d773b8fdde82741a9f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">print(teste_1) #print(teste_1['algo'])  <a href="namespacefree__regression_1_1data.html#a3bbe84ad57f57d773b8fdde82741a9f2">Mais...</a><br /></td></tr>
+<tr class="separator:a3bbe84ad57f57d773b8fdde82741a9f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a02d6d5fbbecf019acca7b375f13b60"><td class="memItemLeft" align="right" valign="top"><a id="a6a02d6d5fbbecf019acca7b375f13b60"></a>
+list&#160;</td><td class="memItemRight" valign="bottom"><b>resp</b> = <a class="el" href="namespacefree__regression_1_1data.html#a57bc4656c182a3dbfeb386ddca557aa7">normalize</a>(<a class="el" href="namespacefree__regression_1_1data.html#a5288bc315239ce8c269afc3765a13141">to_dummy</a>(<a class="el" href="namespacefree__regression_1_1data.html#a3bbe84ad57f57d773b8fdde82741a9f2">dados</a>), only_y = True)</td></tr>
+<tr class="separator:a6a02d6d5fbbecf019acca7b375f13b60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Descrição detalhada</h2>
 <div class="textblock"><pre class="fragment">Dados para testes
 </pre> </div><h2 class="groupheader">Funções</h2>
+<a id="a57bc4656c182a3dbfeb386ddca557aa7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57bc4656c182a3dbfeb386ddca557aa7">&#9670;&nbsp;</a></span>normalize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> list free_regression.data.normalize </td>
+          <td>(</td>
+          <td class="paramtype">list&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool &#160;</td>
+          <td class="paramname"><em>only_y</em> = <code>False</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Normaliza a lista de listas, o usuário pode pedir para normalizar apenas a variável resposta com only_y
+</pre> 
+</div>
+</div>
 <a id="a6d2d3b765edbb7dc4016762a6c95253b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6d2d3b765edbb7dc4016762a6c95253b">&#9670;&nbsp;</a></span>read_csv()</h2>
 
@@ -186,8 +220,8 @@ Args:
 </div>
 </div>
 <h2 class="groupheader">Variáveis</h2>
-<a id="a5c30def0564dd3242ddeaaeeb6740fde"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c30def0564dd3242ddeaaeeb6740fde">&#9670;&nbsp;</a></span>dados</h2>
+<a id="a3bbe84ad57f57d773b8fdde82741a9f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3bbe84ad57f57d773b8fdde82741a9f2">&#9670;&nbsp;</a></span>dados</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -198,7 +232,7 @@ Args:
       </table>
 </div><div class="memdoc">
 <b>Valor inicial:</b><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;=  [[1, <span class="stringliteral">&quot;a&quot;</span>, 5, <span class="stringliteral">&quot;1&quot;</span>],</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;             [3, <span class="stringliteral">&quot;b&quot;</span>, 6, <span class="stringliteral">&quot;2&quot;</span>],</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;             [-3, <span class="stringliteral">&quot;b&quot;</span>, 6, <span class="stringliteral">&quot;2&quot;</span>],</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;             [0, <span class="stringliteral">&quot;a&quot;</span>, 4, <span class="stringliteral">&quot;1&quot;</span>],</div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;             [6, <span class="stringliteral">&quot;c&quot;</span>, 3, <span class="stringliteral">&quot;2&quot;</span>],</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;             [4, <span class="stringliteral">&quot;a&quot;</span>, 4, <span class="stringliteral">&quot;2&quot;</span>],]</div>

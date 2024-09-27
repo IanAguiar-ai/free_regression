@@ -1737,6 +1737,22 @@ def read_csv(csv:str, data = {"medidas_de_massa":medidas_de_massa, "trabalho_rem
 
     return dados
 
+def normalize(data:list, only_y:bool = False) -> list:
+    """
+    Normaliza a lista de listas, o usuário pode pedir para normalizar apenas a variável resposta com only_y
+    """
+    data = transpose(data)
+
+    if only_y:
+        data[-1] = [data[-1][i] - min(data[-1]) for i in range(len(data[-1]))]
+        data[-1] = [data[-1][i]/max(data[-1]) for i in range(len(data[-1]))]
+
+    else:
+        for line in range(len(data)):
+            data[line] = [data[line][i] - min(data[line]) for i in range(len(data[line]))]
+            data[line] = [data[line][i]/max(data[line]) for i in range(len(data[line]))]
+    return transpose(data)
+
 def transpose(data:list) -> list:
     """
     Faz a transposição dos dados
@@ -1873,13 +1889,22 @@ if __name__ == "__main__":
     print(meus_dados[:])
 ##    print(teste_1)
 ##    #print(teste_1['algo'])
-##
     dados = [[1, "a", 5, "1"],
-             [3, "b", 6, "2"],
+             [-3, "b", 6, "2"],
              [0, "a", 4, "1"],
              [6, "c", 3, "2"],
              [4, "a", 4, "2"],]
 
-##
+    dados = [[1, 5],
+             [-3, 6],
+             [0, 4],
+             [6, 3],
+             [4, 4],]
+
+
+    resp = normalize(to_dummy(dados), only_y = True)
+    for line in resp:
+        print(line)
+
 ##    print(to_dummy(dados))
     
