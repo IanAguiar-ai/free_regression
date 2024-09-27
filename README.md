@@ -24,7 +24,7 @@ from free_regression import Regression
 Para importar os geradores de funções:
 
 ```
-from free_regression import generate_regression, generate_mlp, generate_mlp_classifier
+from free_regression import generate_regression, generate_mlp, generate_mlp_classifier, generate_mlp_semi_classifier
 ```
 
 Para importar as funções geradoras de imagens:
@@ -36,7 +36,7 @@ from free_regression import plot_expected, plot_residual
 Para importar as funções de manipulação de dados:
 
 ```
-from free_regression import to_dummy, transpose
+from free_regression import to_dummy, transpose, normalize
 ```
 
 Para importar os dados de teste:
@@ -430,6 +430,8 @@ meu_modelo.set_seed(1)
 
 ## Manipulação de dados
 
+### *to_dummy*
+
 Existem funções que auxiliam o usuário no tratamento dos dados. Por exemplo, a função **to_dummy**. Essa função recebe uma lista de listas, onde algumas colunas são categóricas, e, desde que todas as categorias estejam presentes nas variáveis categóricas, ela cria novas colunas dummy para cada categoria, em ordem alfabética, por coluna categórica. Exemplo:
 
 ```
@@ -463,6 +465,14 @@ categorica_1 = ['1', '2']
 
 total = numericas + (len(categorica_1) - 1) (len(categorica_2) - 1)
 ```
+
+### *transpose*
+
+...
+
+### normalize*
+
+...
 
 ## Gráficos
 
