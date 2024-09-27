@@ -107,10 +107,10 @@ def generate_mlp_classifier(regressors:int, neurons:int = 1) -> ("function", lis
             all_parameters.add(f"x{j}")
         temp_function += f"b_{i})"
         all_parameters.add(f"b_{i}")
-        function += f"1/(1 - 2.7182818**(-{temp_function}))\n\t"
+        function += f"1/(1 + 2.7182818**(-{temp_function}))\n\t"
 
     # Solução
-    function += f"\treturn 1/(1 - 2.7182818**(-("
+    function += f"\treturn 1/(1 + 2.7182818**(-("
     for i in range(neurons):
         function += f"b__{i}*x_{i} + "
         all_parameters.add(f"b__{i}")
@@ -122,6 +122,52 @@ def generate_mlp_classifier(regressors:int, neurons:int = 1) -> ("function", lis
     final_function = exec(function)
 
     return globals()[f'mlp_sigmoid_with_{regressors}_regressors_and_{neurons}_neurons'], [f"x{i}" for i in range(regressors)]
+
+def generate_mlp_semi_classifier(regressors:int, neurons:int = 1) -> ("function", list):
+    """
+    Gera um MLP com a quantidade de regressors e neurons pedidos.
+    Retorna a função MLP e os nomes dos regressores.
+
+    Args:
+        regressors (list): Lista de nomes dos regressores.
+        neurons (int): Quantidade de neurônios na camada intermediaria, padrão é 1.
+
+    Returns:
+        function: Função MLP (Mult Layer Perceptron)
+    """
+    assert type(regressors) == int, "<regressors> must be an integer"
+    assert type(neurons) == int, "<neurons> must be an integer"
+    assert regressors > 0, "<regressors> must be at least 1"
+    assert neurons > 0, "<neurons> must be at least 1"
+
+    all_parameters:set = set()
+    function:str = "try:\n\t"
+    # Camada intemediaria
+    for i in range(neurons):
+        function += f"\tx_{i} = max("
+        all_parameters.add(f"x_{i}")
+        temp_function = f"("
+        for j in range(regressors):
+            temp_function += f"b_{i}_{j}*x{j} + "
+            all_parameters.add(f"b_{i}_{j}")
+            all_parameters.add(f"x{j}")
+        temp_function += f"b_{i})"
+        all_parameters.add(f"b_{i}")
+        function += f"{temp_function}, {temp_function}/100)\n\t"
+
+    # Solução
+    function += f"\treturn 1/(1 + 2.7182818**(-("
+    for i in range(neurons):
+        function += f"b__{i}*x_{i} + "
+        all_parameters.add(f"b__{i}")
+    function += f"b)))\n\texcept:\n\t\treturn 0"
+    all_parameters.add(f"b")
+
+    function:str = f"def mlp_relu_sigmoid_with_{regressors}_regressors_and_{neurons}_neurons({', '.join(sorted(list(all_parameters)))}):\n\t" + function
+    function += f"\nglobals()['mlp_relu_sigmoid_with_{regressors}_regressors_and_{neurons}_neurons'] = mlp_relu_sigmoid_with_{regressors}_regressors_and_{neurons}_neurons"
+    final_function = exec(function)
+    
+    return globals()[f'mlp_relu_sigmoid_with_{regressors}_regressors_and_{neurons}_neurons'], [f"x{i}" for i in range(regressors)]
 
 if __name__ == "__main__":
     from free_regression import Regression

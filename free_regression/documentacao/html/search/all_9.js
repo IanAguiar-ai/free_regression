@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['save_29',['save',['../classfree__regression_1_1free__regression_1_1Regression.html#af9236b96ee3d4aa36bc163415501868c',1,'free_regression::free_regression::Regression']]],
-  ['set_5fseed_30',['set_seed',['../classfree__regression_1_1free__regression_1_1Regression.html#ad3a5ce6481dc8c8c5e6672947d6934ac',1,'free_regression::free_regression::Regression']]]
+  ['read_5fcsv_29',['read_csv',['../namespacefree__regression_1_1data.html#a6d2d3b765edbb7dc4016762a6c95253b',1,'free_regression::data']]],
+  ['regression_30',['Regression',['../classfree__regression_1_1free__regression_1_1Regression.html',1,'free_regression::free_regression']]],
+  ['representation_31',['Representation',['../classfree__regression_1_1data_1_1Representation.html',1,'free_regression::data']]],
+  ['run_32',['run',['../classfree__regression_1_1free__regression_1_1Regression.html#a5b7fcdd8fbd32ae74159a5dd329b13a7',1,'free_regression::free_regression::Regression']]]
 ];

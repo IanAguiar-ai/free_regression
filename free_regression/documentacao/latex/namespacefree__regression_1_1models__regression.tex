@@ -8,6 +8,8 @@
 (\char`\"{}function\char`\"{}, list) \mbox{\hyperlink{namespacefree__regression_1_1models__regression_a6a4663b4b416b446df65891269151d70}{generate\+\_\+mlp}} (int regressors, int neurons=1)
 \item 
 (\char`\"{}function\char`\"{}, list) \mbox{\hyperlink{namespacefree__regression_1_1models__regression_a5b85bf7fa47be55bf7ec15ab6054acbd}{generate\+\_\+mlp\+\_\+classifier}} (int regressors, int neurons=1)
+\item 
+(\char`\"{}function\char`\"{}, list) \mbox{\hyperlink{namespacefree__regression_1_1models__regression_a71ac61ca92fbc1d756be921c03be4965}{generate\+\_\+mlp\+\_\+semi\+\_\+classifier}} (int regressors, int neurons=1)
 \end{DoxyCompactItemize}
 \doxysubsection*{Variáveis}
 \begin{DoxyCompactItemize}
@@ -56,6 +58,22 @@ Returns:
 \index{generate\_mlp\_classifier@{generate\_mlp\_classifier}!free\_regression.models\_regression@{free\_regression.models\_regression}}
 \doxysubsubsection{\texorpdfstring{generate\_mlp\_classifier()}{generate\_mlp\_classifier()}}
 {\footnotesize\ttfamily  (\char`\"{}function\char`\"{}, list) free\+\_\+regression.\+models\+\_\+regression.\+generate\+\_\+mlp\+\_\+classifier (\begin{DoxyParamCaption}\item[{int}]{regressors,  }\item[{int }]{neurons = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Gera um MLP com a quantidade de regressors e neurons pedidos.
+Retorna a função MLP e os nomes dos regressores.
+
+Args:
+    regressors (list): Lista de nomes dos regressores.
+    neurons (int): Quantidade de neurônios na camada intermediaria, padrão é 1.
+
+Returns:
+    function: Função MLP (Mult Layer Perceptron)
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespacefree__regression_1_1models__regression_a71ac61ca92fbc1d756be921c03be4965}\label{namespacefree__regression_1_1models__regression_a71ac61ca92fbc1d756be921c03be4965}} 
+\index{free\_regression.models\_regression@{free\_regression.models\_regression}!generate\_mlp\_semi\_classifier@{generate\_mlp\_semi\_classifier}}
+\index{generate\_mlp\_semi\_classifier@{generate\_mlp\_semi\_classifier}!free\_regression.models\_regression@{free\_regression.models\_regression}}
+\doxysubsubsection{\texorpdfstring{generate\_mlp\_semi\_classifier()}{generate\_mlp\_semi\_classifier()}}
+{\footnotesize\ttfamily  (\char`\"{}function\char`\"{}, list) free\+\_\+regression.\+models\+\_\+regression.\+generate\+\_\+mlp\+\_\+semi\+\_\+classifier (\begin{DoxyParamCaption}\item[{int}]{regressors,  }\item[{int }]{neurons = {\ttfamily 1} }\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Gera um MLP com a quantidade de regressors e neurons pedidos.
 Retorna a função MLP e os nomes dos regressores.
