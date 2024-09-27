@@ -110,13 +110,14 @@ def generate_mlp_classifier(regressors:int, neurons:int = 1) -> ("function", lis
         function += f"1/(1 - 2.7182818**(-{temp_function}))\n\t"
 
     # Solução
-    function += f"\treturn 1/(1 - 2.7182818**(-"
+    function += f"\treturn 1/(1 - 2.7182818**(-("
     for i in range(neurons):
         function += f"b__{i}*x_{i} + "
         all_parameters.add(f"b__{i}")
-    function += f"b))\n\texcept:\n\t\treturn 0"
+    function += f"b)))\n\texcept:\n\t\treturn 0"
     all_parameters.add(f"b")
 
+    print(function)
     function:str = f"def mlp_with_{regressors}_regressors_and_{neurons}_neurons({', '.join(sorted(list(all_parameters)))}):\n\t" + function
     function += f"\nglobals()['mlp_with_{regressors}_regressors_and_{neurons}_neurons'] = mlp_with_{regressors}_regressors_and_{neurons}_neurons"
     final_function = exec(function)
