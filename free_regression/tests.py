@@ -278,7 +278,7 @@ class Teste(unittest.TestCase):
             
             modelo = Regression(*generate_regression(3, 1))
             modelo.set_seed(2024)
-            modelo.run(dados.data_list, precision = .5)
+            modelo.run(dados[:], precision = 1)
             print(modelo)
 
         except Exception as e:
