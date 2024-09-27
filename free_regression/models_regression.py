@@ -71,11 +71,11 @@ def generate_mlp(regressors:int, neurons:int = 1) -> ("function", list):
     function += f"b"
     all_parameters.add(f"b")
 
-    function:str = f"def mlp_with_{regressors}_regressors_and_{neurons}_neurons({', '.join(sorted(list(all_parameters)))}):\n\t" + function
-    function += f"\nglobals()['mlp_with_{regressors}_regressors_and_{neurons}_neurons'] = mlp_with_{regressors}_regressors_and_{neurons}_neurons"
+    function:str = f"def mlp_relu_with_{regressors}_regressors_and_{neurons}_neurons({', '.join(sorted(list(all_parameters)))}):\n\t" + function
+    function += f"\nglobals()['mlp_relu_with_{regressors}_regressors_and_{neurons}_neurons'] = mlp_relu_with_{regressors}_regressors_and_{neurons}_neurons"
     final_function = exec(function)
 
-    return globals()[f'mlp_with_{regressors}_regressors_and_{neurons}_neurons'], [f"x{i}" for i in range(regressors)]
+    return globals()[f'mlp_relu_with_{regressors}_regressors_and_{neurons}_neurons'], [f"x{i}" for i in range(regressors)]
 
 def generate_mlp_classifier(regressors:int, neurons:int = 1) -> ("function", list):
     """
@@ -117,11 +117,11 @@ def generate_mlp_classifier(regressors:int, neurons:int = 1) -> ("function", lis
     function += f"b)))\n\texcept:\n\t\treturn 0"
     all_parameters.add(f"b")
 
-    function:str = f"def mlp_with_{regressors}_regressors_and_{neurons}_neurons({', '.join(sorted(list(all_parameters)))}):\n\t" + function
-    function += f"\nglobals()['mlp_with_{regressors}_regressors_and_{neurons}_neurons'] = mlp_with_{regressors}_regressors_and_{neurons}_neurons"
+    function:str = f"def mlp_sigmoid_with_{regressors}_regressors_and_{neurons}_neurons({', '.join(sorted(list(all_parameters)))}):\n\t" + function
+    function += f"\nglobals()['mlp_sigmoid_with_{regressors}_regressors_and_{neurons}_neurons'] = mlp_sigmoid_with_{regressors}_regressors_and_{neurons}_neurons"
     final_function = exec(function)
 
-    return globals()[f'mlp_with_{regressors}_regressors_and_{neurons}_neurons'], [f"x{i}" for i in range(regressors)]
+    return globals()[f'mlp_sigmoid_with_{regressors}_regressors_and_{neurons}_neurons'], [f"x{i}" for i in range(regressors)]
 
 if __name__ == "__main__":
     from free_regression import Regression
