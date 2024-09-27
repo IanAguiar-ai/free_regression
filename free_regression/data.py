@@ -1837,7 +1837,7 @@ class MedidasDeMassa(Representation):
 
         # Criando nome e colunas
         self.name:str = "Medidas de Massa"
-        self.columns:list = [line[0] for line in data]
+        self.columns:list = [line[0].replace(" ","") for line in data]
 
         # Dados
         self.data:dict = {}
@@ -1859,7 +1859,7 @@ class ProdutividadeTrabalhoRemoto(Representation):
 
         # Criando nome e colunas
         self.name:str = "Medidas de Massa"
-        self.columns:list = [line[0] for line in data]
+        self.columns:list = [line[0].replace(" ","") for line in data]
 
         # Dados
         self.data:dict = {}
