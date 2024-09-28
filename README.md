@@ -504,7 +504,12 @@ dados = transpose(dados)
 
 ### *normalize*
 
-Normaliza a lista de listas
+Normaliza a lista de listas.
+
+Recebe dois argumentos:
+
+- **data**: Lista de listas que será normalizada.
+- **only_y**: Variável booleana, por padrão é *False*, indica se só a última coluna (Y) deve ser normalizada, caso contrário, todas as colunas são normalizadas entre 0 e 1.
 
 ## Gráficos
 
@@ -570,10 +575,12 @@ teste_mlp.set_seed(2024)
 teste_mlp.run(dados, precision = 0.01)
 print(teste_mlp)
 
+
 teste_reg = Regression(*generate_regression(regressors = 1, degree = 2))
 teste_reg.set_seed(2024)
 teste_reg.run(dados, precision = 0.001)
 print(teste_reg)
+
 
 dados_normalizado = normalize(dados, only_y = True)
 teste_mlp_2 = Regression(*generate_mlp_classifier(regressors = 1, neurons = 8))
@@ -581,10 +588,17 @@ teste_mlp_2.set_seed(2024)
 teste_mlp_2.run(dados_normalizado, precision = 0.01)
 print(teste_mlp_2)
 
+
 plot_expected(teste_mlp, dados)
 plot_expected(teste_reg, dados)
 plot_expected(teste_mlp_2, dados_normalizado)
 ```
+
+![EX_1](free_regression/imagens_testes/reg_1_relu.png)
+
+![EX_2](free_regression/imagens_testes/reg_2_pol2.png)
+
+![EX_3](free_regression/imagens_testes/reg_3_sigmoid.png)
 
 ## Com dados artificias, teste com logisticas
 
@@ -608,6 +622,10 @@ print(modelo)
 plot_expected(modelo, dados_)
 ```
 
+![EX_4](free_regression/imagens_testes/reg_4_log.png)
+
+![EX_5](free_regression/imagens_testes/reg_5_sigmoid.png)
+
 ## Com dados reais
 
 ```
@@ -615,15 +633,19 @@ dados = MedidasDeMassa()
 dados = transpose([dados["LegLength"], dados["TotalHeight"]])
 
 modelo_1 = Regression(*generate_regression(1, 2))
+modelo_1.set_seed(2024)
 modelo_1.run(dados)
-print(precisao)
-
+print(modelo_1)
 plot_expected(modelo_1, dados)
 
 
-modelo_1 = Regression(*generate_mlp_classifier(1, 2))
-modelo_1.run(dados)
-print(precisao)
-
-plot_expected(modelo_1, dados)
+modelo_2 = Regression(*generate_mlp_sigmoid_sum(1, 2))
+modelo_2.set_seed(2024)
+modelo_2.run(dados)
+print(modelo_2)
+plot_expected(modelo_2, dados)
 ```
+
+![EX_6](free_regression/imagens_testes/reg_6_pol2.png)
+
+![EX_7](free_regression/imagens_testes/reg_7_sum_sigmoid.png)
