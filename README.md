@@ -7,7 +7,7 @@ Construtor de Regressão Genérico. Com esta biblioteca, o usuário é capaz de:
 3. Manipular as regressões.
 
 
-# Download
+# Donwload
 
 ```
 pip install git+https://github.com/IanAguiar-ai/free_regression
