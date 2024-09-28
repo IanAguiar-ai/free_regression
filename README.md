@@ -587,9 +587,17 @@ teste_mlp_2.run(dados_normalizado, precision = 0.01)
 print(teste_mlp_2)
 
 
+teste_mlp_3 = Regression(*generate_mlp_sigmoid_sum(regressors = 1, neurons = 5))
+teste_mlp_3.set_seed(2024)
+teste_mlp_3.change_all(0.1)
+teste_mlp_3.run(dados, precision = 0.1)
+print(teste_mlp_3)
+
+
 plot_expected(teste_mlp, dados)
 plot_expected(teste_reg, dados)
 plot_expected(teste_mlp_2, dados_normalizado)
+plot_expected(teste_mlp_3, dados)
 ```
 
 ![EX_1](free_regression/imagens_testes/reg_1_relu.png)
@@ -597,6 +605,8 @@ plot_expected(teste_mlp_2, dados_normalizado)
 ![EX_2](free_regression/imagens_testes/reg_2_pol2.png)
 
 ![EX_3](free_regression/imagens_testes/reg_3_sigmoid.png)
+
+![EX_3_1](free_regression/imagens_testes/reg_3_1.png)
 
 ## Com dados artificiais, teste com logisticas
 
