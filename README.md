@@ -65,7 +65,7 @@ Além disso, na classe principal, as variáveis às quais o usuário tem acesso 
 
 A biblioteca conta com dois conjuntos de dados para testes:
 
-- **MedidasDeMassa**: Dados numéricos para as colunas *Age, Hips , LegLength, TotalHeight*;
+- **MedidasDeMassa**: Dados numéricos para as colunas *Age, Hips(polegadas) , LegLength(polegadas), TotalHeight(polegadas)*;
 
 - **ProdutividadeTrabalhoRemoto**: Dados numéricos com variável preditora categórica, as colunas são ...;
 
@@ -645,15 +645,62 @@ modelo_1.set_seed(2024)
 modelo_1.run(dados)
 print(modelo_1)
 plot_expected(modelo_1, dados)
-
+plot_residual(modelo_1, dados)
 
 modelo_2 = Regression(*generate_mlp_sigmoid_sum(1, 2))
 modelo_2.set_seed(2024)
 modelo_2.run(dados)
 print(modelo_2)
 plot_expected(modelo_2, dados)
+plot_residual(modelo_2, dados)
 ```
 
 ![EX_6](free_regression/imagens_testes/reg_6_pol2.png)
 
+![EX_8](free_regression/imagens_testes/res_8.png)
+
 ![EX_7](free_regression/imagens_testes/reg_7_sum_sigmoid.png)
+
+![EX_9](free_regression/imagens_testes/res_9.png)
+
+```
+# Predição
+print(f"Modelo 1 com 'LegLength' = 80cm -> {modelo_1.prediction(x_1 = 80/1.6):0.03f} polegadas")
+print(f"Modelo 2 com 'LegLength' = 80cm -> {modelo_2.prediction(x0 = 80/1.6):0.03f} polegadas")
+```
+
+## Com dados reais, tente você mesmo e veja o resultado!
+
+```
+dados = MedidasDeMassa()
+dados = transpose([dados["Age"], dados["LegLength"]])
+
+
+modelo_1 = Regression(*generate_regression(1, 1))
+modelo_1.set_seed(2024)
+modelo_1.run(dados, precision = 0.01)
+print(modelo_1)
+plot_expected(modelo_1, dados)
+plot_residual(modelo_1, dados)
+
+
+modelo_2 = Regression(*generate_mlp_sigmoid_sum(1, 2))
+modelo_2.set_seed(2024)
+modelo_2.run(dados, precision = 0.1)
+print(modelo_2)
+plot_expected(modelo_2, dados)
+plot_residual(modelo_2, dados)
+
+
+def lin(x0, a):
+  return x0*a
+
+modelo_3 = modelo_2 + Regression(lin, regressors = ["x0"])
+modelo_3.set_seed(2024)
+modelo_3 << modelo_2
+modelo_3.change(a = 0.3)
+modelo_3.run(dados, precision = 0.05)
+print(modelo_3)
+plot_expected(modelo_3, dados)
+plot_residual(modelo_3, dados)
+```
