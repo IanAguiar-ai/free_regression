@@ -24,7 +24,7 @@ from free_regression import Regression
 Para importar os geradores de funções:
 
 ```
-from free_regression import generate_regression, generate_mlp, generate_mlp_classifier, generate_mlp_semi_classifier
+from free_regression import generate_regression, generate_mlp, generate_mlp_classifier, generate_mlp_semi_classifier, generate_mlp_sigmoid_sum
 ```
 
 Para importar as funções geradoras de imagens:
@@ -82,6 +82,15 @@ dados_no_formato_para_a_biblioteca = seus_dados.data_list
 dados_no_formato_para_a_biblioteca = seus_dados[:]
 ```
 
+Criar dados personalizados:
+
+```
+seus_dados = MedidasDeMassa()
+
+# Dados no formato correto [[x0, y0], [x1, y1], ..., [xn, yn]]
+seus_dados = transpose([seus_dados["Age"], seus_dados["TotalHeight"]]) 
+```
+
 ## Criando regressores
 
 O usuário pode criar regressores de duas formas: utilizando as funções prontas ou desenvolvendo seus próprios regressores.
@@ -92,11 +101,13 @@ Se o usuário desejar utilizar um regressor próprio, ele possui algumas opçõe
 
 - **generate_regression**: Para regressão linear, recebe dois parâmetros: *regressors* e *degree*;
 - **generate_mlp**: Para gerar um Multi Layer Perceptron, recebe dois parâmetros: *regressors* e *neurons*, utilizando ReLU para gerar a descontinuidade;
-- **generate_mlp_classifier**: Para gerar um Multi Layer Perceptron classificador, recebe dois parâmetros: *regressors* e *neurons*, utilizando uma função sigmoide para gerar a descontinuidade.
+- **generate_mlp_classifier**: Para gerar um Multi Layer Perceptron classificador, recebe dois parâmetros: *regressors* e *neurons*, utilizando uma função sigmoide para gerar a descontinuidade;
+- **generate_mlp_semi_classifier**: Para gerar um Multi Layer Perceptron com ReLUs na camada intemediária e uma sigmoide no último neurônio, recebe dois parâmetros: *regressors* e *neurons*, utilizando uma função sigmoide para gerar a descontinuidade;
+- **generate_mlp_sigmoid_sum**: Para gerar um Multi Layer Perceptron com sigmoids na camada intermediária e sem função de ativação no ultimo neurônio, recebe dois parâmetros: *regressors* e *neurons*, utilizando uma função sigmoide para gerar a descontinuidade.
 
 Todas essas funções retornam dois elementos: a função em si e a lista de regressores.
 
-Para importar as funções de manipulação de dados:
+Para importar as funções de manipulação de dados e usalas:
 
 ```
 from free_regression import to_dummy
@@ -121,6 +132,8 @@ print(meu_modelo_regressor)
 # Ou para ver os regressores individualmente
 print(meu_modelo['str_nome_do_regressor'])
 ```
+
+Todas os geradores são chamados pelo usuário da mesma forma, apenas mudando o nome da função.
 
 ### Regressores próprios
 
@@ -466,11 +479,32 @@ total = numericas + (len(categorica_1) - 1) (len(categorica_2) - 1)
 
 ### *transpose*
 
-...
+Transpõe a lista de listas. Exemplo:
+
+```
+dados = [
+ [1, 5],
+ [3, 6],
+ [0, 4],
+ [6, 3],
+ [4, 4]
+ ]
+```
+
+Se torna:
+
+```
+dados = transpose(dados)
+
+[[1, 3, 0, 6, 4],
+ [5, 6, 4, 3, 4]]
+```
+
+É últil para montar os dados especificando colunas como é mostrado na seção 'Dados próprios'.
 
 ### *normalize*
 
-...
+Normaliza a lista de listas
 
 ## Gráficos
 
@@ -523,3 +557,73 @@ meu_modelo.run(seus_dados[:])
 meu_modelo.run(seus_dados[-30:])
 ```
 
+# Exemplo
+
+## Com dados artificiais, lineares e descontinuos
+
+```
+dados = [*[[i, i] for i in range(0, 10)], *[[i, 20 - i] for i in range(10, 20)]]
+
+teste_mlp = Regression(*generate_mlp(regressors = 1, neurons = 2))
+teste_mlp.change_all(0)
+teste_mlp.set_seed(2024)
+teste_mlp.run(dados, precision = 0.01)
+print(teste_mlp)
+
+teste_reg = Regression(*generate_regression(regressors = 1, degree = 2))
+teste_reg.set_seed(2024)
+teste_reg.run(dados, precision = 0.001)
+print(teste_reg)
+
+dados_normalizado = normalize(dados, only_y = True)
+teste_mlp_2 = Regression(*generate_mlp_classifier(regressors = 1, neurons = 8))
+teste_mlp_2.set_seed(2024)
+teste_mlp_2.run(dados_normalizado, precision = 0.01)
+print(teste_mlp_2)
+
+plot_expected(teste_mlp, dados)
+plot_expected(teste_reg, dados)
+plot_expected(teste_mlp_2, dados_normalizado)
+```
+
+## Com dados artificias, teste com logisticas
+
+```
+def reg_log(x, b0, b1) -> float:
+  return 1/(1 + 2.71**(-(b0*x+b1)))
+
+dados_ = [[i/100, i/100] for i in range(100)]
+modelo = Regression(reg_log)
+modelo.set_seed(2024)
+modelo.run(dados_, precision = 0.1)
+
+print(modelo)
+plot_expected(modelo, dados_)
+
+
+modelo = Regression(*generate_mlp_classifier(1,5))
+modelo.set_seed(2024)
+modelo.run(dados_, precision = 0.1)
+print(modelo)
+plot_expected(modelo, dados_)
+```
+
+## Com dados reais
+
+```
+dados = MedidasDeMassa()
+dados = transpose([dados["LegLength"], dados["TotalHeight"]])
+
+modelo_1 = Regression(*generate_regression(1, 2))
+modelo_1.run(dados)
+print(precisao)
+
+plot_expected(modelo_1, dados)
+
+
+modelo_1 = Regression(*generate_mlp_classifier(1, 2))
+modelo_1.run(dados)
+print(precisao)
+
+plot_expected(modelo_1, dados)
+```

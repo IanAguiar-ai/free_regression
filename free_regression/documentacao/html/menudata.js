@@ -24,9 +24,9 @@
 */
 var menudata={children:[
 {text:"Página Principal",url:"index.html"},
-{text:"<em>Namespaces</em>",url:"namespaces.html",children:[
+{text:"Namespaces",url:"namespaces.html",children:[
 {text:"Lista de Namespaces",url:"namespaces.html"},
-{text:"Membros do <em>Namespace</em>",url:"namespacemembers.html",children:[
+{text:"Membros do namespace",url:"namespacemembers.html",children:[
 {text:"Todos",url:"namespacemembers.html"},
 {text:"Funções",url:"namespacemembers_func.html"},
 {text:"Variáveis",url:"namespacemembers_vars.html"}]}]},
