@@ -598,7 +598,7 @@ plot_expected(teste_mlp_2, dados_normalizado)
 
 ![EX_3](free_regression/imagens_testes/reg_3_sigmoid.png)
 
-## Com dados artificias, teste com logisticas
+## Com dados artificiais, teste com logisticas
 
 ```
 def reg_log(x, b0, b1) -> float:
