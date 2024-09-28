@@ -562,7 +562,7 @@ meu_modelo.run(seus_dados[:])
 meu_modelo.run(seus_dados[-30:])
 ```
 
-# Exemplo
+# Exemplos
 
 ## Com dados artificiais, lineares e descontinuos
 
