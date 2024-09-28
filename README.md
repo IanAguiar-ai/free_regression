@@ -107,17 +107,13 @@ Se o usuário desejar utilizar um regressor próprio, ele possui algumas opçõe
 
 Todas essas funções retornam dois elementos: a função em si e a lista de regressores.
 
-Para importar as funções de manipulação de dados e usalas:
-
-```
-from free_regression import to_dummy
-```
-
 ```
 funcao, regressores = generate_regression(regressors = 3, degree = 2)
 meu_modelo_regressor = Regression(function = funcao, regressors = regressores)
 meu_modelo.run(seus_dados) # Para começar a regressão
 ```
+
+Ou
 
 ```
 meu_modelo_regressor = Regression(*generate_regression(regressors = 3, degree = 2))
@@ -421,11 +417,13 @@ def func_1(x, a, b):
 def func_2(x, b, c):
 	return c*x + b
 
-# Fanzendo a mistura das regressões
 meu_modelo_1 = Regressao(func_1)
 meu_modelo_2 = Regressao(func_2)
 
+meu_modelo_2["a"] = 1.234
 meu_modelo_1 << meu_modelo_2
+
+print(meu_modelo_1)
 ```
 
 No caso acima, o valor do parâmetro *b* do *meu_modelo_2* é transferido para o *meu_modelo_1*.
