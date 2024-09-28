@@ -67,7 +67,7 @@ A biblioteca conta com dois conjuntos de dados para testes:
 
 - **MedidasDeMassa**: Dados numéricos para as colunas *Age, Hips(polegadas) , LegLength(polegadas), TotalHeight(polegadas)*;
 
-- **ProdutividadeTrabalhoRemoto**: Dados numéricos com variável preditora categórica, as colunas são ...;
+- **ProdutividadeTrabalhoRemoto**: Dados numéricos com variável preditora categórica, as colunas são *Employment_Type, Hours_Worked_Per_Week, Productivity_Score, Well_Being_Score*.
 
 Para usar esses dados:
 
