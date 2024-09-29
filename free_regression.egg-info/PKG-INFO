@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: free-regression
-Version: 1.0.16
+Version: 1.1.0
 Summary: Construtor de regressão genérico.
 Author: ['Ian dos Anjos', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
 Author-email: <iannaianjos@gmail.com>
@@ -18,8 +18,8 @@ Description-Content-Type: text/markdown
 
 Construtor de Regressão Genérico. Com esta biblioteca, o usuário é capaz de:
 
-1. Criar regressões 'tradicionais';
-2. Criar regressões personalizadas;
+1. Criar regressões 'tradicionais' (seção **Geração de regressores**);
+2. Criar regressões personalizadas (seção **Regressores próprios**);
 3. Manipular as regressões.
 
 
@@ -81,9 +81,9 @@ Além disso, na classe principal, as variáveis às quais o usuário tem acesso 
 
 A biblioteca conta com dois conjuntos de dados para testes:
 
-- **MedidasDeMassa**: Dados numéricos para as colunas *Age, Hips , LegLength, TotalHeight*;
+- **MedidasDeMassa**: Dados numéricos para as colunas *Age, Hips(polegadas) , LegLength(polegadas), TotalHeight(polegadas)*;
 
-- **ProdutividadeTrabalhoRemoto**: Dados numéricos com variável preditora categórica, as colunas são ...;
+- **ProdutividadeTrabalhoRemoto**: Dados numéricos com variável preditora categórica, as colunas são *Employment_Type, Hours_Worked_Per_Week, Productivity_Score, Well_Being_Score*.
 
 Para usar esses dados:
 
@@ -98,7 +98,7 @@ dados_no_formato_para_a_biblioteca = seus_dados.data_list
 dados_no_formato_para_a_biblioteca = seus_dados[:]
 ```
 
-Criar dados personalizados:
+Criar dados personalizados usando os dados próprios:
 
 ```
 seus_dados = MedidasDeMassa()
@@ -106,6 +106,11 @@ seus_dados = MedidasDeMassa()
 # Dados no formato correto [[x0, y0], [x1, y1], ..., [xn, yn]]
 seus_dados = transpose([seus_dados["Age"], seus_dados["TotalHeight"]]) 
 ```
+
+Note que os dados são representados por classes, cujos principais parâmetros são:
+
+- **.columns**: As colunas presentes nos dados;
+- **.data_list**: Os dados estruturados em uma lista de listas (formato utilizável pela biblioteca).
 
 ## Criando regressores
 
@@ -123,17 +128,13 @@ Se o usuário desejar utilizar um regressor próprio, ele possui algumas opçõe
 
 Todas essas funções retornam dois elementos: a função em si e a lista de regressores.
 
-Para importar as funções de manipulação de dados e usalas:
-
-```
-from free_regression import to_dummy
-```
-
 ```
 funcao, regressores = generate_regression(regressors = 3, degree = 2)
 meu_modelo_regressor = Regression(function = funcao, regressors = regressores)
 meu_modelo.run(seus_dados) # Para começar a regressão
 ```
+
+Ou
 
 ```
 meu_modelo_regressor = Regression(*generate_regression(regressors = 3, degree = 2))
@@ -174,6 +175,8 @@ meu_modelo_regressor = Regression(minha_funcao, regressors = ["h"])
 print(meu_modelo_regressor) # Para ver as propriedades do modelo
 meu_modelo_regressor.run(seus_dados) # Para começar a regressão
 ```
+
+É importante observar que todo regressor personalizado, ou seja, uma função regressora criada do zero, deve incluir os **regressores**, que são os parâmetros a serem preenchidos pelos dados, e os **parâmetros ajustáveis**, que são aqueles que o modelo irá estimar ao minimizar uma função de perda. Assim, ao criar a função regressora, o usuário deve garantir que ambos os tipos de parâmetros sejam definidos como *inputs* da função.
 
 ## Regressão
 
@@ -437,11 +440,13 @@ def func_1(x, a, b):
 def func_2(x, b, c):
 	return c*x + b
 
-# Fanzendo a mistura das regressões
 meu_modelo_1 = Regressao(func_1)
 meu_modelo_2 = Regressao(func_2)
 
+meu_modelo_2["a"] = 1.234
 meu_modelo_1 << meu_modelo_2
+
+print(meu_modelo_1)
 ```
 
 No caso acima, o valor do parâmetro *b* do *meu_modelo_2* é transferido para o *meu_modelo_1*.
@@ -520,7 +525,12 @@ dados = transpose(dados)
 
 ### *normalize*
 
-Normaliza a lista de listas
+Normaliza a lista de listas.
+
+Recebe dois argumentos:
+
+- **data**: Lista de listas que será normalizada.
+- **only_y**: Variável booleana, por padrão é *False*, indica se só a última coluna (Y) deve ser normalizada, caso contrário, todas as colunas são normalizadas entre 0 e 1.
 
 ## Gráficos
 
@@ -573,7 +583,7 @@ meu_modelo.run(seus_dados[:])
 meu_modelo.run(seus_dados[-30:])
 ```
 
-# Exemplo
+# Exemplos
 
 ## Com dados artificiais, lineares e descontinuos
 
@@ -586,10 +596,12 @@ teste_mlp.set_seed(2024)
 teste_mlp.run(dados, precision = 0.01)
 print(teste_mlp)
 
+
 teste_reg = Regression(*generate_regression(regressors = 1, degree = 2))
 teste_reg.set_seed(2024)
 teste_reg.run(dados, precision = 0.001)
 print(teste_reg)
+
 
 dados_normalizado = normalize(dados, only_y = True)
 teste_mlp_2 = Regression(*generate_mlp_classifier(regressors = 1, neurons = 8))
@@ -597,12 +609,29 @@ teste_mlp_2.set_seed(2024)
 teste_mlp_2.run(dados_normalizado, precision = 0.01)
 print(teste_mlp_2)
 
+
+teste_mlp_3 = Regression(*generate_mlp_sigmoid_sum(regressors = 1, neurons = 5))
+teste_mlp_3.set_seed(2024)
+teste_mlp_3.change_all(0.1)
+teste_mlp_3.run(dados, precision = 0.1)
+print(teste_mlp_3)
+
+
 plot_expected(teste_mlp, dados)
 plot_expected(teste_reg, dados)
 plot_expected(teste_mlp_2, dados_normalizado)
+plot_expected(teste_mlp_3, dados)
 ```
 
-## Com dados artificias, teste com logisticas
+![EX_1](free_regression/imagens_testes/reg_1_relu.png)
+
+![EX_2](free_regression/imagens_testes/reg_2_pol2.png)
+
+![EX_3](free_regression/imagens_testes/reg_3_sigmoid.png)
+
+![EX_3_1](free_regression/imagens_testes/reg_3_1.png)
+
+## Com dados artificiais, teste com logisticas
 
 ```
 def reg_log(x, b0, b1) -> float:
@@ -624,6 +653,10 @@ print(modelo)
 plot_expected(modelo, dados_)
 ```
 
+![EX_4](free_regression/imagens_testes/reg_4_log.png)
+
+![EX_5](free_regression/imagens_testes/reg_5_sigmoid.png)
+
 ## Com dados reais
 
 ```
@@ -631,15 +664,66 @@ dados = MedidasDeMassa()
 dados = transpose([dados["LegLength"], dados["TotalHeight"]])
 
 modelo_1 = Regression(*generate_regression(1, 2))
+modelo_1.set_seed(2024)
 modelo_1.run(dados)
-print(precisao)
-
+print(modelo_1)
 plot_expected(modelo_1, dados)
+plot_residual(modelo_1, dados)
+
+modelo_2 = Regression(*generate_mlp_sigmoid_sum(1, 2))
+modelo_2.set_seed(2024)
+modelo_2.run(dados)
+print(modelo_2)
+plot_expected(modelo_2, dados)
+plot_residual(modelo_2, dados)
+```
+
+![EX_6](free_regression/imagens_testes/reg_6_pol2.png)
+
+![EX_8](free_regression/imagens_testes/res_8.png)
+
+![EX_7](free_regression/imagens_testes/reg_7_sum_sigmoid.png)
+
+![EX_9](free_regression/imagens_testes/res_9.png)
+
+```
+# Predição
+print(f"Modelo 1 com 'LegLength' = 80cm -> {modelo_1.prediction(x_1 = 80/1.6):0.03f} polegadas")
+print(f"Modelo 2 com 'LegLength' = 80cm -> {modelo_2.prediction(x0 = 80/1.6):0.03f} polegadas")
+```
+
+## Com dados reais, tente você mesmo e veja o resultado!
+
+```
+dados = MedidasDeMassa()
+dados = transpose([dados["Age"], dados["LegLength"]])
 
 
-modelo_1 = Regression(*generate_mlp_classifier(1, 2))
-modelo_1.run(dados)
-print(precisao)
-
+modelo_1 = Regression(*generate_regression(1, 1))
+modelo_1.set_seed(2024)
+modelo_1.run(dados, precision = 0.01)
+print(modelo_1)
 plot_expected(modelo_1, dados)
+plot_residual(modelo_1, dados)
+
+
+modelo_2 = Regression(*generate_mlp_sigmoid_sum(1, 2))
+modelo_2.set_seed(2024)
+modelo_2.run(dados, precision = 0.1)
+print(modelo_2)
+plot_expected(modelo_2, dados)
+plot_residual(modelo_2, dados)
+
+
+def lin(x0, a):
+  return x0*a
+
+modelo_3 = modelo_2 + Regression(lin, regressors = ["x0"])
+modelo_3.set_seed(2024)
+modelo_3 << modelo_2
+modelo_3.change(a = 0.3)
+modelo_3.run(dados, precision = 0.05)
+print(modelo_3)
+plot_expected(modelo_3, dados)
+plot_residual(modelo_3, dados)
 ```

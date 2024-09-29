@@ -1870,7 +1870,7 @@ class ProdutividadeTrabalhoRemoto(Representation):
     def __init__(self):
         # Obtendo e tratando os dados
         data:list = transpose(read_csv("trabalho_remoto"))
-        columns_use:tuple = (1, 7, 11, 12)
+        columns_use:tuple = (1, 2, 3, 4)
         data:list = [list(map(to_float, data[i])) for i in columns_use]
 
         # Criando nome e colunas
