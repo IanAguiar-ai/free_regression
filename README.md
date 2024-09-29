@@ -2,12 +2,12 @@
 
 Construtor de Regressão Genérico. Com esta biblioteca, o usuário é capaz de:
 
-1. Criar regressões 'tradicionais';
-2. Criar regressões personalizadas;
+1. Criar regressões 'tradicionais' (seção **Geração de regressores**);
+2. Criar regressões personalizadas (seção **Regressores próprios**);
 3. Manipular as regressões.
 
 
-# Donwload
+# Download
 
 ```
 pip install git+https://github.com/IanAguiar-ai/free_regression
@@ -82,7 +82,7 @@ dados_no_formato_para_a_biblioteca = seus_dados.data_list
 dados_no_formato_para_a_biblioteca = seus_dados[:]
 ```
 
-Criar dados personalizados:
+Criar dados personalizados usando os dados próprios:
 
 ```
 seus_dados = MedidasDeMassa()
@@ -90,6 +90,11 @@ seus_dados = MedidasDeMassa()
 # Dados no formato correto [[x0, y0], [x1, y1], ..., [xn, yn]]
 seus_dados = transpose([seus_dados["Age"], seus_dados["TotalHeight"]]) 
 ```
+
+Note que os dados são representados por classes, cujos principais parâmetros são:
+
+- **.columns**: As colunas presentes nos dados;
+- **.data_list**: Os dados estruturados em uma lista de listas (formato utilizável pela biblioteca).
 
 ## Criando regressores
 
@@ -154,6 +159,8 @@ meu_modelo_regressor = Regression(minha_funcao, regressors = ["h"])
 print(meu_modelo_regressor) # Para ver as propriedades do modelo
 meu_modelo_regressor.run(seus_dados) # Para começar a regressão
 ```
+
+É importante observar que todo regressor personalizado, ou seja, uma função regressora criada do zero, deve incluir os **regressores**, que são os parâmetros a serem preenchidos pelos dados, e os **parâmetros ajustáveis**, que são aqueles que o modelo irá estimar ao minimizar uma função de perda. Assim, ao criar a função regressora, o usuário deve garantir que ambos os tipos de parâmetros sejam definidos como *inputs* da função.
 
 ## Regressão
 
