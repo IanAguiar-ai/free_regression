@@ -427,13 +427,13 @@ def func_2(x, b, c):
 meu_modelo_1 = Regressao(func_1)
 meu_modelo_2 = Regressao(func_2)
 
-meu_modelo_2["a"] = 1.234
+meu_modelo_2["b"] = 1.234
 meu_modelo_1 << meu_modelo_2
 
 print(meu_modelo_1)
 ```
 
-No caso acima, o valor do parâmetro *b* do *meu_modelo_2* é transferido para o *meu_modelo_1*.
+No caso acima, o valor do parâmetro *b* (parâmetro em comum) do *meu_modelo_2* é transferido para o *meu_modelo_1*.
 
 ### Setar *seed*
 
