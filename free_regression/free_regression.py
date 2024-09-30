@@ -397,4 +397,4 @@ class Regression:
 
         # Salva o resultado
         self.__args_function = best_args
-        self.__error = best_result
+        self.__error = best_result/len(data)

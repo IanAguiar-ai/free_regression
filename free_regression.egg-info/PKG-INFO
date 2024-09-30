@@ -2,12 +2,9 @@ Metadata-Version: 2.1
 Name: free-regression
 Version: 1.1.0
 Summary: Construtor de regressão genérico.
-Home-page: UNKNOWN
 Author: ['Ian dos Anjos', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
 Author-email: <iannaianjos@gmail.com>
-License: UNKNOWN
 Keywords: python,regression
-Platform: UNKNOWN
 Classifier: Development Status :: 1 - Planning
 Classifier: Intended Audience :: Developers
 Classifier: Programming Language :: Python :: 3
@@ -731,4 +728,77 @@ plot_expected(modelo_3, dados)
 plot_residual(modelo_3, dados)
 ```
 
+## Com dados reais, usando dummys
 
+```
+dados = ProdutividadeTrabalhoRemoto()
+print(dados)
+
+dados_mod = transpose([dados["Hours_Worked_Per_Week"], dados["Employment_Type"]])
+dados_mod_1 = to_dummy(dados_mod)
+
+dados_mod_2 = to_dummy(dados[:])
+
+def regressao_logistica(x:float, a:float, b:float) -> float:
+  return 1/(1+2.7183**(a*x + b))
+  
+modelo_1 = Regression(regressao_logistica)
+modelo_1.set_seed(2024)
+modelo_1.run(dados_mod_1, precision = 0.1)
+print(modelo_1)
+
+modelo_2 = Regression(*generate_mlp_semi_classifier(regressors = 1, neurons = 1))
+modelo_2.set_seed(2024)
+modelo_2.run(dados_mod_1, precision = 0.1)
+print(modelo_2)
+
+plot_expected(modelo_1, dados_mod_1)
+plot_expected(modelo_2, dados_mod_1)
+
+def regressao_logistica_multipla(x1:float, x2:float, x3:float, a:float, b:float, c:float, d:float) -> float:
+  return 1/(1+2.7183**(a*x1 + b*x2 + c*x2 + d))
+  
+modelo_3 = Regression(regressao_logistica_multipla, regressors = ["x1", "x2", "x3"])
+modelo_3.set_seed(2024)
+modelo_3.run(dados_mod_2, precision = 0.01)
+print(modelo_3)
+
+modelo_4 = Regression(*generate_mlp_semi_classifier(regressors = 3, neurons = 2))
+modelo_4.set_seed(2024)
+modelo_4.run(dados_mod_2, precision = 0.1)
+print(modelo_4)
+
+modelo_5 = Regression(*generate_mlp_classifier(regressors = 3, neurons = 2))
+modelo_5.set_seed(2024)
+modelo_5.run(dados_mod_2, precision = 1)
+print(modelo_5)
+
+print(f"OBSERVADO | MODELO_1 | MODELO_2 | MODELO_3")
+for *x, y in dados_mod_2:
+  MODELO_1 = 1 if modelo_3.prediction([x])[0] >= 0.5 else 0
+  MODELO_2 = 1 if modelo_4.prediction([x])[0] >= 0.5 else 0
+  MODELO_3 = 1 if modelo_5.prediction([x])[0] >= 0.5 else 0
+  print(f"{y:10}|{MODELO_1:10}|{MODELO_1:10}|{MODELO_1:10}")
+
+num_acertos = [0, 0, 0]
+for *x, y in dados_mod_2:
+  MODELO_1 = 1 if modelo_3.prediction([x])[0] >= 0.5 else 0
+  MODELO_2 = 1 if modelo_4.prediction([x])[0] >= 0.5 else 0
+  MODELO_3 = 1 if modelo_5.prediction([x])[0] >= 0.5 else 0
+  
+  i = 0
+  MODELOS = [MODELO_1, MODELO_2, MODELO_3]
+  for MODELO in MODELOS:
+    if MODELO == y:
+      num_acertos[i] += 1
+    i += 1
+
+for i in range(len(num_acertos)):
+  num_acertos[i] /= len(dados_mod_2)
+
+print(f"\nMODELO_1: {num_acertos[0]*100:2.02f}%\nMODELO_2: {num_acertos[1]*100:2.02f}%\nMODELO_3: {num_acertos[2]*100:2.02f}%")
+```
+
+![EX_10](free_regression/imagens_testes/reg_10.png)
+
+![EX_11](free_regression/imagens_testes/reg_11.png)
