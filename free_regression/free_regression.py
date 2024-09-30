@@ -59,7 +59,7 @@ class Regression:
                 self.__args_function[parameter] = 0.1
         
         self.__seed = None
-        self.iterations:int = 50 * len(self.__args_function.keys()) # Quanto mais parâmetros mais iterações eu precisso para que o valor mude
+        self.iterations:int = min(50 * len(self.__args_function.keys()), 500) # Quanto mais parâmetros mais iterações eu precisso para que o valor mude
 
         # Variáveis bloqueadas
         self.__lock = {}

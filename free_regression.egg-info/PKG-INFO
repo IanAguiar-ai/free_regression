@@ -2,9 +2,12 @@ Metadata-Version: 2.1
 Name: free-regression
 Version: 1.1.0
 Summary: Construtor de regressão genérico.
+Home-page: UNKNOWN
 Author: ['Ian dos Anjos', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
 Author-email: <iannaianjos@gmail.com>
+License: UNKNOWN
 Keywords: python,regression
+Platform: UNKNOWN
 Classifier: Development Status :: 1 - Planning
 Classifier: Intended Audience :: Developers
 Classifier: Programming Language :: Python :: 3
@@ -727,3 +730,5 @@ print(modelo_3)
 plot_expected(modelo_3, dados)
 plot_residual(modelo_3, dados)
 ```
+
+
