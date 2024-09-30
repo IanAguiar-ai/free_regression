@@ -783,6 +783,6 @@ for i in range(len(num_acertos)):
 print(f"\nMODELO_1: {num_acertos[0]*100:2.02f}%\nMODELO_2: {num_acertos[1]*100:2.02f}%\nMODELO_3: {num_acertos[2]*100:2.02f}%")
 ```
 
-![EX_10](free_regression/imagens_testes/res_10.png)
+![EX_10](free_regression/imagens_testes/reg_10.png)
 
-![EX_11](free_regression/imagens_testes/res_11.png)
+![EX_11](free_regression/imagens_testes/reg_11.png)
