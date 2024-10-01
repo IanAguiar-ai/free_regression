@@ -65,9 +65,9 @@ Além disso, na classe principal, as variáveis às quais o usuário tem acesso 
 
 A biblioteca conta com dois conjuntos de dados para testes:
 
-- **MedidasDeMassa**: Dados numéricos para as colunas *Age, Hips(polegadas) , LegLength(polegadas), TotalHeight(polegadas)*;
+- **MedidasDeMassa**: Dados numéricos para as colunas *Age, Hips(polegadas) , LegLength(polegadas), TotalHeight(polegadas)*; (https://www.kaggle.com/datasets/saurabhshahane/body-measurements-dataset)
 
-- **ProdutividadeTrabalhoRemoto**: Dados numéricos com variável preditora categórica, as colunas são *Employment_Type, Hours_Worked_Per_Week, Productivity_Score, Well_Being_Score*.
+- **ProdutividadeTrabalhoRemoto**: Dados numéricos com variável preditora categórica, as colunas são *Employment_Type, Hours_Worked_Per_Week, Productivity_Score, Well_Being_Score*. (https://www.kaggle.com/datasets/mrsimple07/remote-work-productivity)
 
 Para usar esses dados:
 
@@ -158,6 +158,16 @@ def minha_funcao(h:float, b1:float, b2:float) -> float:
 meu_modelo_regressor = Regression(minha_funcao, regressors = ["h"])
 print(meu_modelo_regressor) # Para ver as propriedades do modelo
 meu_modelo_regressor.run(seus_dados) # Para começar a regressão
+```
+
+O usuário pedindo *print(meu_modelo_regressor)* verá:
+
+```
+FUNCTION: minha_funcao
+REGRESSORS: h
+PARAMS:
+  b1 = 0.10000000
+  b2 = 0.10000000
 ```
 
 É importante observar que todo regressor personalizado, ou seja, uma função regressora criada do zero, deve incluir os **regressores**, que são os parâmetros a serem preenchidos pelos dados, e os **parâmetros ajustáveis**, que são aqueles que o modelo irá estimar ao minimizar uma função de perda. Assim, ao criar a função regressora, o usuário deve garantir que ambos os tipos de parâmetros sejam definidos como *inputs* da função.
@@ -568,7 +578,7 @@ meu_modelo.run(seus_dados[-30:])
 ```
 ## Problemas de *overflow* e truncamento
 
-Nos geradores de regressões feitas para classificação, as vezes quando o parâmetro *precision* no *.run* é muito grande, o usuário pode ter o problema de *overflow*, erro acompanhado com o número de indentificação 34, nesse caso, basta o usuário diminuir a *precision*.
+Nos geradores de regressões utilizados para classificação, ocasionalmente, quando o parâmetro precision no método *.run* é configurado com um valor muito elevado, o usuário pode enfrentar problemas de *overflow*, acompanhado pelo erro com o código de identificação 34. Nesses casos, recomenda-se que o usuário reduza o valor de precision para evitar esse erro.
 
 # Exemplos
 
