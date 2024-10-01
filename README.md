@@ -566,6 +566,9 @@ meu_modelo = Regression(*generate_regression(regressors = 2, degree = 1))
 meu_modelo.run(seus_dados[:])
 meu_modelo.run(seus_dados[-30:])
 ```
+## Problemas de *overflow* e truncamento
+
+Nos geradores de regressões feitas para classificação, as vezes quando o parâmetro *precision* no *.run* é muito grande, o usuário pode ter o problema de *overflow*, erro acompanhado com o número de indentificação 34, nesse caso, basta o usuário diminuir a *precision*.
 
 # Exemplos
 
