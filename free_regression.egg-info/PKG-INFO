@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: free-regression
-Version: 1.1.1
+Version: 1.1.2
 Summary: Construtor de regressão genérico.
 Author: ['Ian dos Anjos', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
 Author-email: <iannaianjos@gmail.com>
@@ -40,13 +40,13 @@ from free_regression import Regression
 Para importar os geradores de funções:
 
 ```
-from free_regression import generate_regression, generate_mlp, generate_mlp_classifier, generate_mlp_semi_classifier, generate_mlp_sigmoid_sum
+from free_regression import generate_regression, generate_mlp, generate_mlp_classifier, generate_mlp_semi_classifier, generate_mlp_sigmoid_sum, generate_mlp_normals, generate_distribuction
 ```
 
 Para importar as funções geradoras de imagens:
 
 ```
-from free_regression import plot_expected, plot_residual
+from free_regression import plot_expected, plot_residual, make_animation
 ```
 
 Para importar as funções de manipulação de dados:
@@ -566,6 +566,26 @@ Função que recebe:
 - **percentile**: Lista com dois percentis que serão apresentados no plot.
 
 Esta função gera um histograma com a distribuição dos resíduos.
+
+## Salvar *plots* da iteração
+
+A função *make_animation* que recebe:
+
+- **obj**: Instância da classe *Regression*;
+- **data**: Dados em lista de listas;
+
+Salva em uma pasta no diretório atual do código do usuário, todos os plots para chegar no resultado da regressão em uma pasta chamado *temporary*.
+
+Exemplo:
+```
+teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
+teste_1.set_seed(1)
+teste_1.change(b = 0)
+
+dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
+
+make_animation(teste_1, dados)
+```
 
 # Limitação da biblioteca
 
