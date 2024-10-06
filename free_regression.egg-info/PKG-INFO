@@ -574,7 +574,7 @@ A função *make_animation* que recebe:
 - **obj**: Instância da classe *Regression*;
 - **data**: Dados em lista de listas;
 
-Salva em uma pasta no diretório atual do código do usuário, todos os plots para chegar no resultado da regressão em uma pasta chamado *temporary*.
+Salva em uma pasta no diretório atual, chamada *temporary*, todos os plots para chegar no resultado da regressão.
 
 Exemplo:
 ```
