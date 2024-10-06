@@ -108,7 +108,9 @@ Se o usuário desejar utilizar um regressor próprio, ele possui algumas opçõe
 - **generate_mlp**: Para gerar um Multi Layer Perceptron, recebe dois parâmetros: *regressors* e *neurons*, utilizando ReLU para gerar a descontinuidade;
 - **generate_mlp_classifier**: Para gerar um Multi Layer Perceptron classificador, recebe dois parâmetros: *regressors* e *neurons*, utilizando uma função sigmoide para gerar a descontinuidade;
 - **generate_mlp_semi_classifier**: Para gerar um Multi Layer Perceptron com ReLUs na camada intemediária e uma sigmoide no último neurônio, recebe dois parâmetros: *regressors* e *neurons*, utilizando uma função sigmoide para gerar a descontinuidade;
-- **generate_mlp_sigmoid_sum**: Para gerar um Multi Layer Perceptron com sigmoids na camada intermediária e sem função de ativação no ultimo neurônio, recebe dois parâmetros: *regressors* e *neurons*, utilizando uma função sigmoide para gerar a descontinuidade.
+- **generate_mlp_sigmoid_sum**: Para gerar um Multi Layer Perceptron com sigmoids na camada intermediária e sem função de ativação no ultimo neurônio, recebe dois parâmetros: *regressors* e *neurons*, utilizando uma função sigmoide para gerar a descontinuidade;
+- **generate_mlp_sigmoid_sum**: Para gerar um Multi Layer Perceptron com *Radial Basis Function (RBF)* na camada intermediária e sem função de ativação no ultimo neurônio, recebe três parâmetros: *regressors*, *neurons* e *max*, utilizando uma função sigmoide para gerar a descontinuidade;
+- **generate_distribuction**: Para gerar uma distribuição com integral de -infinito a +infinito sendo 1, usando *Radial Basis Function (RBF)*, recebe dois parâmetros: *regressors*, *normals*.
 
 Todas essas funções retornam dois elementos: a função em si e a lista de regressores.
 

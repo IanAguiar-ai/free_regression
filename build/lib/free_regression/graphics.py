@@ -80,28 +80,51 @@ if __name__ == "__main__":
     from free_regression import Regression
     from random import random
 
-    def regressao_2(x:float, a:float, b:float, c:float) -> float:
-        return a*x**2 + b*x + c
-
-    def reg_2b(x1:float, x2:float, b1:float, b2:float) -> float:
-        return x1*b1 + x2*b2
-
-    dado = [[x, regressao_2(x, a = 15, b = -7, c = -4) + random()*100-50] for x in range(30)]
-    dado = [[random()*i/100, random()*i/100] for i in range(40)]
-    teste = Regression(regressao_2)
-    teste.run(dado)
-    print(teste)
-
-    plot_expected(teste, dado)
-    plot_residual(teste, dado)
-
-    dado = []
-    for i in range(20):
-        a = int(random()*i*5)
-        b = int(random()*i*5)
-        dado.append([a, b, a*7.5 + b*(-2.4) + random()*i - i/2])
-    teste_2 = Regression(reg_2b, ["x1", "x2"])
-    teste_2.run(dado)
-    print(teste_2)
-
-    plot_residual(teste_2, dado)
+##    def regressao_2(x:float, a:float, b:float, c:float) -> float:
+##        return a*x**2 + b*x + c
+##
+##    def reg_2b(x1:float, x2:float, b1:float, b2:float) -> float:
+##        return x1*b1 + x2*b2
+##
+##    dado = [[x, regressao_2(x, a = 15, b = -7, c = -4) + random()*100-50] for x in range(30)]
+##    dado = [[random()*i/100, random()*i/100] for i in range(40)]
+##    teste = Regression(regressao_2)
+##    teste.run(dado)
+##    print(teste)
+##
+##    plot_expected(teste, dado)
+##    plot_residual(teste, dado)
+##
+##    dado = []
+##    for i in range(20):
+##        a = int(random()*i*5)
+##        b = int(random()*i*5)
+##        dado.append([a, b, a*7.5 + b*(-2.4) + random()*i - i/2])
+##    teste_2 = Regression(reg_2b, ["x1", "x2"])
+##    teste_2.run(dado)
+##    print(teste_2)
+##
+##    plot_residual(teste_2, dado)
+    from models_regression import *
+    teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
+    teste_1.set_seed(1)
+    teste_1.change(b = 0)
+    print(teste_1)
+    dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
+    teste_1.run(dados)
+    print(f"{teste_1}\n")
+    print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
+    plot_expected(teste_1, dados)
+    plot_residual(teste_1, dados)
+    
+    teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 2))
+    teste_1.set_seed(1)
+    teste_1.change(mean_0 = 1, mean_1 = 3, var_1 = 0.3)
+    print(teste_1)
+    dados = [[0, 0], [1, 0.4], [2, 0], [2.1, 0.1], [2.12, 0.20], [2.5, 0.40], [3, 0]]
+    plot_expected(teste_1, dados)
+    teste_1.run(dados)
+    print(f"{teste_1}\n")
+    print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
+    plot_expected(teste_1, dados)
+    plot_residual(teste_1, dados)

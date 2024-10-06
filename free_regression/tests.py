@@ -1,7 +1,8 @@
 # Biblioteca autoral
 from free_regression import Regression
 from data import MedidasDeMassa
-from models_regression import generate_regression
+from models_regression import *
+from graphics import *
 
 # Biblioteca de teste
 import unittest
@@ -283,6 +284,29 @@ class Teste(unittest.TestCase):
 
         except Exception as e:
             self.fail(f"Não foi possível completar o teste com o banco de dados iris: {e}")
+
+        teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
+        teste_1.set_seed(1)
+        teste_1.change(b = 0)
+        print(teste_1)
+        dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
+        teste_1.run(dados)
+        print(f"{teste_1}\n")
+        print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
+        plot_expected(teste_1, dados)
+        plot_residual(teste_1, dados)
+        
+        teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 2))
+        teste_1.set_seed(1)
+        teste_1.change(mean_0 = 1, mean_1 = 3, var_1 = 0.3)
+        print(teste_1)
+        dados = [[0, 0], [1, 0.4], [2, 0], [2.1, 0.1], [2.12, 0.20], [2.5, 0.40], [3, 0]]
+        plot_expected(teste_1, dados)
+        teste_1.run(dados)
+        print(f"{teste_1}\n")
+        print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
+        plot_expected(teste_1, dados)
+        plot_residual(teste_1, dados)
 
         
 if __name__ == "__main__":

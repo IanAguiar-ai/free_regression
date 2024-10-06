@@ -286,6 +286,9 @@ class Regression:
 
         if type(value) == list or type(value) == tuple:
             assert len(value) == 2, f"If <value> has to be 2 values, [min, max]"
+
+            if self.__seed is not None:
+                seed(self.__seed)
             
             for arg in self.__args_function.keys():
                 self.__args_function[arg] = random()*(max(value) - min(value)) - min(value)
