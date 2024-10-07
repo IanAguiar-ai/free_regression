@@ -51,11 +51,11 @@ def plot_expected_and_save(regression:"Regression", data:[list], name:str, size:
     plt.savefig(f"{name}.png")
 
 
-def make_animation(obj:"Regression", data:list) -> None:
+def make_animation(obj:"Regression", data:list, precision:float = 0.01) -> None:
     """
     Faz a animação desde que o objeto passado seja da classe passada
     """
-    obj._Regression__animation_run(data)
+    obj._Regression__animation_run(data, precision = precision)
     
 if __name__ == "__main__":
     from free_regression import Regression
@@ -69,9 +69,14 @@ if __name__ == "__main__":
 ##
 ##    make_animation(teste_1, dados)
 
-    teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 2))
-    teste_1.set_seed(1)
-    teste_1.change(mean_0 = 1, mean_1 = 3, var_1 = 0.3)
-    print(teste_1)
-    dados = [[0, 0], [1, 0.4], [2, 0], [2.1, 0.1], [2.12, 0.20], [2.5, 0.40], [3, 0]]
-    make_animation(teste_1, dados)
+##    teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 2))
+##    teste_1.set_seed(1)
+##    teste_1.change(mean_0 = 1, mean_1 = 3, var_1 = 0.3)
+##    print(teste_1)
+##    dados = [[0, 0], [1, 0.4], [2, 0], [2.1, 0.1], [2.12, 0.20], [2.5, 0.40], [3, 0]]
+##    make_animation(teste_1, dados)
+
+    dados_ = [[i/100, i/100] for i in range(100)]
+    modelo = Regression(*generate_mlp_classifier(1,5))
+    modelo.set_seed(2024)
+    make_animation(modelo, dados_, precision = 0.1)

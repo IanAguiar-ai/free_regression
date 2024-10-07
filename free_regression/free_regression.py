@@ -439,7 +439,6 @@ class Regression:
         iteration_:int = 0
         qnt_:int = 0
         qnt_plot:list = [int(i + 1.04**i) for i in range(5_000)]
-        print(qnt_plot[:1000])
         precision_final, precision = precision/2, precision * 100
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
