@@ -1,8 +1,8 @@
 Metadata-Version: 2.1
 Name: free-regression
-Version: 1.1.2
+Version: 1.1.3
 Summary: Construtor de regressão genérico.
-Author: ['Ian dos Anjos', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
+Author: ['Ian dos Anjos Melo Aguiar', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
 Author-email: <iannaianjos@gmail.com>
 Keywords: python,regression
 Classifier: Development Status :: 1 - Planning
@@ -574,7 +574,7 @@ A função *make_animation* que recebe:
 - **obj**: Instância da classe *Regression*;
 - **data**: Dados em lista de listas;
 
-Salva em uma pasta no diretório atual, chamada *temporary*, todos os *plots* para chegar no resultado da regressão.
+Salva em uma pasta no diretório atual, chamada *temporary*, todos os *plots* para chegar no resultado da regressão e gera um vídeo em *.mp4* dessa animação.
 
 Exemplo:
 ```
