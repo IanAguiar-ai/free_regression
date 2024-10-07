@@ -1,10 +1,6 @@
 import matplotlib.pyplot as plt
 import os
 
-import matplotlib.pyplot as plt
-import tempfile
-import os
-
 def plot_expected_and_save(regression:"Regression", data:[list], name:str, size:list = (8, 6)) -> None:
     """
     Plot que compara os valores preditos e observados.
