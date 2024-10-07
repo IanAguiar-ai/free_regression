@@ -61,10 +61,17 @@ if __name__ == "__main__":
     from free_regression import Regression
     from models_regression import *
 
-    teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
-    teste_1.set_seed(1)
-    teste_1.change(b = 0)
-    print(teste_1)
-    dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
+##    teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
+##    teste_1.set_seed(1)
+##    teste_1.change(b = 0)
+##    print(teste_1)
+##    dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
+##
+##    make_animation(teste_1, dados)
 
+    teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 2))
+    teste_1.set_seed(1)
+    teste_1.change(mean_0 = 1, mean_1 = 3, var_1 = 0.3)
+    print(teste_1)
+    dados = [[0, 0], [1, 0.4], [2, 0], [2.1, 0.1], [2.12, 0.20], [2.5, 0.40], [3, 0]]
     make_animation(teste_1, dados)

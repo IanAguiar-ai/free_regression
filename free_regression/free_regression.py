@@ -476,6 +476,7 @@ class Regression:
                     best_args = deepcopy(args_temp)
                     self.__args_function = best_args
                     if qnt_ in qnt_plot:
+                        plot_expected_and_save(self, data, name = f"img_{int(iteration_):04.00f}")
                     qnt_ += 1
                     
                 else:
