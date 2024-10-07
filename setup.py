@@ -15,7 +15,7 @@ LONG_DESCRIPTION = ""
 setup(
     name="free_regression",
     version=VERSION,
-    author=["Ian dos Anjos", "Arthur Magalhões", "João Roberto", "Henrique de Souza"],
+    author=["Ian dos Anjos Melo Aguiar", "Arthur Magalhões", "João Roberto", "Henrique de Souza"],
     author_email="<iannaianjos@gmail.com>",
     description=DESCRIPTION,
     long_description_content_type="text/markdown",

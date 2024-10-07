@@ -48,14 +48,47 @@ def plot_expected_and_save(regression:"Regression", data:[list], name:str, size:
         os.makedirs(save_dir)
 
     name = os.path.join("temporary", name)
-    plt.savefig(f"{name}.png")
+    plt.savefig(f"{name}.png")    
 
+def make_animation(obj:"Regression", data:list, precision:float = 0.01, image_folder:str = "temporary", output_video:str = "animation_temporary.mp4", frame_rate:int = 24) -> None:
+    """
+    Faz a animação desde que o objeto passado seja da classe passada e gera um vídeo MP4 a partir de imagens em uma pasta.
 
-def make_animation(obj:"Regression", data:list, precision:float = 0.01) -> None:
+    Args:
+        image_folder (str): Caminho para a pasta com as imagens.
+        output_video (str): Nome do arquivo de saída (vídeo).
+        frame_rate (int): Taxa de quadros do vídeo (frames por segundo).
     """
-    Faz a animação desde que o objeto passado seja da classe passada
-    """
+    import os
+    import re
+
     obj._Regression__animation_run(data, precision = precision)
+    
+    try:
+        import cv2
+
+        # Regex para capturar apenas números na imagem para ordenar corretamente
+        def extract_number(filename):
+            match = re.search(r'(\d+)', filename)
+            return int(match.group()) if match else -1
+
+        images = [img for img in os.listdir(image_folder) if img.endswith(".png") or img.endswith(".jpg")]
+        images = sorted(images, key=extract_number)
+        first_image_path = os.path.join(image_folder, images[0])
+        frame = cv2.imread(first_image_path)
+        height, width, layers = frame.shape
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec para MP4
+        video = cv2.VideoWriter(output_video, fourcc, frame_rate, (width, height))
+        for image in images:
+            image_path = os.path.join(image_folder, image)
+            frame = cv2.imread(image_path)
+            video.write(frame)
+        video.release()
+        print(f"Save: {output_video}")
+        
+    except Exception as error:
+        print(error)
+    
     
 if __name__ == "__main__":
     from free_regression import Regression
