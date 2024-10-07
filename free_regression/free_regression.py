@@ -436,7 +436,10 @@ class Regression:
             else:
                 args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
 
-        iteration_ = 0
+        iteration_:int = 0
+        qnt_:int = 0
+        qnt_plot:list = [int(i + 1.04**i) for i in range(5_000)]
+        print(qnt_plot[:1000])
         precision_final, precision = precision/2, precision * 100
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
@@ -465,13 +468,15 @@ class Regression:
                     best_args = deepcopy(args_temp)
                     self.__args_function = best_args
                     plot_expected_and_save(self, data, name = f"img_{int(iteration_):04.00f}")
+                    qnt_ += 1
 
                 if result < best_result:
                     with_no_iteration = 0
                     best_result:float = result
                     best_args = deepcopy(args_temp)
                     self.__args_function = best_args
-                    plot_expected_and_save(self, data, name = f"img_{(iteration_):04.00f}")
+                    if qnt_ in qnt_plot:
+                    qnt_ += 1
                     
                 else:
                     args_temp = deepcopy(best_args)
