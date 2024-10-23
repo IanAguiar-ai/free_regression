@@ -328,7 +328,7 @@ class Regression:
 
             return self.__function(**x_args, **self.__args_function)
 
-    def run(self, data:[list], precision:float = 0.001) -> None:
+    def run(self, data:[list], precision:float = 0.001, booster:float = 100) -> None:
         """
         Faz a regressão.
 
@@ -358,7 +358,7 @@ class Regression:
             else:
                 args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
 
-        precision_final, precision = precision/2, precision * 100
+        precision_final, precision = precision/2, precision * booster
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
             while with_no_iteration < self.iterations:
@@ -403,7 +403,7 @@ class Regression:
         self.__error = best_result/len(data)
 
 
-    def __animation_run(self, data:[list], precision:float = 0.001) -> None:
+    def __animation_run(self, data:[list], precision:float = 0.001, booster:float = 100) -> None:
         """
         Função modificada para fazer animações.
         
@@ -439,7 +439,7 @@ class Regression:
         iteration_:int = 0
         qnt_:int = 0
         qnt_plot:list = [int(i + 1.04**i) for i in range(5_000)]
-        precision_final, precision = precision/2, precision * 100
+        precision_final, precision = precision/2, precision * booster
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
             while with_no_iteration < self.iterations:

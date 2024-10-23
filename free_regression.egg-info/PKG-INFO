@@ -1,8 +1,8 @@
 Metadata-Version: 2.1
 Name: free-regression
-Version: 1.1.3
+Version: 1.1.4
 Summary: Construtor de regressão genérico.
-Author: ['Ian dos Anjos Melo Aguiar', 'Arthur Magalhões', 'João Roberto', 'Henrique de Souza']
+Author: ['Ian dos Anjos Melo Aguiar']
 Author-email: <iannaianjos@gmail.com>
 Keywords: python,regression
 Classifier: Development Status :: 1 - Planning
