@@ -588,6 +588,14 @@ meu_modelo.run(seus_dados, precision = 1)
 meu_modelo.run(seus_dados, precision = 0.001)
 ```
 
+ou
+
+```
+meu_modelo = Regression(*generate_regression(regressors = 2, degree = 1))
+
+meu_modelo.run(seus_dados, especific_precision = [100, 1, 0.001])
+```
+
 ## Regressão/treinamento de forma dividida
 
 O usuário ainda pode dividir os dados e treinar um modelo de cada vez. Isso faz sentido se o usuário deseja, por exemplo, modelar uma ação, aprendendo todo o histórico dela, e depois refazer a regressão com os últimos 30 dias, a fim de obter um viés mais recente da ação. Por exemplo:
