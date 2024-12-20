@@ -328,13 +328,15 @@ class Regression:
 
             return self.__function(**x_args, **self.__args_function)
 
-    def run(self, data:[list], precision:float = 0.001, booster:float = 100) -> None:
+    def run(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None) -> None:
         """
         Faz a regressão.
 
         Args:
             data(list(list)): lista de listas com x e y.
             precision(float): Numero da precisão para achar os parâmetros esperados.
+            booster(float): Numero que é multiplicado pela precisão para decidir o limite superior de treino.
+            especific_precision(list): Lista de valores específicos para precisão específica.
         """
 
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"
@@ -358,16 +360,24 @@ class Regression:
             else:
                 args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
 
-        precision_final, precision = precision/2, precision * booster
+        if type(especific_precision) == list:
+            precision_final, precision = 1, len(especific_precision)
+            index_precision = 0
+        else:
+            precision_final, precision = precision/2, precision * booster
+            
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
+            if type(especific_precision) == list:
+                precision:float = especific_precision[index_precision]
+                index_precision += 1
+
             while with_no_iteration < self.iterations:
                 with_no_iteration += 1
                 
                 # y predito
                 y_predicted:list = []
                 for *x, _ in data:
-
                     # Separando as variáveis regressoras
                     x_args:dict = {}
                     for i in range(len(x)):
@@ -382,21 +392,25 @@ class Regression:
                 # Atualizando melhores parâmetros para regressora
                 if not "best_result" in locals():
                     best_result:float = result
-                    best_args = deepcopy(args_temp)
+                    best_args:dict = deepcopy(args_temp)
 
                 if result < best_result:
                     with_no_iteration = 0
                     best_result:float = result
-                    best_args = deepcopy(args_temp)
+                    best_args:dict = deepcopy(args_temp)
                 else:
-                    args_temp = deepcopy(best_args)
+                    args_temp:dict = deepcopy(best_args)
 
                 for parameter in self.__args_function.keys():
                     if parameter not in self.__lock.keys():
                         args_temp[parameter] += random()*precision - precision/2
                         
             # Aumenta a precisão
-            precision /= 2
+            if type(especific_precision) == list:
+                precision_final += 1
+                precision:int = len(especific_precision)
+            else:
+                precision /= 2
 
         # Salva o resultado
         self.__args_function = best_args

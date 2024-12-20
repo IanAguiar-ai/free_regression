@@ -113,7 +113,7 @@ class Teste(unittest.TestCase):
             dado = [[x, int(x*3 % 11), regressao_2_regressores(x, int(x*3 % 11), a = 3, b = 10)] for x in range(5)]
             teste_4 = Regression(regressao_2_regressores, regressors = ["x_1", "x_2"])
             teste_4.lock(a = 3)
-            teste_4.run(dado, precision = 0.001)
+            teste_4.run(dado, especific_precision = [1, 0.1, 0.001])
             print(teste_4)
         except Exception as e:
             self.fail(f"Teste com regressão com 2 regressores e lock: {e}")
@@ -262,7 +262,7 @@ class Teste(unittest.TestCase):
             modelo_iris_3 = Regression(mlp, regressors = ['x1', 'x2'])
             modelo_iris_3.change_all(0)
             modelo_iris_3.set_seed(0)
-            modelo_iris_3.run(iris, precision = 0.1)
+            modelo_iris_3.run(iris, especific_precision = [10, 1, 0.1])
 
             print(f"\n{modelo_iris_3}")
 
