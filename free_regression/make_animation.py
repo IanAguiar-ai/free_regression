@@ -46,7 +46,7 @@ def plot_expected_and_save(regression:"Regression", data:[list], name:str, size:
     name = os.path.join("temporary", name)
     plt.savefig(f"{name}.png")    
 
-def make_animation(obj:"Regression", data:list, precision:float = 0.01, image_folder:str = "temporary", output_video:str = "animation_temporary.mp4", frame_rate:int = 24) -> None:
+def make_animation(obj:"Regression", data:list, precision:float = 0.01, booster:float = 100, especific_precision:list = None, image_folder:str = "temporary", output_video:str = "animation_temporary.mp4", frame_rate:int = 24) -> None:
     """
     Faz a animação desde que o objeto passado seja da classe passada e gera um vídeo MP4 a partir de imagens em uma pasta.
 
@@ -58,7 +58,7 @@ def make_animation(obj:"Regression", data:list, precision:float = 0.01, image_fo
     import os
     import re
 
-    obj._Regression__animation_run(data, precision = precision)
+    obj._Regression__animation_run(data, precision = precision, booster = booster, especific_precision = especific_precision)
     
     try:
         import cv2
@@ -108,4 +108,4 @@ if __name__ == "__main__":
     dados_ = [[i/100, i/100] for i in range(100)]
     modelo = Regression(*generate_mlp_classifier(1,5))
     modelo.set_seed(2024)
-    make_animation(modelo, dados_, precision = 0.1)
+    make_animation(modelo, dados_, especific_precision = [10, 1, 0.1])

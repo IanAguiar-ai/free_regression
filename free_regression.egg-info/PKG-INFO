@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: free-regression
-Version: 1.1.4
+Version: 1.1.6
 Summary: Construtor de regressão genérico.
 Author: ['Ian dos Anjos Melo Aguiar']
 Author-email: <iannaianjos@gmail.com>
@@ -602,6 +602,14 @@ meu_modelo = Regression(*generate_regression(regressors = 2, degree = 1))
 
 meu_modelo.run(seus_dados, precision = 1)
 meu_modelo.run(seus_dados, precision = 0.001)
+```
+
+ou
+
+```
+meu_modelo = Regression(*generate_regression(regressors = 2, degree = 1))
+
+meu_modelo.run(seus_dados, especific_precision = [100, 1, 0.001])
 ```
 
 ## Regressão/treinamento de forma dividida

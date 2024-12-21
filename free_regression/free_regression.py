@@ -417,7 +417,7 @@ class Regression:
         self.__error = best_result/len(data)
 
 
-    def __animation_run(self, data:[list], precision:float = 0.001, booster:float = 100) -> None:
+    def __animation_run(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None) -> None:
         """
         Função modificada para fazer animações.
         
@@ -426,6 +426,8 @@ class Regression:
         Args:
             data(list(list)): lista de listas com x e y.
             precision(float): Numero da precisão para achar os parâmetros esperados.
+            booster(float): Numero que é multiplicado pela precisão para decidir o limite superior de treino.
+            especific_precision(list): Lista de valores específicos para precisão específica.
         """
         from make_animation import plot_expected_and_save
 
@@ -453,9 +455,19 @@ class Regression:
         iteration_:int = 0
         qnt_:int = 0
         qnt_plot:list = [int(i + 1.04**i) for i in range(5_000)]
-        precision_final, precision = precision/2, precision * booster
+        
+        if type(especific_precision) == list:
+            precision_final, precision = 1, len(especific_precision)
+            index_precision = 0
+        else:
+            precision_final, precision = precision/2, precision * booster
+        
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
+            if type(especific_precision) == list:
+                precision:float = especific_precision[index_precision]
+                index_precision += 1
+                
             while with_no_iteration < self.iterations:
                 iteration_ += 1
                 with_no_iteration += 1
@@ -500,7 +512,11 @@ class Regression:
                         args_temp[parameter] += random()*precision - precision/2
                         
             # Aumenta a precisão
-            precision /= 2
+            if type(especific_precision) == list:
+                precision_final += 1
+                precision:int = len(especific_precision)
+            else:
+                precision /= 2
 
         # Salva o resultado
         self.__args_function = best_args
