@@ -375,19 +375,12 @@ class Regression:
             while with_no_iteration < self.iterations:
                 with_no_iteration += 1
                 
-                # y predito
-                y_predicted:list = []
-                for *x, _ in data:
-                    # Separando as variáveis regressoras
-                    x_args:dict = {}
-                    for i in range(len(x)):
-                        x_args[self.regressors[i]] = x[i]
+                # y predito                
+                y_predicted:list = [self.__function(**{self.regressors[i]: x[i] for i in range(len(x))}, **args_temp) for *x, _ in data]
 
-                    # Fazendo a predição
-                    y_predicted.append(self.__function(**x_args, **args_temp))
 
                 # Resultado dos minimos quadrados
-                result = self.__loss_function(y_predicted, y_expected)
+                result:float = self.__loss_function(y_predicted, y_expected)
 
                 # Atualizando melhores parâmetros para regressora
                 if not "best_result" in locals():
@@ -485,7 +478,7 @@ class Regression:
                     y_predicted.append(self.__function(**x_args, **args_temp))
 
                 # Resultado dos minimos quadrados
-                result = self.__loss_function(y_predicted, y_expected)
+                result:float = self.__loss_function(y_predicted, y_expected)
 
                 # Atualizando melhores parâmetros para regressora
                 if not "best_result" in locals():
