@@ -736,7 +736,7 @@ plot_residual(modelo_2, dados)
 
 ![EX_8](free_regression/imagens_testes/res_8.png)
 
-![EX_16](free_regression/imagens_testes/res_16.png)
+![EX_16](free_regression/imagens_testes/reg_16.png)
 
 ![EX_7](free_regression/imagens_testes/reg_7_sum_sigmoid.png)
 
