@@ -16,14 +16,14 @@ def plot_expected(regression:"Regression", data:[list], size:list = (8, 6)) -> N
     assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
     assert len(data[0]) == 2, "The <data[n]> has to be 2 elements"
     
-    x = [values[0] for values in data]
-    y1 = [values[1] for values in data]
-    x_new = [min(x)]
-    dif = sorted(x)
-    dif = min([dif[i+1] - dif[i] for i in range(len(dif) - 1)])
+    x:list = [values[0] for values in data]
+    y1:list = [values[1] for values in data]
+    x_new:list = [min(x)]
+    dif:list = sorted(x)
+    dif:float = min([dif[i+1] - dif[i] for i in range(len(dif) - 1)])
     while x_new[-1] < max(x):
         x_new.append(x_new[-1] + max(dif, (max(x) - min(x))/200))
-    y2 = [regression.prediction(**{regression.regressors[0]: value}) for value in x_new]
+    y2:list = [regression.prediction(**{regression.regressors[0]: value}) for value in x_new]
 
     fig, ax = plt.subplots(figsize = size)
     if sorted(list(set(x))) == x:
@@ -50,10 +50,10 @@ def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), perc
     assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
     assert len(regression.regressors) == len(data[0]) - 1, f"{len(regression.regressors)} regressors were indicated but {len(data[0]) - 1} appears in the data"
     
-    x = [values[:-1] for values in data]
-    y1 = [values[-1] for values in data]
-    y2 = [regression.prediction([value]) for value in x]
-    y_dif = [y1[i] - y2[i][0] for i in range(len(data))]
+    x:list = [values[:-1] for values in data]
+    y1:list = [values[-1] for values in data]
+    y2:list = [regression.prediction([value]) for value in x]
+    y_dif:list = [y1[i] - y2[i][0] for i in range(len(data))]
 
     fig, ax = plt.subplots(figsize = size)
     
@@ -76,16 +76,79 @@ def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), perc
     
     plt.show()
 
+def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 6), sigma:float = 1.64, amplitude:float = None):
+    """
+    Plot de um gráfico da série com os intervalos de confiança passado por sigma
+
+    Args:
+        regression (Regression): Classe 'Regression' da função a ser plotada como preditora.
+        data (list(list)): Dados, lista de listas sendo do tamanho nx2.
+
+    sigmas:
+    1,64	90,00
+    1,96	95,00
+    2,33	98,00
+    2,58	99,00
+    3,00	99,74
+    """
+
+    def mov_var(y_real:list, y_predict:list, amplitude:float):
+        def var(y_real, y_predict):
+            return sum([(y_real[i] - y_predict[i])**2 for i in range(len(y_real))])**(1/2)
+        return [var(y_real[max(0, i - amplitude):min(len(y_real), i + amplitude)], y_predict[max(0, i - amplitude):min(len(y_real), i + amplitude)]) for i in range(len(y_real))]
+    
+    assert type(data) == list or type(data) == tuple, "The <data> must be a list"
+    assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
+    assert len(regression.regressors) == len(data[0]) - 1, f"{len(regression.regressors)} regressors were indicated but {len(data[0]) - 1} appears in the data"
+    assert sigma > 0, f"sigma has to be larger than 0, sigma now: {sigma}"
+
+    if amplitude == None:
+        amplitude:float = min(1, 5/len(data))
+    assert 0 < amplitude <= 1, f"amplitude has to ben between 0 and 1, amplitude now: {amplitude}"
+
+    amplitude:int = max(int(len(data) * amplitude), 1)
+
+    x:list = [values[0] for values in data]
+    y1:list = [values[1] for values in data]
+    x_new:list = [min(x)]
+    dif:list = sorted(x)
+    dif:float = min([dif[i+1] - dif[i] for i in range(len(dif) - 1)])
+    while x_new[-1] < max(x):
+        x_new.append(x_new[-1] + max(dif, (max(x) - min(x))/200))
+    y2:list = [regression.prediction(**{regression.regressors[0]: value}) for value in x_new]
+
+    var_mov:list = mov_var(y1, y2, amplitude)
+    lim_sup:list = [y2[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+    lim_inf:list = [y2[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+
+    fig, ax = plt.subplots(figsize = size)
+    if sorted(list(set(x))) == x:
+        ax.plot(x, y1, label = "Dados Observados", color = "blue", linestyle = "-")
+    else:
+        ax.scatter(x, y1, label = "Dados observados", color = "blue")
+    ax.plot(x_new, y2, label = "Valores Preditos", color = "red", linestyle = "--")
+    ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
+    ax.fill_between(x_new, lim_inf, lim_sup, color = "lightgreen", alpha = 0.5, label = f"Banda de Confiança (±{sigma}σ)")
+    ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
+    ax.set_xlabel("X", fontsize = 14)
+    ax.set_ylabel("Y", fontsize = 14)
+    ax.legend()
+    plt.show()
+
 if __name__ == "__main__":
     from free_regression import Regression
     from random import random
+    from models_regression import *
 
-##    def regressao_2(x:float, a:float, b:float, c:float) -> float:
-##        return a*x**2 + b*x + c
-##
-##    def reg_2b(x1:float, x2:float, b1:float, b2:float) -> float:
-##        return x1*b1 + x2*b2
-##
+    def regressao_2(x:float, a:float, b:float, c:float) -> float:
+        return a*x**2 + b*x + c
+
+    def reg_2b(x1:float, x2:float, b1:float, b2:float) -> float:
+        return x1*b1 + x2*b2
+
+    def lin_reg(x:float, a:float, b:float) -> float:
+        return x*a + b
+
 ##    dado = [[x, regressao_2(x, a = 15, b = -7, c = -4) + random()*100-50] for x in range(30)]
 ##    dado = [[random()*i/100, random()*i/100] for i in range(40)]
 ##    teste = Regression(regressao_2)
@@ -94,37 +157,43 @@ if __name__ == "__main__":
 ##
 ##    plot_expected(teste, dado)
 ##    plot_residual(teste, dado)
-##
-##    dado = []
-##    for i in range(20):
-##        a = int(random()*i*5)
-##        b = int(random()*i*5)
-##        dado.append([a, b, a*7.5 + b*(-2.4) + random()*i - i/2])
-##    teste_2 = Regression(reg_2b, ["x1", "x2"])
-##    teste_2.run(dado)
-##    print(teste_2)
-##
-##    plot_residual(teste_2, dado)
-    from models_regression import *
-    teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
-    teste_1.set_seed(1)
-    teste_1.change(b = 0)
-    print(teste_1)
-    dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
-    teste_1.run(dados)
-    print(f"{teste_1}\n")
-    print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
-    plot_expected(teste_1, dados)
-    plot_residual(teste_1, dados)
+
+    dado = []
+    for i in range(20):
+        a = int(random()*i*5)
+        b = int(random()*i*5)
+        dado.append([a, b, a*7.5 + b*(-2.4) + random()*i - i/2])
+    dado = [[i, i*0.5 + 4 + random()*random()*random()*20] for i in range(100)]
+
+    teste_2 = Regression(lin_reg)
+    teste_2.run(dado)
+    print(teste_2)
+
+    #plot_expected(teste_2, dado)
+    #plot_residual(teste_2, dado)
+    plot_prediction_bands(teste_2, dado, amplitude = 0.1, sigma = 1.64)
     
-    teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 2))
-    teste_1.set_seed(1)
-    teste_1.change(mean_0 = 1, mean_1 = 3, var_1 = 0.3)
-    print(teste_1)
-    dados = [[0, 0], [1, 0.4], [2, 0], [2.1, 0.1], [2.12, 0.20], [2.5, 0.40], [3, 0]]
-    plot_expected(teste_1, dados)
-    teste_1.run(dados)
-    print(f"{teste_1}\n")
-    print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
-    plot_expected(teste_1, dados)
-    plot_residual(teste_1, dados)
+    
+##    
+##    teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
+##    teste_1.set_seed(1)
+##    teste_1.change(b = 0)
+##    print(teste_1)
+##    dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
+##    teste_1.run(dados)
+##    print(f"{teste_1}\n")
+##    print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
+##    plot_expected(teste_1, dados)
+##    plot_residual(teste_1, dados)
+    
+##    teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 2))
+##    teste_1.set_seed(1)
+##    teste_1.change(mean_0 = 1, mean_1 = 3, var_1 = 0.3)
+##    print(teste_1)
+##    dados = [[0, 0], [1, 0.4], [2, 0], [2.1, 0.1], [2.12, 0.20], [2.5, 0.40], [3, 0]]
+##    plot_expected(teste_1, dados)
+##    teste_1.run(dados)
+##    print(f"{teste_1}\n")
+##    print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
+##    plot_expected(teste_1, dados)
+##    plot_residual(teste_1, dados)

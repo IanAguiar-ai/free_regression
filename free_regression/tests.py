@@ -269,7 +269,7 @@ class Teste(unittest.TestCase):
             print(f"\nComparando com os valores reais:\n{'MODELO 1':12}|{'MODELO 2':12}|{'MODELO 3':12}|{'ESPERADO':12}")
             for *x, y in iris:
                 print(f"{modelo_iris.prediction([x])[0]:12.04f}|{modelo_iris_2.prediction([x])[0]:12.04f}|{modelo_iris_3.prediction([x])[0]:12.04f}|{y:12.04f}")
-         
+            
         except Exception as e:
             self.fail(f"Não foi possível completar o teste com o banco de dados iris: {e}")
 
@@ -281,7 +281,7 @@ class Teste(unittest.TestCase):
             modelo.set_seed(2024)
             modelo.run(dados[:], precision = 1)
             print(modelo)
-
+            
         except Exception as e:
             self.fail(f"Não foi possível completar o teste com o banco de dados iris: {e}")
 
