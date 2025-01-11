@@ -1,6 +1,7 @@
 # Biblioteca graficos:
 import matplotlib.pyplot as plt
 import numpy as np
+from collections import defaultdict
 
 def plot_expected(regression:"Regression", data:[list], size:list = (8, 6)) -> None:
     """
@@ -92,23 +93,28 @@ def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 
     3,00	99,74
     """
 
-    def mov_var(y_real:list, y_predict:list, amplitude:float):
+    def mov_var(x_real, x_predict, y_real:list, y_predict:list, amplitude:float):
         def var(y_real, y_predict):
-            return sum([(y_real[i] - y_predict[i])**2 for i in range(len(y_real))])**(1/2)
-        return [var(y_real[max(0, i - amplitude):min(len(y_real), i + amplitude)], y_predict[max(0, i - amplitude):min(len(y_real), i + amplitude)]) for i in range(len(y_real))]
+            return sum([(y_real[i] - y_predict[i])**2 for i in range(len(y_predict))])**(1/2)
+        mov_var:list = []
+        for i in range(len(x_predict)):
+            temp_y_real, temp_y_predict = [], []
+            for j in range(len(x_real)):
+                if x_real[j] - amplitude <= x_predict[i] <= x_real[j] + amplitude:
+                    temp_y_real.append(y_real[j])
+                    temp_y_predict.append(y_predict[i])
+            mov_var.append(var(temp_y_real, temp_y_predict))
+        return mov_var
     
     assert type(data) == list or type(data) == tuple, "The <data> must be a list"
     assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
     assert len(regression.regressors) == len(data[0]) - 1, f"{len(regression.regressors)} regressors were indicated but {len(data[0]) - 1} appears in the data"
     assert sigma > 0, f"sigma has to be larger than 0, sigma now: {sigma}"
 
-    if amplitude == None:
-        amplitude:float = min(1, 5/len(data))
-    assert 0 < amplitude <= 1, f"amplitude has to ben between 0 and 1, amplitude now: {amplitude}"
-
-    amplitude:int = max(int(len(data) * amplitude), 1)
-
     x:list = [values[0] for values in data]
+    if amplitude == None:
+        amplitude:float = (max(x) - min(x))/20
+    
     y1:list = [values[1] for values in data]
     x_new:list = [min(x)]
     dif:list = sorted(x)
@@ -117,9 +123,14 @@ def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 
         x_new.append(x_new[-1] + max(dif, (max(x) - min(x))/200))
     y2:list = [regression.prediction(**{regression.regressors[0]: value}) for value in x_new]
 
-    var_mov:list = mov_var(y1, y2, amplitude)
-    lim_sup:list = [y2[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
-    lim_inf:list = [y2[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+    try:
+        var_mov:list = mov_var(x, x, y1, y2, amplitude)
+        lim_sup:list = [y2[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+        lim_inf:list = [y2[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+    except IndexError:
+        var_mov:list = mov_var(x, x_new, y1, y2, amplitude)
+        lim_sup:list = [y2[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+        lim_inf:list = [y2[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
 
     fig, ax = plt.subplots(figsize = size)
     if sorted(list(set(x))) == x:
@@ -128,7 +139,12 @@ def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 
         ax.scatter(x, y1, label = "Dados observados", color = "blue")
     ax.plot(x_new, y2, label = "Valores Preditos", color = "red", linestyle = "--")
     ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
-    ax.fill_between(x_new, lim_inf, lim_sup, color = "lightgreen", alpha = 0.5, label = f"Banda de Confiança (±{sigma}σ)")
+    try:
+        ax.fill_between(x, lim_inf, lim_sup, color = "lightgreen", alpha = 0.5, label = f"Banda de Confiança (±{sigma}σ)")
+    except ValueError:
+        combined = sorted(zip(x_new, lim_inf, lim_sup))
+        x, lim_inf, lim_sup = zip(*combined)
+        ax.fill_between(x, lim_inf, lim_sup, color = "lightgreen", alpha = 0.5, label = f"Banda de Confiança (±{sigma}σ)")
     ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
     ax.set_xlabel("X", fontsize = 14)
     ax.set_ylabel("Y", fontsize = 14)
@@ -171,9 +187,39 @@ if __name__ == "__main__":
 
     #plot_expected(teste_2, dado)
     #plot_residual(teste_2, dado)
-    plot_prediction_bands(teste_2, dado, amplitude = 0.1, sigma = 1.64)
+    plot_prediction_bands(teste_2, dado, sigma = 1.64)
+
+    def reg_log(x, b0, b1) -> float:
+      return 1/(1 + 2.71**(-(b0*x+b1)))
+
+    dados_ = [[i/100, i/100] for i in range(100)]
+    modelo = Regression(reg_log)#Regression(*generate_mlp_classifier(1,1))
+    modelo.set_seed(2024)
+    modelo.run(dados_, precision = 0.1)
+    #modelo.change(b0 = 1, b1 = -0.5)
+    print(modelo)
+    plot_expected(modelo, dados_)
+    plot_prediction_bands(modelo, dados_)
     
-    
+    def reg_mult(x, b0, b1, b2, b3):
+      if x < 20:
+        return (b2*x + b3)
+      elif x > 40:
+        return (b0*x + b1)
+      else:
+        return ((x-20)/20) * (b0*x + b1) + (1 - (x-20)/20) * (b2*x + b3)
+
+    from data import MedidasDeMassa, transpose
+    dados = MedidasDeMassa()
+    dados = transpose([dados[1], dados["TotalHeight"]])
+    modelo = Regression(reg_mult)
+    modelo.set_seed(2024)
+    modelo.change(b0 = 0, b1 = 90, b2 = 0, b3 = 30)
+    modelo.run(dados, precision = 0.1)
+    print(modelo)
+    plot_expected(modelo, dados)
+    plot_prediction_bands(modelo, dados, amplitude = 2)
+
 ##    
 ##    teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
 ##    teste_1.set_seed(1)
