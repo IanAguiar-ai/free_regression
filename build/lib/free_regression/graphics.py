@@ -95,7 +95,7 @@ def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 
 
     def mov_var(x_real, x_predict, y_real:list, y_predict:list, amplitude:float):
         def var(y_real, y_predict):
-            return sum([(y_real[i] - y_predict[i])**2 for i in range(len(y_predict))])**(1/2)
+            return sum([(y_real[i] - y_predict[i])**2 for i in range(len(y_predict))])/max(len(y_predict), 1)
         mov_var:list = []
         for i in range(len(x_predict)):
             temp_y_real, temp_y_predict = [], []

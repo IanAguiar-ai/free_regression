@@ -569,6 +569,19 @@ Função que recebe:
 
 Esta função gera um histograma com a distribuição dos resíduos.
 
+### *plot_prediction_bands*
+
+Função que recebe:
+
+- **regression**: Instância da classe *Regression*;
+- **data**: Dados em lista de listas;
+- **size**: Tamanho da figura;
+- **percentile**: Lista com dois percentis que serão apresentados no plot;
+- **sigma**: Float que controla a banda de confiança;
+- **amplitude**: Float que controla o nível de amplitude que calcula a variância móvel, esse valor segue a escala dos dados no eixo *x*.
+
+Esta função gera um histograma com a distribuição dos resíduos e com uma banda de confiança móvel que segue o **sigma** e o **percentile**.
+
 ## Salvar *plots* da iteração
 
 A função *make_animation* que recebe:
@@ -666,6 +679,11 @@ plot_expected(teste_mlp, dados)
 plot_expected(teste_reg, dados)
 plot_expected(teste_mlp_2, dados_normalizado)
 plot_expected(teste_mlp_3, dados)
+
+plot_prediction_bands(teste_mlp, dados, amplitude = 1)
+plot_prediction_bands(teste_reg, dados, amplitude = 1)
+plot_prediction_bands(teste_mlp_2, dados_normalizado, amplitude = 1)
+plot_prediction_bands(teste_mlp_3, dados, amplitude = 1)
 ```
 
 ![EX_1](free_regression/imagens_testes/reg_1_relu.png)
@@ -675,6 +693,14 @@ plot_expected(teste_mlp_3, dados)
 ![EX_3](free_regression/imagens_testes/reg_3_sigmoid.png)
 
 ![EX_3_1](free_regression/imagens_testes/reg_3_1.png)
+
+![EX_12](free_regression/imagens_testes/reg_12.png)
+
+![EX_13](free_regression/imagens_testes/reg_13.png)
+
+![EX_14](free_regression/imagens_testes/reg_14.png)
+
+![EX_15](free_regression/imagens_testes/reg_15.png)
 
 ## Com dados artificiais, teste com logisticas
 
@@ -714,6 +740,7 @@ modelo_1.run(dados)
 print(modelo_1)
 plot_expected(modelo_1, dados)
 plot_residual(modelo_1, dados)
+plot_prediction_bands(modelo_1, dados, amplitude = 5, sigma = 1.96)
 
 modelo_2 = Regression(*generate_mlp_sigmoid_sum(1, 2))
 modelo_2.set_seed(2024)
@@ -727,6 +754,8 @@ plot_residual(modelo_2, dados)
 
 ![EX_8](free_regression/imagens_testes/res_8.png)
 
+![EX_16](free_regression/imagens_testes/reg_16.png)
+
 ![EX_7](free_regression/imagens_testes/reg_7_sum_sigmoid.png)
 
 ![EX_9](free_regression/imagens_testes/res_9.png)
@@ -736,6 +765,21 @@ plot_residual(modelo_2, dados)
 print(f"Modelo 1 com 'LegLength' = 80cm -> {modelo_1.prediction(x_1 = 80/1.6):0.03f} polegadas")
 print(f"Modelo 2 com 'LegLength' = 80cm -> {modelo_2.prediction(x0 = 80/1.6):0.03f} polegadas")
 ```
+
+```
+dados = MedidasDeMassa()
+dados = transpose([dados[1], dados["TotalHeight"]])
+
+modelo = Regression(reg_mult)
+modelo.set_seed(2024)
+modelo.change(b0 = 0, b1 = 90, b2 = 0, b3 = 30)
+modelo.run(dados, precision = 0.1)
+print(modelo)
+
+plot_prediction_bands(modelo, dados, amplitude = 2)
+```
+
+![EX_17](free_regression/imagens_testes/res_17.png)
 
 ## Com dados reais, tente você mesmo e veja o resultado!
 
@@ -847,3 +891,5 @@ print(f"\nMODELO_1: {num_acertos[0]*100:2.02f}%\nMODELO_2: {num_acertos[1]*100:2
 ![EX_10](free_regression/imagens_testes/reg_10.png)
 
 ![EX_11](free_regression/imagens_testes/reg_11.png)
+
+
