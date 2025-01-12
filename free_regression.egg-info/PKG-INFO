@@ -715,7 +715,7 @@ modelo.run(dados_, precision = 0.1)
 
 print(modelo)
 plot_expected(modelo, dados_)
-
+plot_prediction_bands(modelo, dados_)
 
 modelo = Regression(*generate_mlp_classifier(1,5))
 modelo.set_seed(2024)
@@ -725,6 +725,8 @@ plot_expected(modelo, dados_)
 ```
 
 ![EX_4](free_regression/imagens_testes/reg_4_log.png)
+
+![EX_18](free_regression/imagens_testes/res_18.png)
 
 ![EX_5](free_regression/imagens_testes/reg_5_sigmoid.png)
 

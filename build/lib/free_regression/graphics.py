@@ -102,7 +102,7 @@ def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 
             for j in range(len(x_real)):
                 if x_real[j] - amplitude <= x_predict[i] <= x_real[j] + amplitude:
                     temp_y_real.append(y_real[j])
-                    temp_y_predict.append(y_predict[i])
+                    temp_y_predict.append(y_predict[j])
             mov_var.append(var(temp_y_real, temp_y_predict))
         return mov_var
     
@@ -128,21 +128,28 @@ def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 
         lim_sup:list = [y2[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
         lim_inf:list = [y2[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
     except IndexError:
-        var_mov:list = mov_var(x, x_new, y1, y2, amplitude)
-        lim_sup:list = [y2[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
-        lim_inf:list = [y2[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+        #print(f"x: {len(x)}, x_new: {len(x_new)}, y1: {len(y1)}, y2: {len(y2)}")
+        y2_new:list = [regression.prediction(**{regression.regressors[0]: value}) for value in x]
+        var_mov:list = mov_var(x, x, y1, y2_new, amplitude)
+        #print(f"var_mov: {len(var_mov)}, x: {len(x)}, x_new: {len(x_new)}, y1: {len(y1)}, y2_new: {len(y2_new)}")
+        lim_sup:list = [y2_new[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+        lim_inf:list = [y2_new[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
 
     fig, ax = plt.subplots(figsize = size)
     if sorted(list(set(x))) == x:
+        linear:bool = True
         ax.plot(x, y1, label = "Dados Observados", color = "blue", linestyle = "-")
     else:
+        linear:bool = False
         ax.scatter(x, y1, label = "Dados observados", color = "blue")
+        
     ax.plot(x_new, y2, label = "Valores Preditos", color = "red", linestyle = "--")
+        
     ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
-    try:
+    if linear:
         ax.fill_between(x, lim_inf, lim_sup, color = "lightgreen", alpha = 0.5, label = f"Banda de Confiança (±{sigma}σ)")
-    except ValueError:
-        combined = sorted(zip(x_new, lim_inf, lim_sup))
+    else:
+        combined = sorted(zip(x, lim_inf, lim_sup), key = lambda x:x[0])
         x, lim_inf, lim_sup = zip(*combined)
         ax.fill_between(x, lim_inf, lim_sup, color = "lightgreen", alpha = 0.5, label = f"Banda de Confiança (±{sigma}σ)")
     ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
@@ -218,7 +225,7 @@ if __name__ == "__main__":
     modelo.run(dados, precision = 0.1)
     print(modelo)
     plot_expected(modelo, dados)
-    plot_prediction_bands(modelo, dados, amplitude = 2)
+    plot_prediction_bands(modelo, dados, amplitude = 1)
 
 ##    
 ##    teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
