@@ -306,22 +306,39 @@ def generate_distribuction(regressors:int, normals:int = 1) -> ("function", list
 
 if __name__ == "__main__":
     from free_regression import Regression
-    teste_1 = Regression(*generate_distribuction(regressors = 2, normals = 2))
-    teste_1.set_seed(1)
-    teste_1.run([[1, 4, 1], [6, 3, 0]])
-    print(f"{teste_1}\n")
-    print(f"{teste_1.prediction([[1, 4], [6, 3]])}")
-
-    from free_regression import Regression
-    teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 3))
-    teste_1.set_seed(2)
-    teste_1.change_all([0.5, 3])
-    teste_1.run([[0, 0], [1, 1], [2, 0], [2.3, 1], [2.5, 1], [3, 0]], precision = 0.01)
-    print(f"{teste_1}\n")
-    print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
-
+##    teste_1 = Regression(*generate_distribuction(regressors = 2, normals = 2))
+##    teste_1.set_seed(1)
+##    teste_1.run([[1, 4, 1], [6, 3, 0]])
+##    print(f"{teste_1}\n")
+##    print(f"{teste_1.prediction([[1, 4], [6, 3]])}")
+##
+##    from free_regression import Regression
+##    teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 3))
+##    teste_1.set_seed(2)
+##    teste_1.change_all([0.5, 3])
+##    teste_1.run([[0, 0], [1, 1], [2, 0], [2.3, 1], [2.5, 1], [3, 0]], precision = 0.01)
+##    print(f"{teste_1}\n")
+##    print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
+##
 ##    mlp_func, regressors = generate_mlp_sigmoid_sum(regressors = 2, neurons = 2)
 ##    teste_2 = Regression(mlp_func, regressors)
 ##    teste_2.change_all(0.1)
 ##    teste_2.run([[1, 4, 0], [6, 3, 1]])
 ##    print(teste_2.prediction([[1, 4], [6, 3]]))
+
+##    from random import random
+##    from data import *
+##
+##    def ar_2(y1, y2, b1, b2, b3):
+##        return y1 * b1 + y2 * b2 + b3
+##    
+##    data = [[random()*10] for i in range(20)]
+##    data = data_series(data, p = 2)
+##    model_ar_2 = Regression(ar_2, regressors = ["y1", "y2"])
+##    model_ar_2.iterations = 1000
+##    model_ar_2.run(data, especific_precision = [2, 1, 0.1, 0.01, ])
+##    print(model_ar_2)
+##    a = model_ar_2.prediction([data[i][:-1] for i in range(len(data))])
+##    for i in range(len(data)):
+##        print(data[i][-1], a[i])
+

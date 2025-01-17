@@ -358,7 +358,7 @@ class Regression:
             if parameter not in self.__lock.keys():
                 args_temp[parameter] = self.__args_function[parameter]
             else:
-                args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
+                args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada        
 
         if type(especific_precision) == list:
             precision_final, precision = 1, len(especific_precision)

@@ -1766,6 +1766,21 @@ def transpose(data:list) -> list:
 
     return new_data
 
+def data_series(data:list, p:int = 1) -> list:
+    """
+    Função que transforma vetor de séries temporais em matriz de série temporal
+    """
+    data:list = transpose(data)
+    
+    new_data:list = []
+    l:int = len(data)
+    c:int = len(data[0])
+
+    for i in range(l):
+        for j in range(p + 1):
+            new_data.append(data[i][j:c - p + j])
+    return transpose(new_data)
+
 def to_float(number:str) -> float:
     try:
         return float(number)
