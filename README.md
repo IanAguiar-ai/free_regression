@@ -334,10 +334,10 @@ def parte_2(x, c):
 	return c*x
 	
 # Fanzendo a mistura das regressões
-meu_modelo_parte_1 = Regressao(parte_1)
-meu_modelo_parte_2 = Regressao(parte_2)
+meu_modelo_parte_1 = Regression(parte_1)
+meu_modelo_parte_2 = Regression(parte_2)
 
-meu_modelo_final = meu_modelo_parte_1 + meu_modelo_parte_1 - 20
+meu_modelo_final = meu_modelo_parte_1 + meu_modelo_parte_2 - 20
 
 print(f"Modelo mistura: {meu_modelo_final}")
 ```
@@ -357,10 +357,10 @@ def parte_2(x, c):
 	return c*x
 	
 # Fanzendo a mistura das regressões
-meu_modelo_parte_1 = Regressao(parte_1)
-meu_modelo_parte_2 = Regressao(parte_2)
+meu_modelo_parte_1 = Regression(parte_1)
+meu_modelo_parte_2 = Regression(parte_2)
 
-meu_modelo_final = meu_modelo_parte_1.operation(meu_modelo_parte_1, operator = "%")
+meu_modelo_final = meu_modelo_parte_1.operation(meu_modelo_parte_2, operator = "%")
 
 print(f"Modelo mistura: {meu_modelo_final}")
 ```
@@ -436,8 +436,8 @@ def func_1(x, a, b):
 def func_2(x, b, c):
 	return c*x + b
 
-meu_modelo_1 = Regressao(func_1)
-meu_modelo_2 = Regressao(func_2)
+meu_modelo_1 = Regression(func_1)
+meu_modelo_2 = Regression(func_2)
 
 meu_modelo_2["b"] = 1.234
 meu_modelo_1 << meu_modelo_2
@@ -452,7 +452,7 @@ No caso acima, o valor do parâmetro *b* (parâmetro em comum) do *meu_modelo_2*
 A função **.set_seed** da classe *Regression* recebe um número inteiro e define a *seed* do processo, garantindo reprodutibilidade. Exemplo:
 
 ```
-meu_modelo = Regressao(func_1)
+meu_modelo = Regression(func_1)
 meu_modelo.set_seed(1)
 ```
 
