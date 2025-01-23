@@ -1,8 +1,9 @@
 # Biblioteca autoral
 from free_regression import Regression
-from data import MedidasDeMassa
+from data import MedidasDeMassa, density
 from models_regression import *
 from graphics import *
+from random import random
 
 # Biblioteca de teste
 import unittest
@@ -57,6 +58,10 @@ def mlp(x1:float, x2:float, b_0:float, b_1:float, b_2:float, b1:float, b2:float,
 
 def regressao_logistica(x1, x2, x3, b1, b2, b3) -> float:
     return 1/(1-2.718182**(x1*b1 + x2*b2 + x3*b3))
+
+def normal_assimetrica(x:list, m:float, v1:float, v2:float, c:float) -> list:
+    e:float = 2.7182
+    return (e**(-1/2 * (x-m)**2/v1) if x > m else e**(-1/2 * (x-m)**2/v2)) * c
 
 # Classe de testes
 class Teste(unittest.TestCase):
@@ -308,6 +313,24 @@ class Teste(unittest.TestCase):
         plot_expected(teste_1, dados)
         plot_residual(teste_1, dados)
 
+        print("\nTeste 12.1")
+        dados = [[i, (random()+random()+random()+random()+random())*5 - 2.5*5 + i] for i in range(1000)]
+
+        modelo = Regression(regressao_simples)
+        erro = Regression(normal_assimetrica)
+
+        modelo.run(dados)
+        ruido = plot_residual(modelo, dados)
+
+        media = sum(ruido)/len(ruido)
+        v = sum([(media - x)**2 for x in ruido])/len(ruido)
+        erro.change(m = media, v1 = v, v2 = v)
+
+        ruido = density(ruido, h = 20)
+        erro.run(ruido)
+        print(erro)
+        plot_expected(erro, ruido)
+
         
-if __name__ == "__main__":
+if __name__ == "__main__":    
     unittest.main()

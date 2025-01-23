@@ -39,13 +39,16 @@ def plot_expected(regression:"Regression", data:[list], size:list = (8, 6)) -> N
     ax.legend()
     plt.show()
 
-def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), percentile:list = [2.5, 97.5]) -> None:
+def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), percentile:list = [2.5, 97.5]) -> list:
     """
     Plot que mostra a distribuição dos resíduos.
 
     Args:
         regression (Regression): Classe 'Regression' da função a ser plotada como preditora.
         data (list(list)): Dados, lista de listas sendo do tamanho nx2.
+
+    Return:
+        Residuos (list): Lista de resíduos dos erros
     """
     assert type(data) == list or type(data) == tuple, "The <data> must be a list"
     assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
@@ -58,10 +61,10 @@ def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), perc
 
     fig, ax = plt.subplots(figsize = size)
     
-    n, bins, patches = ax.hist(y_dif, bins=int(len(y_dif)**(1/2)*1.5), color = "skyblue", edgecolor = "gray", alpha = 0.7, density=True)
+    n, bins, patches = ax.hist(y_dif, bins = int(len(y_dif)**(1/2)*1.5), color = "skyblue", edgecolor = "gray", alpha = 0.7, density=True)
     n_percent = n * 100 / np.sum(n)
     ax.clear()
-    ax.bar(bins[:-1], n_percent, width=np.diff(bins), align = "edge", color = "skyblue", edgecolor = "gray", alpha = 0.7)
+    ax.bar(bins[:-1], n_percent, width = np.diff(bins), align = "edge", color = "skyblue", edgecolor = "gray", alpha = 0.7)
     lower_bound = np.percentile(y_dif, percentile[0])
     upper_bound = np.percentile(y_dif, percentile[1])
     mean_residual = np.mean(y_dif)
@@ -76,6 +79,7 @@ def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), perc
     ax.legend()
     
     plt.show()
+    return y_dif
 
 def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 6), sigma:float = 1.64, amplitude:float = None):
     """

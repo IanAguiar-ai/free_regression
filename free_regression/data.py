@@ -1781,6 +1781,15 @@ def data_series(data:list, p:int = 1) -> list:
             new_data.append(data[i][j:c - p + j])
     return transpose(new_data)
 
+def density(y:list, h = 10) -> list:
+    data = {}
+    max_ = max(y)
+    min_ = min(y)
+    for i in range(h + 1):
+        data[min_ + i * (max_ - min_)/h] = sum([1 if min_ + i * (max_ - min_)/h <= y_i < min_ + (i + 1) * (max_ - min_)/h else 0 for y_i in y])
+    norm = sum(data.values())
+    return [[key, data[key]/norm] for key in data.keys()]
+
 def to_float(number:str) -> float:
     try:
         return float(number)
