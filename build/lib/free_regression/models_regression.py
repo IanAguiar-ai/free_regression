@@ -304,6 +304,11 @@ def generate_distribuction(regressors:int, normals:int = 1) -> ("function", list
 
     return globals()[f'normals_sum_with_{regressors}_regressors_and_{normals}_neurons'], [f"x{i}" for i in range(regressors)]
 
+def asymmetric_normal(x:list, m:float, v1:float, v2:float, c:float) -> list:
+    e:float = 2.7182
+    return (e**(-1/2 * (x-m)**2/v1) if x > m else e**(-1/2 * (x-m)**2/v2)) * c
+
+
 if __name__ == "__main__":
     from free_regression import Regression
 ##    teste_1 = Regression(*generate_distribuction(regressors = 2, normals = 2))
