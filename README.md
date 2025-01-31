@@ -390,9 +390,9 @@ def perda_modificada(v_1:list, v_2:list) -> float:
 	perda = 0
 	for i in range(len(v_1)):
 		if v_1 > v2:
-			perda += (v1[i] - v2[i])**2
+			perda += (v_1[i] - v_2[i])**2
 		else:
-			perda += (v2[i] - v1[i])/10
+			perda += (v_2[i] - v_1[i])/10
 	return perda    	
 
 
