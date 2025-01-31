@@ -333,6 +333,7 @@ if __name__ == "__main__":
 
     from random import random, seed
     from data import *
+    from graphics import plot_series
     
     seed(1)
 
@@ -341,8 +342,8 @@ if __name__ == "__main__":
 
     phi = [0.45, -0.95]
     data = [1, 2]
-    for i in range(30):
-        data.append(phi[0] * data[-1] + phi[1] * data[-2] + 10)
+    for i in range(200):
+        data.append(phi[0] * data[-1] + phi[1] * data[-2] + 5 + (random() + random() + random()) )
 
         
     data = data_series(data, p = 2)
@@ -354,4 +355,8 @@ if __name__ == "__main__":
     a = model_ar_2.prediction([data[i][:-1] for i in range(len(data))])
     for i in range(len(data)):
         print(data[i][-1], a[i])
+
+    plot_series(model_ar_2, data, size = (14, 8))
+
+        
 

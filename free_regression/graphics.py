@@ -37,6 +37,8 @@ def plot_expected(regression:"Regression", data:[list], size:list = (8, 6)) -> N
     ax.set_xlabel("X", fontsize = 14)
     ax.set_ylabel("Y", fontsize = 14)
     ax.legend()
+    
+    plt.subplots_adjust(left = 0.07, right = 0.99, top = 0.95, bottom = 0.07)
     plt.show()
 
 def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), percentile:list = [2.5, 97.5]) -> list:
@@ -77,7 +79,8 @@ def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), perc
     ax.set_ylabel("Frequência (%)", fontsize = 14)
     ax.set_xlim([min(bins), max(bins)])
     ax.legend()
-    
+
+    plt.subplots_adjust(left = 0.07, right = 0.99, top = 0.95, bottom = 0.07)
     plt.show()
     return y_dif
 
@@ -160,6 +163,39 @@ def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 
     ax.set_xlabel("X", fontsize = 14)
     ax.set_ylabel("Y", fontsize = 14)
     ax.legend()
+
+    plt.subplots_adjust(left = 0.07, right = 0.99, top = 0.95, bottom = 0.07)
+    plt.show()
+
+def plot_series(regression:"Regression", data:[list], size:list = (8, 6)) -> None:
+    """
+    Plot para séries temporais que compara os valores preditos e observados.
+    Só funciona quando existe apenas um regressor e um valor esperado.
+
+    Args:
+        regression (Regression): Classe 'Regression' da função a ser plotada como preditora.
+        data (list(list)): Dados, lista de listas sendo do tamanho nx2.
+    """
+    
+    assert type(data) == list or type(data) == tuple, "The <data> must be a list"
+    assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
+    
+    x:list = [i for i in range(len(data))]
+    y1:list = [values[-1] for values in data]
+    
+    x_new:list = [i for i in range(len(data))]
+    y2 = regression.prediction([data[i][:-1] for i in range(len(data))])
+
+    fig, ax = plt.subplots(figsize = size)
+    ax.plot(x, y1, label = "Dados Observados", color = "blue", linestyle = "-")
+    ax.plot(x_new, y2, label = "Valores Preditos", color = "red", linestyle = "--")
+    ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
+    ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
+    ax.set_xlabel("X", fontsize = 14)
+    ax.set_ylabel("Y", fontsize = 14)
+    ax.legend()
+
+    plt.subplots_adjust(left = 0.07, right = 0.99, top = 0.95, bottom = 0.07)
     plt.show()
 
 if __name__ == "__main__":
