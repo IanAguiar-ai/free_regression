@@ -331,19 +331,32 @@ if __name__ == "__main__":
 ##    teste_2.run([[1, 4, 0], [6, 3, 1]])
 ##    print(teste_2.prediction([[1, 4], [6, 3]]))
 
-##    from random import random
-##    from data import *
-##
-##    def ar_2(y1, y2, b1, b2, b3):
-##        return y1 * b1 + y2 * b2 + b3
-##    
-##    data = [[random()*10] for i in range(20)]
-##    data = data_series(data, p = 2)
-##    model_ar_2 = Regression(ar_2, regressors = ["y1", "y2"])
-##    model_ar_2.iterations = 1000
-##    model_ar_2.run(data, especific_precision = [2, 1, 0.1, 0.01, ])
-##    print(model_ar_2)
-##    a = model_ar_2.prediction([data[i][:-1] for i in range(len(data))])
-##    for i in range(len(data)):
-##        print(data[i][-1], a[i])
+    from random import random, seed
+    from data import *
+    from graphics import plot_series
+    
+    seed(1)
+
+    def ar_2(y1, y2, b1, b2, b3):
+        return y1 * b1 + y2 * b2 + b3
+
+    phi = [0.45, -0.95]
+    data = [1, 2]
+    for i in range(200):
+        data.append(phi[0] * data[-1] + phi[1] * data[-2] + 5 + (random() + random() + random()) )
+
+        
+    data = data_series(data, p = 2)
+    model_ar_2 = Regression(ar_2, regressors = ["y1", "y2"])
+    model_ar_2.set_seed(1)
+    model_ar_2.iterations = 1000
+    model_ar_2.run(data, especific_precision = [1, 0.1, 0.01])
+    print(model_ar_2)
+    a = model_ar_2.prediction([data[i][:-1] for i in range(len(data))])
+    for i in range(len(data)):
+        print(data[i][-1], a[i])
+
+    plot_series(model_ar_2, data, size = (14, 8))
+
+        
 

@@ -1,6 +1,6 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: free_regression
-Version: 1.1.8
+Version: 1.1.9
 Summary: Construtor de regressão genérico.
 Author: ['Ian dos Anjos Melo Aguiar']
 Author-email: <iannaianjos@gmail.com>
@@ -14,6 +14,14 @@ Classifier: Operating System :: Microsoft :: Windows
 Description-Content-Type: text/markdown
 Requires-Dist: matplotlib
 Requires-Dist: numpy
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: keywords
+Dynamic: requires-dist
+Dynamic: summary
 
 
 # free_regression

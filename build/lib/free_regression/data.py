@@ -1770,6 +1770,10 @@ def data_series(data:list, p:int = 1) -> list:
     """
     Função que transforma vetor de séries temporais em matriz de série temporal
     """
+    print(set(map(type, data)))
+    if set(map(type, data)) != {list} and set(map(type, data)) != {tuple} :
+        data:list = [[x_i] for x_i in data]
+        
     data:list = transpose(data)
     
     new_data:list = []
