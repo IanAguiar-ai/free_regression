@@ -585,7 +585,8 @@ Função que recebe:
 
 - **regression**: Instância da classe *Regression*;
 - **data**: Dados em lista de listas;
-- **size**: Tamanho da figura.
+- **size**: Tamanho da figura;
+- **bins**: Quantidade de barras no histograma.
 
 Esta função a predição da série temporal desde que ela tenha sido construida corretamente.
 
@@ -785,7 +786,7 @@ plot_series(model_ar_2, data, size = (14, 8))
 
 ![EX_TEMPORAL_SERIES_1](free_regression/imagens_testes/ts_1.png)
 
-## Com dados artificiais, MCMC (MArkov Chain Monte Carlo)
+## Com dados artificiais, MCMC (Markov Chain Monte Carlo)
 
 ```
 from free_regression import Generator, plot_time_series, round_series

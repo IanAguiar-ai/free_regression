@@ -4,9 +4,10 @@ from random import random
 def round_series(series:list, n:int = 10) -> list:
     return [int(x_i * n)/n for x_i in series]
 
-def plot_time_series(generator:"Generator", sequence:list, lenth:int = 1, times:int = 100, size:tuple = (14, 8)) -> list:
+def plot_time_series(generator:"Generator", sequence:list, lenth:int = 1, times:int = 100, size:tuple = (14, 8), bins:int = 20) -> list:
     import matplotlib.pyplot as plt
     import matplotlib.gridspec as gridspec
+    import numpy as np
     
     if set(map(type, sequence)) != {str}:
         sequence:list = list(map(str, sequence))
@@ -36,18 +37,28 @@ def plot_time_series(generator:"Generator", sequence:list, lenth:int = 1, times:
         ax_time_series.plot(x_new, list(map(float, Y_i)), color = "blue", linestyle = "-", alpha = alpha, zorder = 1)
 
     ax_time_series.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
-    ax_time_series.set_title("Dados Observados com Predições por Monte Carlo", fontsize = 16, weight = "bold")
+    ax_time_series.set_title(f"Dados Observados com Predições por MCMC de dependência {generator.dependence}", fontsize = 16, weight = "bold")
     ax_time_series.set_xlabel("X", fontsize = 14)
     ax_time_series.set_ylabel("Y", fontsize = 14)
     ax_time_series.legend()
 
-    # Plot do histograma deitado
-    ax_histogram.hist(values_y_to_histogram, bins = 20, density = True, orientation = "horizontal", color = "lightblue", alpha = 0.6, edgecolor = "black")
-    ax_histogram.set_xlabel("Proporção", fontsize = 12)
-    #ax_histogram.set_yticklabels([])
+    counts, bin_edges, patches = ax_histogram.hist(
+        values_y_to_histogram, bins = bins, orientation = "horizontal",
+        color = "lightblue", alpha = 0.6, edgecolor="black"
+    )
+
+    # Converter para porcentagem
+    counts_percentage = counts/counts.sum() * 100
+
+    # Atualizar os rótulos no eixo X
+    ax_histogram.clear()  # Limpa o eixo para atualizar corretamente
+    ax_histogram.barh(bin_edges[:-1], counts_percentage, height = np.diff(bin_edges),
+                      color = "lightblue", alpha = 0.6, edgecolor = "black")
+
+    ax_histogram.set_xlabel("Frequência (%)", fontsize=12)
     ax_histogram.grid(axis = "x", linestyle = "--", linewidth = 0.7, alpha = 0.5)
 
-    plt.subplots_adjust(left = 0.05, right = 0.98, top = 0.95, bottom = 0.07, wspace = 0.1)  # Ajuste de espaçamento
+    plt.subplots_adjust(left = 0.07, right = 0.98, top = 0.95, bottom = 0.07, wspace = 0.1)  # Ajuste de espaçamento
     plt.show()
 
     return new_sequences
