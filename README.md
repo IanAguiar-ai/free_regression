@@ -4,7 +4,8 @@ Construtor de Regressão Genérico. Com esta biblioteca, o usuário é capaz de:
 
 1. Criar regressões 'tradicionais' (seção **Geração de regressores**);
 2. Criar regressões personalizadas (seção **Regressores próprios**);
-3. Manipular as regressões.
+3. Manipular as regressões;
+4. Criar cadeias de Markov com n graus (seção **Generator**).
 
 
 # Download
@@ -30,19 +31,25 @@ from free_regression import generate_regression, generate_mlp, generate_mlp_clas
 Para importar as funções geradoras de imagens:
 
 ```
-from free_regression import plot_expected, plot_residual, make_animation
+from free_regression import plot_expected, plot_residual, make_animation, plot_prediction_bands, plot_series
 ```
 
 Para importar as funções de manipulação de dados:
 
 ```
-from free_regression import to_dummy, transpose, normalize
+from free_regression import to_dummy, transpose, normalize, data_series, round_series
 ```
 
 Para importar os dados de teste:
 
 ```
 from free_regression import MedidasDeMassa, ProdutividadeTrabalhoRemoto
+```
+
+Para importar funções de cadeia de Markov:
+
+```
+from free_regression import Generator
 ```
 
 # Documentação das classes e funções
@@ -564,6 +571,16 @@ Função que recebe:
 
 Esta função gera um histograma com a distribuição dos resíduos e com uma banda de confiança móvel que segue o **sigma** e o **percentile**.
 
+### *plot_series*
+
+Função que recebe:
+
+- **regression**: Instância da classe *Regression*;
+- **data**: Dados em lista de listas;
+- **size**: Tamanho da figura.
+
+Esta função a predição da série temporal desde que ela tenha sido construida corretamente.
+
 ## Salvar *plots* da iteração
 
 A função *make_animation* que recebe:
@@ -711,6 +728,76 @@ plot_expected(modelo, dados_)
 ![EX_18](free_regression/imagens_testes/res_18.png)
 
 ![EX_5](free_regression/imagens_testes/reg_5_sigmoid.png)
+
+## Com dados artificiais, cadeia de Markov com multiplas dependências
+
+```
+from free_regression import Generator
+
+text = """COLOQUE SEU TEXTO AQUI, VÁRIAS LINHAS DE TEXTO"""
+
+for dependence in range(1, 10, 1):
+  test = Generator(dependence = dependence)
+  test.train(list(text))
+  #print(test.chain)
+  #print(test.prob_chain)
+  #print(test.choice(["t", "a"]))
+  resp:str = test.make_text(list("Por fim, a resiliencia"), lenth = 200)
+  print(f"\nDependenci: {'='*200}\n{dependence} -> {resp}\n")
+```
+
+## Com dados artificiais, série temporal
+
+```
+from random import random, seed
+from free_regression import plot_series, data_series
+    
+seed(1)
+
+def ar_2(y1, y2, b1, b2, b3):
+    return y1 * b1 + y2 * b2 + b3
+
+phi = [0.45, -0.95]
+data = [1, 2]
+for i in range(200):
+    data.append(phi[0] * data[-1] + phi[1] * data[-2] + 5 + (random() + random() + random()) )
+
+data = data_series(data, p = 2)
+model_ar_2 = Regression(ar_2, regressors = ["y1", "y2"])
+model_ar_2.set_seed(1)
+model_ar_2.iterations = 1000
+model_ar_2.run(data, especific_precision = [1, 0.1, 0.01])
+print(model_ar_2)
+a = model_ar_2.prediction([data[i][:-1] for i in range(len(data))])
+for i in range(len(data)):
+    print(data[i][-1], a[i])
+
+plot_series(model_ar_2, data, size = (14, 8))
+```
+
+![EX_TEMPORAL_SERIES_1](free_regression/imagens_testes/ts_1.png)
+
+## Com dados artificiais, MCMC (MArkov Chain Monte Carlo)
+
+```
+from free_regression import Generator, plot_time_series, round_series
+from random import random, seed
+from math import cos
+
+seed(2)
+text = [cos(i/7) + cos(i/3) - cos(cos(i/17) + random() - 0.5) for i in range(3_000)]
+text = round_series(text, n = 40)
+
+print(f"Valores: {sorted(set(text))}")
+test = Generator(dependence = 2)
+test.train(list(text))
+resp = plot_time_series(generator = test,
+                        sequence = text[400:405],
+                        lenth = 30,
+                        times = 1000)
+```
+
+![EX_MCMC_1](free_regression/imagens_testes/mcmc_1.png)
 
 ## Com dados reais
 
@@ -875,5 +962,7 @@ print(f"\nMODELO_1: {num_acertos[0]*100:2.02f}%\nMODELO_2: {num_acertos[1]*100:2
 ![EX_10](free_regression/imagens_testes/reg_10.png)
 
 ![EX_11](free_regression/imagens_testes/reg_11.png)
+
+
 
 
