@@ -535,6 +535,14 @@ Recebe dois argumentos:
 - **data**: Lista de listas que será normalizada.
 - **only_y**: Variável booleana, por padrão é *False*, indica se só a última coluna (Y) deve ser normalizada, caso contrário, todas as colunas são normalizadas entre 0 e 1.
 
+### *data_series*
+
+...
+
+### *round_series*
+
+...
+
 ## Gráficos
 
 ### *plot_expected*
@@ -750,7 +758,7 @@ for dependence in range(1, 10, 1):
 
 ```
 from random import random, seed
-from free_regression import plot_series, data_series
+from free_regression import Regression, plot_series, data_series
     
 seed(1)
 
