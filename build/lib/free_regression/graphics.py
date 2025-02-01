@@ -84,7 +84,7 @@ def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), perc
     plt.show()
     return y_dif
 
-def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 6), sigma:float = 1.64, amplitude:float = None):
+def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 6), sigma:float = None, amplitude:float = None):
     """
     Plot de um gráfico da série com os intervalos de confiança passado por sigma
 
@@ -116,7 +116,8 @@ def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 
     assert type(data) == list or type(data) == tuple, "The <data> must be a list"
     assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
     assert len(regression.regressors) == len(data[0]) - 1, f"{len(regression.regressors)} regressors were indicated but {len(data[0]) - 1} appears in the data"
-    assert sigma > 0, f"sigma has to be larger than 0, sigma now: {sigma}"
+    if sigma != None:
+        assert sigma > 0, f"sigma has to be larger than 0, sigma now: {sigma}"
 
     x:list = [values[0] for values in data]
     if amplitude == None:
@@ -130,17 +131,30 @@ def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 
         x_new.append(x_new[-1] + max(dif, (max(x) - min(x))/200))
     y2:list = [regression.prediction(**{regression.regressors[0]: value}) for value in x_new]
 
+    alphas = [[90, 1.64, "lightgreen"], [95, 1.96, "yellow"], [99, 2.56, "red"], [99.97, 3, "grey"]]
     try:
         var_mov:list = mov_var(x, x, y1, y2, amplitude)
-        lim_sup:list = [y2[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
-        lim_inf:list = [y2[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+        if sigma != None:
+            lim_sup:list = [y2[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+            lim_inf:list = [y2[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+        else:
+            lim_sup, lim_inf = {}, {}
+            for porc, alpha, _ in alphas:
+                lim_sup[porc] = [y2[i] + var_mov[i]**(1/2) * alpha for i in range(len(var_mov))]
+                lim_inf[porc] = [y2[i] - var_mov[i]**(1/2) * alpha for i in range(len(var_mov))]
     except IndexError:
         #print(f"x: {len(x)}, x_new: {len(x_new)}, y1: {len(y1)}, y2: {len(y2)}")
         y2_new:list = [regression.prediction(**{regression.regressors[0]: value}) for value in x]
         var_mov:list = mov_var(x, x, y1, y2_new, amplitude)
         #print(f"var_mov: {len(var_mov)}, x: {len(x)}, x_new: {len(x_new)}, y1: {len(y1)}, y2_new: {len(y2_new)}")
-        lim_sup:list = [y2_new[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
-        lim_inf:list = [y2_new[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+        if sigma != None:
+            lim_sup:list = [y2_new[i] + var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+            lim_inf:list = [y2_new[i] - var_mov[i]**(1/2) * sigma for i in range(len(var_mov))]
+        else:
+            lim_sup, lim_inf = {}, {}
+            for porc, alpha, _ in alphas:
+                lim_sup[porc] = [y2_new[i] + var_mov[i]**(1/2) * alpha for i in range(len(var_mov))]
+                lim_inf[porc] = [y2_new[i] - var_mov[i]**(1/2) * alpha for i in range(len(var_mov))]
 
     fig, ax = plt.subplots(figsize = size)
     if sorted(list(set(x))) == x:
@@ -154,11 +168,22 @@ def plot_prediction_bands(regression:"Regression", data:[list], size:list = (8, 
         
     ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
     if linear:
-        ax.fill_between(x, lim_inf, lim_sup, color = "lightgreen", alpha = 0.5, label = f"Banda de Confiança (±{sigma}σ)")
+        if sigma != None:
+            ax.fill_between(x, lim_inf, lim_sup, color = "lightgreen", alpha = 0.5, label = f"Banda de Confiança (±{sigma}σ)", zorder = 0)
+        else:
+            for porc, alpha, col in sorted(alphas, reverse = True, key = lambda x : x[0]):
+                ax.fill_between(x, lim_inf[porc], lim_sup[porc], color = col, alpha = 0.5, label = f"Banda de Confiança ({porc}% | ±{alpha}σ)", zorder = 0)
     else:
-        combined = sorted(zip(x, lim_inf, lim_sup), key = lambda x:x[0])
-        x, lim_inf, lim_sup = zip(*combined)
-        ax.fill_between(x, lim_inf, lim_sup, color = "lightgreen", alpha = 0.5, label = f"Banda de Confiança (±{sigma}σ)")
+        if sigma != None:
+            combined = sorted(zip(x, lim_inf, lim_sup), key = lambda x:x[0])
+            x, lim_inf, lim_sup = zip(*combined)
+            ax.fill_between(x, lim_inf, lim_sup, color = "lightgreen", alpha = 0.5, label = f"Banda de Confiança (±{sigma}σ)", zorder = 0)
+        else:
+            for porc, alpha, col in sorted(alphas, reverse = True, key = lambda x : x[0]):
+                combined = sorted(zip(x, lim_inf[porc], lim_sup[porc]), key = lambda x:x[0])
+                x_, lim_inf_, lim_sup_ = zip(*combined)
+                ax.fill_between(x_, lim_inf_, lim_sup_, color = col, alpha = 0.5, label = f"Banda de Confiança ({porc}% | ±{alpha}σ)", zorder = 0)
+                
     ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
     ax.set_xlabel("X", fontsize = 14)
     ax.set_ylabel("Y", fontsize = 14)
@@ -234,7 +259,7 @@ if __name__ == "__main__":
 
     #plot_expected(teste_2, dado)
     #plot_residual(teste_2, dado)
-    plot_prediction_bands(teste_2, dado, sigma = 1.64)
+    plot_prediction_bands(teste_2, dado, sigma = None)
 
     def reg_log(x, b0, b1) -> float:
       return 1/(1 + 2.71**(-(b0*x+b1)))
@@ -247,7 +272,7 @@ if __name__ == "__main__":
     print(modelo)
     plot_expected(modelo, dados_)
     plot_prediction_bands(modelo, dados_)
-    
+  
     def reg_mult(x, b0, b1, b2, b3):
       if x < 20:
         return (b2*x + b3)
@@ -265,6 +290,7 @@ if __name__ == "__main__":
     modelo.run(dados, precision = 0.1)
     print(modelo)
     plot_expected(modelo, dados)
+    plot_prediction_bands(modelo, dados, amplitude = 1, sigma = 1.64)
     plot_prediction_bands(modelo, dados, amplitude = 1)
 
 ##    
