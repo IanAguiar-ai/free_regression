@@ -70,12 +70,17 @@ Com os temas abordados, questões principalmente relacionadas a precipitação e
     text = [cos(i/7) + cos(i/3) - cos(cos(i/17)) for i in range(10_000)]
     text = round_series(text, n = 20)
 
-    with open("/home/user/Documents/__git_repos__/predicao_acoes/dados/dados_bitcoin_atualizados_5221", "r") as arq:
-        text = arq.read()
-    text = list(map(float, text.split(";")[:-1]))
-    text = round_series(text, n = 1/200)
-    print(text[:10], text[-10:])
-    print(len(text))
+##    with open("/home/user/Documents/__git_repos__/predicao_acoes/dados/dados_bitcoin_atualizados_5221", "r") as arq:
+##        text = arq.read()
+##    text = list(map(float, text.split(";")[:-1]))
+##    text = round_series(text, n = 1/200)
+##    print(text[:10], text[-10:])
+##    print(len(text))
+
+    text = [7, 9]
+    for _ in range(10_000):
+        text.append(text[-1] * 0.8 + text[-2] * (-0.25) + 8 + random()*3 - 1.5)
+    text = round_series(text, n = 10)
     
     print(f"Valores: {sorted(set(text))}")
     h = 4720
