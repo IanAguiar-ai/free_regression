@@ -856,7 +856,7 @@ modelo.change(b0 = 0, b1 = 90, b2 = 0, b3 = 30)
 modelo.run(dados, precision = 0.1)
 print(modelo)
 
-plot_prediction_bands(modelo, dados, amplitude = 2)
+plot_prediction_bands(modelo, dados, amplitude = 1.5)
 ```
 
 ![EX_17](free_regression/imagens_testes/res_17.png)
