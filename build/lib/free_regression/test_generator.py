@@ -53,32 +53,42 @@ Com os temas abordados, questões principalmente relacionadas a precipitação e
 
     #text = "1234 56 78987654321 123156431512315648944124115145604v145s4g1s54145154751451hg"
 
-    for dependence in range(1, 10, 1):
-        test = Generator(dependence = dependence)
-        test.train(list(text))
-        #print(test.chain)
-        #print(test.prob_chain)
-        #print(test.choice(["t", "a"]))
-        resp:str = test.make_text(list("Por fim, a resiliencia"), lenth = 200)
-        print(f"\nDependenci: {'='*200}\n{dependence} -> {resp}\n")
+##    for dependence in range(1, 10, 1):
+##        test = Generator(dependence = dependence)
+##        test.train(list(text))
+##        #print(test.chain)
+##        #print(test.prob_chain)
+##        #print(test.choice(["t", "a"]))
+##        resp:str = test.make_text(list("Por fim, a resiliencia"), lenth = 200)
+##        print(f"\nDependenci: {'='*200}\n{dependence} -> {resp}\n")
 
     from generator_probabilistic import Generator, plot_time_series, round_series
     from random import random, seed
     from math import cos
 
-    if __name__ == "__main__":
-        seed(2)
-        text = [cos(i/7) + cos(i/3) - cos(cos(i/17) + random() - 0.5) for i in range(3_000)]
-        text = round_series(text, n = 40)
-        
-        print(sorted(set(text)))
-        test = Generator(dependence = 2)
+    seed(2)
+    text = [cos(i/7) + cos(i/3) - cos(cos(i/17)) for i in range(10_000)]
+    text = round_series(text, n = 20)
+
+    with open("/home/user/Documents/__git_repos__/predicao_acoes/dados/dados_bitcoin_atualizados_5221", "r") as arq:
+        text = arq.read()
+    text = list(map(float, text.split(";")[:-1]))
+    text = round_series(text, n = 1/200)
+    print(text[:10], text[-10:])
+    print(len(text))
+    
+    print(f"Valores: {sorted(set(text))}")
+    h = 4720
+    for dependence in range(1, 4):
+        test = Generator(dependence = dependence)
         test.train(list(text))
         #print(test.chain)
         #print(test.prob_chain)
         #print(test.choice(["t", "a"]))
         #resp:str = test.make_text([1, 2, 3, ], lenth = 300)
         resp = plot_time_series(generator = test,
-                                sequence = text[400:405],
+                                sequence = text[h:h + 5],
                                 lenth = 30,
-                                times = 1000)
+                                times = 1000,
+                                bins = 10,
+                                real = text[h:(h+5) + 30])

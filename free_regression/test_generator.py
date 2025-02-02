@@ -70,15 +70,15 @@ Com os temas abordados, questões principalmente relacionadas a precipitação e
     text = [cos(i/7) + cos(i/3) - cos(cos(i/17)) for i in range(10_000)]
     text = round_series(text, n = 20)
 
-##    with open("/home/user/Documents/__git_repos__/predicao_acoes/dados/dados_bitcoin_atualizados_5221", "r") as arq:
-##        text = arq.read()
-##    text = list(map(float, text.split(";")[:-1]))
-##    text = round_series(text, n = 1/250)
-##    print(text[:10], text[-10:])
-##    print(len(text))
+    with open("/home/user/Documents/__git_repos__/predicao_acoes/dados/dados_bitcoin_atualizados_5221", "r") as arq:
+        text = arq.read()
+    text = list(map(float, text.split(";")[:-1]))
+    text = round_series(text, n = 1/200)
+    print(text[:10], text[-10:])
+    print(len(text))
     
     print(f"Valores: {sorted(set(text))}")
-
+    h = 4720
     for dependence in range(1, 4):
         test = Generator(dependence = dependence)
         test.train(list(text))
@@ -87,7 +87,8 @@ Com os temas abordados, questões principalmente relacionadas a precipitação e
         #print(test.choice(["t", "a"]))
         #resp:str = test.make_text([1, 2, 3, ], lenth = 300)
         resp = plot_time_series(generator = test,
-                                sequence = text[1000:1010],#text[4600:4605],
+                                sequence = text[h:h + 5],
                                 lenth = 30,
                                 times = 1000,
-                                bins = 20)
+                                bins = 10,
+                                real = text[h:(h+5) + 30])

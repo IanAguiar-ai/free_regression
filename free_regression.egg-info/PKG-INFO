@@ -553,6 +553,14 @@ Recebe dois argumentos:
 - **data**: Lista de listas que será normalizada.
 - **only_y**: Variável booleana, por padrão é *False*, indica se só a última coluna (Y) deve ser normalizada, caso contrário, todas as colunas são normalizadas entre 0 e 1.
 
+### *data_series*
+
+...
+
+### *round_series*
+
+...
+
 ## Gráficos
 
 ### *plot_expected*
@@ -595,7 +603,8 @@ Função que recebe:
 
 - **regression**: Instância da classe *Regression*;
 - **data**: Dados em lista de listas;
-- **size**: Tamanho da figura.
+- **size**: Tamanho da figura;
+- **bins**: Quantidade de barras no histograma.
 
 Esta função a predição da série temporal desde que ela tenha sido construida corretamente.
 
@@ -768,7 +777,7 @@ for dependence in range(1, 10, 1):
 
 ```
 from random import random, seed
-from free_regression import plot_series, data_series
+from free_regression import Regression, plot_series, data_series
     
 seed(1)
 
@@ -795,7 +804,7 @@ plot_series(model_ar_2, data, size = (14, 8))
 
 ![EX_TEMPORAL_SERIES_1](free_regression/imagens_testes/ts_1.png)
 
-## Com dados artificiais, MCMC (MArkov Chain Monte Carlo)
+## Com dados artificiais, MCMC (Markov Chain Monte Carlo)
 
 ```
 from free_regression import Generator, plot_time_series, round_series

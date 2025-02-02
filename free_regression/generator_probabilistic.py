@@ -4,7 +4,7 @@ from random import random
 def round_series(series:list, n:int = 10) -> list:
     return [int(x_i * n)/n for x_i in series]
 
-def plot_time_series(generator:"Generator", sequence:list, lenth:int = 1, times:int = 100, size:tuple = (14, 8), bins:int = 20) -> list:
+def plot_time_series(generator:"Generator", sequence:list, lenth:int = 1, times:int = 100, size:tuple = (14, 8), bins:int = 20, real:list = None) -> list:
     import matplotlib.pyplot as plt
     import matplotlib.gridspec as gridspec
     import numpy as np
@@ -28,8 +28,15 @@ def plot_time_series(generator:"Generator", sequence:list, lenth:int = 1, times:
     ax_histogram = plt.subplot(gs[1], sharey=ax_time_series)  # Eixo para o histograma compartilhando Y
 
     # Plot da série temporal
-    x = [i + 1 for i in range(len(sequence))]
-    ax_time_series.plot(x, list(map(float, sequence)), label = "Dados Observados", color = "red", linestyle = "--")
+    if real == None:
+        x = [i + 1 for i in range(len(sequence))]
+        ax_time_series.plot(x, list(map(float, sequence)), label = "Dados Observados", color = "red", linestyle = "--")
+    else:    
+        x = [i + 1 for i in range(len(real))]
+        ax_time_series.plot(x, list(map(float, real)), label = "Dados Observados (não considerados)", color = "orange", linestyle = ":", linewidth = 3)
+
+        x = [i + 1 for i in range(len(sequence))]
+        ax_time_series.plot(x, list(map(float, sequence)), label = "Dados Observados (considerados)", color = "red", linestyle = "--", linewidth = 3)
 
     x_new = [i + 1 for i in range(len(sequence) + lenth)]
     alpha = 1 / len(new_sequences) ** (1 / 2)
