@@ -4,7 +4,7 @@ from random import random
 def round_series(series:list, n:int = 10) -> list:
     return [int(x_i * n)/n for x_i in series]
 
-def plot_time_series(generator:"Generator", sequence:list, lenth:int = 1, times:int = 100, size:tuple = (14, 8), bins:int = 20, real:list = None) -> list:
+def plot_time_series(generator:"Generator", sequence:list, lenth:int = 1, times:int = 100, size:tuple = (14, 8), bins:int = 20, real:list = None, limits:bool = False) -> list:
     import matplotlib.pyplot as plt
     import matplotlib.gridspec as gridspec
     import numpy as np
@@ -42,6 +42,24 @@ def plot_time_series(generator:"Generator", sequence:list, lenth:int = 1, times:
     alpha = 1 / len(new_sequences) ** (1 / 2)
     for Y_i in new_sequences:
         ax_time_series.plot(x_new, list(map(float, Y_i)), color = "blue", linestyle = "-", alpha = alpha, zorder = 1)
+        if limits:
+            if not "max_series" in locals():
+                max_series:list = list(map(float, Y_i))
+            else:
+                if max_series[-1] < list(map(float, Y_i))[-1]:
+                    max_series = list(map(float, Y_i))
+                
+            if not "min_series" in locals():
+                min_series:list = list(map(float, Y_i))
+            else:
+                if min_series[-1] > list(map(float, Y_i))[-1]:
+                    min_series = list(map(float, Y_i))
+
+    if limits:
+        ax_time_series.axhline(max_series[-1], color = "grey", linestyle = "--")
+        ax_time_series.axhline(min_series[-1], color = "grey", linestyle = "--")
+        ax_time_series.plot(x_new, max_series, color = "yellow", linestyle = "--", alpha = 1, zorder = 1)
+        ax_time_series.plot(x_new, min_series, color = "yellow", linestyle = "--", alpha = 1, zorder = 1)
 
     ax_time_series.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
     ax_time_series.set_title(f"Dados Observados com Predições por MCMC de dependência {generator.dependence}", fontsize = 16, weight = "bold")

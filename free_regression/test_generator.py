@@ -96,4 +96,5 @@ Com os temas abordados, questões principalmente relacionadas a precipitação e
                                 lenth = 30,
                                 times = 1000,
                                 bins = 10,
-                                real = text[h:(h+5) + 30])
+                                real = text[h:(h+5) + 30],
+                                limits = True)
