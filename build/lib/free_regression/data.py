@@ -1740,6 +1740,13 @@ def read_csv(csv:str, data = {"medidas_de_massa":medidas_de_massa, "trabalho_rem
 def normalize(data:list, only_y:bool = False) -> list:
     """
     Normaliza a lista de listas, o usuário pode pedir para normalizar apenas a variável resposta com only_y
+
+    Args:
+        data: Lista de listas com os dados do usuário
+        only_y: Booleano, se o usuário quiser só normalizar os ultimos dados das listas da lista passada, ou seja, só normalizar Y
+
+    Retorna:
+        Lista de listas com método aplicado
     """
     data = transpose(data)
 
@@ -1756,6 +1763,12 @@ def normalize(data:list, only_y:bool = False) -> list:
 def transpose(data:list) -> list:
     """
     Faz a transposição dos dados
+    
+    Args:
+        data: Lista de listas com os dados do usuário
+
+    Retorna:
+        Lista de listas com método aplicado
     """
     new_data:list = []
     for i in range(len(data[0])):
@@ -1769,6 +1782,13 @@ def transpose(data:list) -> list:
 def data_series(data:list, p:int = 1) -> list:
     """
     Função que transforma vetor de séries temporais em matriz de série temporal
+
+    Args:
+        data: Lista com a série temporal
+        p: Quantidade de parâmetros, por exemplo, se você quer aplicar uma série temporal o método AR(2) então p tem que ser 2
+
+    Retorna:
+        Lista de listas com método aplicado
     """
     print(set(map(type, data)))
     if set(map(type, data)) != {list} and set(map(type, data)) != {tuple} :
@@ -1806,6 +1826,9 @@ def to_dummy(data:list) -> list:
 
     Args:
         data: Lista de listas com os dados do usuário
+
+    Retorna:
+        Lista de listas com método aplicado
     """
     assert type(data) == list, "<data> has to be a list"
     assert type(data[0]) == list, "<data[n]> has to be a list"
@@ -1845,6 +1868,40 @@ def to_dummy(data:list) -> list:
 
     return transpose(data)
 
+def exponential_smoothing(series:list, alpha:float) -> list:
+    """
+    Função se suavização exponencial
+
+    Args:
+        series: Lista da série temporal
+        alpha: Parâmetro alpha para suavização
+
+    Retorna:
+        Lista da série temporal com método aplicado
+    """
+    new_series:list = [series[0]]
+    for i in range(1, len(series)):
+        new_series.append(alpha*series[i] + (1 - alpha)*new_series[-1])
+    return new_series
+
+def double_exponential_smoothing(series:list, alpha:float = 0.15, beta:float = 0.15) -> list:
+    """
+    Função se suavização exponencial dupla, é a suavização exponencial mais uma adição de tendência que é controlado pelo parâmetro beta
+
+    Args:
+        series: Lista da série temporal
+        alpha: Parâmetro alpha para suavização
+        beta: Parâmetro que controla a tendência
+
+    Retorna:
+        Lista da série temporal com método aplicado
+    """
+    new_series:list = [series[0]]
+    trend = [0]
+    for i in range(1, len(series)):
+        new_series.append(alpha*series[i] + (1 - alpha)*(new_series[-1] + trend[-1]))
+        trend.append(beta*(new_series[-1] - new_series[-2]) + (1 - beta)*trend[-1])
+    return new_series
 
 class Representation:
     """

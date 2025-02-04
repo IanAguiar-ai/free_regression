@@ -543,6 +543,14 @@ Recebe dois argumentos:
 
 ...
 
+### *exponential_smoothing*
+
+...
+
+### *double_exponential_smoothing*
+
+...
+
 ## Gráficos
 
 ### *plot_expected*
