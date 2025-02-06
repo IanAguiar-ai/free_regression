@@ -551,6 +551,10 @@ Recebe dois argumentos:
 
 ...
 
+### *memory_alpha*
+
+...
+
 ## Gráficos
 
 ### *plot_expected*
