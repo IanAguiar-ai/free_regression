@@ -1,4 +1,4 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.1
 Name: free_regression
 Version: 1.1.10
 Summary: Construtor de regressão genérico.
@@ -14,14 +14,6 @@ Classifier: Operating System :: Microsoft :: Windows
 Description-Content-Type: text/markdown
 Requires-Dist: matplotlib
 Requires-Dist: numpy
-Dynamic: author
-Dynamic: author-email
-Dynamic: classifier
-Dynamic: description
-Dynamic: description-content-type
-Dynamic: keywords
-Dynamic: requires-dist
-Dynamic: summary
 
 
 # free_regression
@@ -574,6 +566,10 @@ Recebe dois argumentos:
 ...
 
 ### *double_exponential_smoothing*
+
+...
+
+### *memory_alpha*
 
 ...
 

@@ -1903,6 +1903,38 @@ def double_exponential_smoothing(series:list, alpha:float = 0.15, beta:float = 0
         trend.append(beta*(new_series[-1] - new_series[-2]) + (1 - beta)*trend[-1])
     return new_series
 
+def memory_alpha(memory:int, percent:float = 0.99) -> float:
+    """
+    Calcula alpha necessário para uma memória específica
+
+    Args:
+        memory: Inteiro que é a quantidade de memória que deve ter um alpha específico
+        percent: Porcentagem de "confiança" de alpha, float maior que 0 e menor que 1
+
+    Retorna:
+        Float com valor de alpha
+    """
+    def calc(alpha:float, n:int) -> float:
+        return alpha * sum([(1-alpha)**k for k in range(n - 1)])
+
+    lim_inf: float = 0
+    lim_sup:float = 1
+    op:int = 0
+    sup:int = max(memory, 200)
+    while op < sup:
+        cont_inf:float = calc(alpha = lim_inf, n = memory)
+        cont_sup:float = calc(alpha = lim_sup, n = memory)
+        
+        if cont_inf > percent:
+            lim_inf:float = 5/6 * lim_inf
+        elif abs(cont_inf - percent) > abs(cont_sup - percent):
+            lim_inf:float = (lim_inf + lim_sup)/2
+        else:
+            lim_sup:float = (lim_inf + lim_sup)/2
+        op += 1
+
+    return lim_sup
+
 class Representation:
     """
     Classe de quem será herdada os métodos especiais
@@ -1980,11 +2012,11 @@ if __name__ == "__main__":
              [6, "c", 3, "2"],
              [4, "a", 4, "2"],]
 
-    dados = [[1, 5],
-             [-3, 6],
-             [0, 4],
-             [6, 3],
-             [4, 4],]
+##    dados = [[1, 5],
+##             [-3, 6],
+##             [0, 4],
+##             [6, 3],
+##             [4, 4],]
 
 
     resp = normalize(to_dummy(dados), only_y = True)
