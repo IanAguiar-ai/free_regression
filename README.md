@@ -602,6 +602,20 @@ Função que recebe:
 
 Esta função a predição da série temporal desde que ela tenha sido construida corretamente.
 
+## Generator (MC e MCMC)
+
+### *Generator*
+
+...
+
+### *plot_time_series*
+
+...
+
+### *mcmc_anomaly*
+
+...
+
 ## Salvar *plots* da iteração
 
 A função *make_animation* que recebe:
