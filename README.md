@@ -837,6 +837,7 @@ resp = plot_time_series(generator = test,
 ```
 from free_regression import Generator, mcmc_anomaly
 from random import random, seed
+from math import cos
 
 seed(0)
 dados = [10 + int(random()+random()+random()+cos(i/10)*30) for i in range(50_000)]
