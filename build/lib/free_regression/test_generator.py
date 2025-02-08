@@ -62,9 +62,19 @@ Com os temas abordados, questões principalmente relacionadas a precipitação e
 ##        resp:str = test.make_text(list("Por fim, a resiliencia"), lenth = 200)
 ##        print(f"\nDependenci: {'='*200}\n{dependence} -> {resp}\n")
 
-    from generator_probabilistic import Generator, plot_time_series, round_series
+    from generator_probabilistic import Generator, plot_time_series, round_series, mcmc_anomaly
     from random import random, seed
     from math import cos
+
+    #Testar previsão MCMC
+    seed(0)
+    dados = [10 + int(random()+random()+random()+cos(i/10)*30) for i in range(50_000)]
+    dados_prev = dados[100:300]
+
+    mcmc_anomaly(dados, dados_prev,
+                 dependence = 2,
+                 percentage = 10)
+
 
     seed(2)
     text = [cos(i/7) + cos(i/3) - cos(cos(i/17)) for i in range(10_000)]

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: free_regression
-Version: 1.1.10
+Version: 1.1.11
 Summary: Construtor de regressão genérico.
 Author: ['Ian dos Anjos Melo Aguiar']
 Author-email: <iannaianjos@gmail.com>
@@ -837,6 +837,19 @@ resp = plot_time_series(generator = test,
 ```
 
 ![EX_MCMC_1](free_regression/imagens_testes/mcmc_1.png)
+
+```
+from free_regression import Generator, mcmc_anomaly
+from random import random, seed
+
+seed(0)
+dados = [10 + int(random()+random()+random()+cos(i/10)*30) for i in range(50_000)]
+dados_prev = dados[100:300]
+
+mcmc_anomaly(dados, dados_prev,
+             dependence = 2,
+             percentage = 10)
+```
 
 ## Com dados reais
 

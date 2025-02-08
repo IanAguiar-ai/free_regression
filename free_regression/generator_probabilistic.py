@@ -1,10 +1,95 @@
 from copy import deepcopy
 from random import random
+from collections import Counter
+
+def mcmc_prevision(generator:"Generator", sequence:list, lenth:int = 1, times:int = 1000) -> list:
+    sequence:list = list(map(str, sequence))
+        
+    new_sequences:list = []
+    for _ in range(times):
+        new_sequences.append(sequence.copy())
+        for __ in range(lenth):
+            new_sequences[-1].append(generator.choice(list(map(str, new_sequences[-1][-generator.dependence:]))))
+
+    return [new_sequences_i[-1] for new_sequences_i in new_sequences]
+
+
+def mcmc_anomaly(series:list, predict:list, dependence:int = 1, percentage:float = 5, runs:int = 1000, plot:bool = True) -> list:
+    """
+    Função que detecta anomalia
+
+    Args:
+        series: Lista com série que deve treinar a cadeia de Markov
+        predict: Lista com os dados que devem ser preditos, o tamanho dele deve ser pelo menos de dependence + 1
+        porcentage: Float que considera o limiar que será considerado anomalia
+        runs: Inteiro com quantidade de vezes que MCMC deve ser executado por elemento, recomendado é 1000
+        plot: Booleano que indica se deverá ser colocado o plot
+
+    Retorna:
+        Retorna uma lista do tamanho de predict - dependence mostrando quais pontos seriam anomalias
+    """
+    def valor_mais_provavel(respostas:list) -> int:
+        contagem = Counter(respostas)
+        return max(contagem, key=contagem.get)
+    
+    gerador = Generator(dependence = dependence)
+    gerador.train(series)
+    anomalia:list = []
+    valores_esperados, x_valores_esperados = [], []
+    limiar:int = int(percentage/100 * runs)
+
+    for i in range(len(predict) - dependence):
+        try:
+            resp:list = mcmc_prevision(generator = gerador,
+                                       sequence = predict[i:dependence + i],
+                                       lenth = 1,
+                                       times = runs)
+            
+            anomalia.append(False if sum([resp_i == predict[dependence + i] for resp_i in resp]) >= limiar else True)
+            valores_esperados.append(valor_mais_provavel(resp))
+            x_valores_esperados.append(i + dependence)
+        except KeyError:
+            anomalia.append(False)
+        except AssertionError:
+            anomalia.append(False)
+  
+    if plot:
+        import matplotlib.pyplot as plt
+    
+        fig, ax = plt.subplots(figsize = (12, 8))
+    
+        x:list = [i for i in range(len(predict))]
+        x_pred:list = [i for i in range(1, len(predict))]
+    
+        x_fora, y_fora = [], []
+        for i, resp in enumerate(anomalia):
+            if resp:
+                x_fora.append(x[i+dependence])
+                y_fora.append(predict[i+dependence])
+        
+        ax.plot(x, predict, label = "Valores Reais", color = "blue", linestyle = "-")
+        ax.plot(x_valores_esperados, valores_esperados, label = "Valor mais provável", color = "red", linestyle = "--")
+        ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
+    
+        ax.scatter(x_fora, y_fora, marker = "x", color = "brown", label = f"Probabilidade de acontecimento menor que {percentage}%")
+
+        ax.set_title(f"Predição de anomalias com MCMC de dependência {dependence}", fontsize = 16, weight = "bold")
+        ax.set_xlabel("X", fontsize = 14)
+        ax.set_ylabel("Y", fontsize = 14)
+        ax.legend()
+    
+        plt.subplots_adjust(left = 0.07, right = 0.99, top = 0.95, bottom = 0.07)
+        plt.show()
+    
+    return anomalia
 
 def round_series(series:list, n:int = 10) -> list:
     return [int(x_i * n)/n for x_i in series]
 
 def plot_time_series(generator:"Generator", sequence:list, lenth:int = 1, times:int = 100, size:tuple = (14, 8), bins:int = 20, real:list = None, limits:bool = False) -> list:
+    """
+    Plota a série temporal dado uma cadeia de Markov fazendo simulações MCMC e mostrando a densidade da distribuição provável futura.
+    """
     import matplotlib.pyplot as plt
     import matplotlib.gridspec as gridspec
     import numpy as np
