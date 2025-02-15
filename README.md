@@ -215,6 +215,11 @@ print(meu_modelo_regressor)
 Para realizar uma regressão semelhante ao método **.run**, mas de forma robusta:
 
 ```
+from random import random
+
+def regressao_simples(x:float, a:float, b:float) -> float:
+    return a*x + b
+    
 dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
 modelo1 = Regression(regressao_simples)
 modelo1.run_robust(dados, especific_precision = [1, 0.1])
@@ -754,6 +759,12 @@ plot_prediction_bands(teste_mlp_3, dados, amplitude = 1)
 Para realizar uma regressão semelhante ao método **.run**, mas de forma robusta:
 
 ```
+from random import random, seed
+
+def regressao_simples(x:float, a:float, b:float) -> float:
+    return a*x + b
+
+seed(1)
 dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
 
 modelo_normal = Regression(regressao_simples)
