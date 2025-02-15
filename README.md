@@ -210,6 +210,19 @@ meu_modelo_regressor.run(meus_dados)
 print(meu_modelo_regressor)
 ```
 
+### Regressão robusta
+
+Para realizar uma regressão semelhante ao método **.run**, mas de forma robusta:
+
+```
+dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
+modelo1 = Regression(regressao_simples)
+modelo1.run_robust(dados, especific_precision = [1, 0.1])
+
+modelo2 = Regression(regressao_simples)
+modelo2.run(dados, especific_precision = [1, 0.1])
+```
+
 ### Parâmetros de regressão
 
 Além da regressão simples, é possível realizar diversas alterações nos parâmetros a fim de controlar melhor o processo de regressão. Algumas das funções embutidas na classe *Regression* são:
@@ -735,6 +748,30 @@ plot_prediction_bands(teste_mlp_3, dados, amplitude = 1)
 ![EX_14](free_regression/imagens_testes/reg_14.png)
 
 ![EX_15](free_regression/imagens_testes/reg_15.png)
+
+### Com dados artificiais, regressão robusta
+
+Para realizar uma regressão semelhante ao método **.run**, mas de forma robusta:
+
+```
+dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
+
+modelo_normal = Regression(regressao_simples)
+modelo_normal.run(dados, especific_precision = [1, 0.1])
+
+modelo_robust = Regression(regressao_simples)
+modelo_robust.run_robust(dados, especific_precision = [1, 0.1])
+
+print(modelo_normal)
+print(modelo_robust)
+
+plot_expected(modelo_normal, dados)
+plot_expected(modelo_robust, dados)
+```
+
+![EX_robust_1](free_regression/imagens_testes/robust_1.png)
+
+![EX_robust_2](free_regression/imagens_testes/robust_2.png)
 
 ## Com dados artificiais, teste com logisticas
 

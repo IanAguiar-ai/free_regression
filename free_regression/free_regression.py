@@ -328,6 +328,14 @@ class Regression:
 
             return self.__function(**x_args, **self.__args_function)
 
+    def variance_error(self, data:[list]) -> float:
+        """
+        Calcula a variância do erro
+        """
+        y_:list = regression.prediction([data_i[:-1] for data_i in data])
+        y:list = [data_i[-1] for data_i in data]
+        return sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
+
     def run(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None) -> None:
         """
         Faz a regressão.
@@ -409,6 +417,56 @@ class Regression:
         self.__args_function = best_args
         self.__error = best_result/len(data)
 
+    def run_robust(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None, limiar:float = 1.92) -> [list]:
+        """
+        Faz uma regressão robusta usando o valor de limiar para o erro dos dados.
+
+        Args:
+            data(list(list)): lista de listas com x e y.
+            precision(float): Numero da precisão para achar os parâmetros esperados.
+            booster(float): Numero que é multiplicado pela precisão para decidir o limite superior de treino.
+            especific_precision(list): Lista de valores específicos para precisão específica.
+
+        Return:
+            [list]: Nova lista com valores robustos (não anomalos)
+        """
+        
+        assert type(data) == list, f"The data must be a list of lists not {type(data)}"
+        assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"
+        assert len(data[0]) == len(self.regressors) + 1, f"The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]\n\tSize of the passed list: {len(data[0])}\n\tExpected size: {len(self.regressors) + 1}"
+        assert (k := list(map(len, data))) and max(k) == min(k), "The data list must be the same size in all itens"
+        assert type(precision) == int or type(precision) == float, "Precision has to be a float or int"
+        assert limiar > 0, f"the limit must be greater than 0"
+
+        def new_data(regression:"Generator", data:[list], limiar:float) -> [list]:
+            y_:list = regression.prediction([data_i[:-1] for data_i in data])
+            y:list = [data_i[-1] for data_i in data]
+            variance:float = sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
+            sd:list = variance**(1/2)
+
+            new_data:list = []
+            for y_i, yi, i in zip(y_, y, range(len(y))):
+                if abs(yi - y_i) < limiar * sd:
+                    new_data.append(data[i])
+            return new_data
+            
+
+        len_old_data = len(data)
+        while True:
+            self.run(data = data,
+                     precision = precision,
+                     booster = booster,
+                     especific_precision = especific_precision)
+
+            data:[list] = new_data(regression = self, data = data, limiar = limiar)
+
+            if len_old_data == len(data):
+                break
+
+            len_old_data = len(data)
+
+        return data            
+        
 
     def __animation_run(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None) -> None:
         """

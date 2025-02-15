@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: free_regression
-Version: 1.1.11
+Version: 1.2.0
 Summary: Construtor de regressão genérico.
 Author: ['Ian dos Anjos Melo Aguiar']
 Author-email: <iannaianjos@gmail.com>
@@ -226,6 +226,19 @@ meu_modelo_regressor.run(meus_dados)
 
 # Conferindo parâmetros atualizados
 print(meu_modelo_regressor)
+```
+
+### Regressão robusta
+
+Para realizar uma regressão semelhante ao método **.run**, mas de forma robusta:
+
+```
+dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
+modelo1 = Regression(regressao_simples)
+modelo1.run_robust(dados, especific_precision = [1, 0.1])
+
+modelo2 = Regression(regressao_simples)
+modelo2.run(dados, especific_precision = [1, 0.1])
 ```
 
 ### Parâmetros de regressão
@@ -620,6 +633,20 @@ Função que recebe:
 
 Esta função a predição da série temporal desde que ela tenha sido construida corretamente.
 
+## Generator (MC e MCMC)
+
+### *Generator*
+
+...
+
+### *plot_time_series*
+
+...
+
+### *mcmc_anomaly*
+
+...
+
 ## Salvar *plots* da iteração
 
 A função *make_animation* que recebe:
@@ -740,6 +767,30 @@ plot_prediction_bands(teste_mlp_3, dados, amplitude = 1)
 
 ![EX_15](free_regression/imagens_testes/reg_15.png)
 
+### Com dados artificiais, regressão robusta
+
+Para realizar uma regressão semelhante ao método **.run**, mas de forma robusta:
+
+```
+dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
+
+modelo_normal = Regression(regressao_simples)
+modelo_normal.run(dados, especific_precision = [1, 0.1])
+
+modelo_robust = Regression(regressao_simples)
+modelo_robust.run_robust(dados, especific_precision = [1, 0.1])
+
+print(modelo_normal)
+print(modelo_robust)
+
+plot_expected(modelo_normal, dados)
+plot_expected(modelo_robust, dados)
+```
+
+![EX_robust_1](free_regression/imagens_testes/robust_1.png)
+
+![EX_robust_2](free_regression/imagens_testes/robust_2.png)
+
 ## Com dados artificiais, teste com logisticas
 
 ```
@@ -841,6 +892,7 @@ resp = plot_time_series(generator = test,
 ```
 from free_regression import Generator, mcmc_anomaly
 from random import random, seed
+from math import cos
 
 seed(0)
 dados = [10 + int(random()+random()+random()+cos(i/10)*30) for i in range(50_000)]

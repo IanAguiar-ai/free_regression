@@ -3,7 +3,7 @@ from free_regression import Regression
 from data import MedidasDeMassa, density
 from models_regression import *
 from graphics import *
-from random import random
+from random import random, seed
 
 # Biblioteca de teste
 import unittest
@@ -331,6 +331,20 @@ class Teste(unittest.TestCase):
         print(erro)
         plot_expected(erro, ruido)
 
+        print("Teste run_robust")
+        dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
+        modelo1 = Regression(regressao_simples)
+        modelo1.run_robust(dados, especific_precision = [1, 0.1])
+
+        modelo2 = Regression(regressao_simples)
+        modelo2.run(dados, especific_precision = [1, 0.1])
+
+        print(modelo2)
+        print(modelo1)
+
+        plot_expected(modelo2, dados)
+        plot_expected(modelo1, dados)
+
         
-if __name__ == "__main__":    
+if __name__ == "__main__":
     unittest.main()
