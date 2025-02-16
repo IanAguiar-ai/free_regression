@@ -30,9 +30,26 @@ def plot_expected(regression:"Regression", data:[list], size:list = (8, 6)) -> N
     if sorted(list(set(x))) == x:
         ax.plot(x, y1, label = "Dados Observados", color = "blue", linestyle = "-")
     else:
-        ax.scatter(x, y1, label = "Dados observados", color = "blue")
+        ax.scatter(x, y1, label = "Dados observados", color = "blue", alpha = 0.7)
+
     ax.plot(x_new, y2, label = "Valores Preditos", color = "red", linestyle = "--")
     ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
+
+    if regression._Regression__robust:
+        new_data:[list] = regression._Regression__new_data(data = data, limiar = regression._Regression__limiar)
+        old_data:[list] = data
+
+        outliers:list = []
+        for i in range(len(old_data)):
+            if not old_data[i] in new_data:
+                print(old_data[i])
+                outliers.append(old_data[i])
+
+        ax.scatter([outliers_i[0] for outliers_i in outliers],
+                   [outliers_i[-1] for outliers_i in outliers],
+                   marker = "o", label = f"Desconsiderados", color = "red", alpha = 0.8)
+        
+    
     ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
     ax.set_xlabel("X", fontsize = 14)
     ax.set_ylabel("Y", fontsize = 14)

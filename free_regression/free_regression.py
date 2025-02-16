@@ -25,7 +25,7 @@ class Regression:
         regressors (list): Lista de regressores, não é precisso passar se a função tiver apenas um parâmetro regressor e ele se chame 'x'.
         loss_function (function): Função de perda, é a função 'least squares' mas pode ser qualquer uma passada pelo usuário.
     """
-    __slots__ = ("iterations", "params", "regressors", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error")
+    __slots__ = ("iterations", "params", "regressors", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error", "__robust", "__limiar")
     
     def __init__(self, function:"function", regressors:list = None, loss_function:"function" = least_squares) -> None:
         """
@@ -37,6 +37,8 @@ class Regression:
         self.__function:"function" = function
         self.__loss_function:"function" = loss_function
         self.__error:float = None
+        self.__robust:bool = True
+        self.__limiar:float = 1.92
         
         temp = tuple(signature(function).parameters.keys())
         assert len(temp) >= 2, "Your function must have at least two parameters. Example f(x, b) = x*b = y"
@@ -416,6 +418,19 @@ class Regression:
         # Salva o resultado
         self.__args_function = best_args
         self.__error = best_result/len(data)
+        self.__robust:bool = False
+
+    def __new_data(self, data:[list], limiar:float) -> [list]:
+        y_:list = self.prediction([data_i[:-1] for data_i in data])
+        y:list = [data_i[-1] for data_i in data]
+        variance:float = sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
+        sd:list = variance**(1/2)
+
+        new_data:list = []
+        for y_i, yi, i in zip(y_, y, range(len(y))):
+            if abs(yi - y_i) < limiar * sd:
+                new_data.append(data[i])
+        return new_data
 
     def run_robust(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None, limiar:float = 1.92) -> [list]:
         """
@@ -436,20 +451,7 @@ class Regression:
         assert len(data[0]) == len(self.regressors) + 1, f"The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]\n\tSize of the passed list: {len(data[0])}\n\tExpected size: {len(self.regressors) + 1}"
         assert (k := list(map(len, data))) and max(k) == min(k), "The data list must be the same size in all itens"
         assert type(precision) == int or type(precision) == float, "Precision has to be a float or int"
-        assert limiar > 0, f"the limit must be greater than 0"
-
-        def new_data(regression:"Generator", data:[list], limiar:float) -> [list]:
-            y_:list = regression.prediction([data_i[:-1] for data_i in data])
-            y:list = [data_i[-1] for data_i in data]
-            variance:float = sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
-            sd:list = variance**(1/2)
-
-            new_data:list = []
-            for y_i, yi, i in zip(y_, y, range(len(y))):
-                if abs(yi - y_i) < limiar * sd:
-                    new_data.append(data[i])
-            return new_data
-            
+        assert limiar > 0, f"the limit must be greater than 0"           
 
         len_old_data = len(data)
         while True:
@@ -458,13 +460,15 @@ class Regression:
                      booster = booster,
                      especific_precision = especific_precision)
 
-            data:[list] = new_data(regression = self, data = data, limiar = limiar)
+            data:[list] = self.__new_data(data = data, limiar = limiar)
 
             if len_old_data == len(data):
                 break
 
             len_old_data = len(data)
 
+        self.__limiar:float = limiar
+        self.__robust:bool = True
         return data            
         
 

@@ -334,7 +334,7 @@ class Teste(unittest.TestCase):
         print("Teste run_robust")
         dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
         modelo1 = Regression(regressao_simples)
-        modelo1.run_robust(dados, especific_precision = [1, 0.1])
+        modelo1.run_robust(dados, especific_precision = [1, 0.1], limiar = 1.64)
 
         modelo2 = Regression(regressao_simples)
         modelo2.run(dados, especific_precision = [1, 0.1])
@@ -345,6 +345,26 @@ class Teste(unittest.TestCase):
         plot_expected(modelo2, dados)
         plot_expected(modelo1, dados)
 
+        from math import log
+    
+        def cos_(x, a, b) -> float:
+            return a*log(x+1) + b
+
+        seed(1)
+        dados = [*[[i, cos_(i, a = 1.5, b = 8) + random()*3-1.5] for i in range(100)],
+                 *[[i, cos_(i, a = .5, b = 3) + random()*20-10] for i in range(20, 100, 4)]]
+        modelo1 = Regression(cos_)
+        modelo2 = Regression(cos_)
+
+        modelo1.run(dados, especific_precision = [1, 0.1])
+        modelo2.run_robust(dados, especific_precision = [1, 0.1])
+
+        print(modelo1)
+        print(modelo2)
+
+        plot_expected(modelo1, dados)
+        plot_expected(modelo2, dados)
+
         
-if __name__ == "__main__":
+if __name__ == "__main__":    
     unittest.main()
