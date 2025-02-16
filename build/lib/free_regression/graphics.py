@@ -42,7 +42,6 @@ def plot_expected(regression:"Regression", data:[list], size:list = (8, 6)) -> N
         outliers:list = []
         for i in range(len(old_data)):
             if not old_data[i] in new_data:
-                print(old_data[i])
                 outliers.append(old_data[i])
 
         ax.scatter([outliers_i[0] for outliers_i in outliers],
