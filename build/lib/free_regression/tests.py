@@ -365,6 +365,23 @@ class Teste(unittest.TestCase):
         plot_expected(modelo1, dados)
         plot_expected(modelo2, dados)
 
+        def f(x, a, b) -> float:
+            return a*x**2 + x*b
         
-if __name__ == "__main__":    
+        data = [[x, x**2 + 20*x] for x in range(10, 30)]
+        modelo = Regression(f)
+        modelo.set_seed(1)
+        print(modelo.weights)
+        modelo.run(data, especific_precision = [1, 0.1], adaptive = False)
+        print(modelo)
+
+        data = [[x, x**2 + 20*x] for x in range(10, 30)]
+        modelo = Regression(f)
+        modelo.set_seed(1)
+        print(modelo.weights)
+        modelo.run(data, especific_precision = [1, 0.1])
+        print(modelo)
+
+        
+if __name__ == "__main__":
     unittest.main()

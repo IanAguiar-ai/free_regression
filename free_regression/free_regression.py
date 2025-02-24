@@ -341,15 +341,16 @@ class Regression:
         y:list = [data_i[-1] for data_i in data]
         return sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
 
-    def run(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None) -> None:
+    def run(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None, adaptive:bool = True) -> None:
         """
         Faz a regressão.
 
         Args:
-            data(list(list)): lista de listas com x e y.
+            data(list(list)): Lista de listas com x e y.
             precision(float): Numero da precisão para achar os parâmetros esperados.
             booster(float): Numero que é multiplicado pela precisão para decidir o limite superior de treino.
             especific_precision(list): Lista de valores específicos para precisão específica.
+            adaptive(bool): Se o método deve dar pesos diferentes para cada parâmetro (recomendado).
         """
 
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"
@@ -361,6 +362,10 @@ class Regression:
         # Iniciando a seed
         if self.__seed is not None:
             seed(self.__seed)
+
+        # Método adaptativo
+        if adaptive:
+            self.adjust_weights(data = data, value = precision)
 
         # Pegando y esperado
         y_expected = [data[i][-1] for i in range(len(data))]
@@ -418,22 +423,42 @@ class Regression:
             else:
                 precision /= 2
 
+            if adaptive:
+                self.adjust_weights(data = data, value = precision)
+                
+
         # Salva o resultado
         self.__args_function = best_args
         self.__error = best_result/len(data)
         self.__robust:bool = False
 
-    def adjust_weights(self, data:[list]) -> None:
+    def adjust_weights(self, data:[list], value:float = 1) -> None:
         """
         Função que ajusta pesos das mudanças dos parâmetros
+
+        Args:
+            data(list(list)): lista de listas com x e y.
+            value(float): Valor que define quanto será o salto para teste
         """
         X:[list] = [data_i[:-1] for data_i in data]
         y:list = [data_i[-1] for data_i in data]
 
         # Confere erro inicial:
-        errors = self.__loss_function(self.prediction(X), y)
-        print(errors)
-        
+        initial_error:float = self.__loss_function(self.prediction(X), y)
+
+        sum_errors:float = 0
+        errors:dict = {}
+        for key in self.__args_function: # Ver erros marginais de cada variável
+            self[key] += value
+            errors[key] = self.__loss_function(self.prediction(X), y)
+            self[key] -= value
+
+            # Calculando novos pesos
+            self.weights[key] = 1/(abs(errors[key] - initial_error) + 1)
+            sum_errors += 1/(abs(errors[key] - initial_error) + 1)
+
+        self.weights = {key: value / sum_errors for key, value in self.weights.items()} #Normalizando pesos
+            
 
     def __new_data(self, data:[list], limiar:float) -> [list]:
         y_:list = self.prediction([data_i[:-1] for data_i in data])
@@ -447,7 +472,7 @@ class Regression:
                 new_data.append(data[i])
         return new_data
 
-    def run_robust(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None, limiar:float = 1.92) -> [list]:
+    def run_robust(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None, limiar:float = 1.92, adaptive:bool = True) -> [list]:
         """
         Faz uma regressão robusta usando o valor de limiar para o erro dos dados.
 
@@ -473,7 +498,8 @@ class Regression:
             self.run(data = data,
                      precision = precision,
                      booster = booster,
-                     especific_precision = especific_precision)
+                     especific_precision = especific_precision,
+                     adaptive = adaptive)
 
             data:[list] = self.__new_data(data = data, limiar = limiar)
 
