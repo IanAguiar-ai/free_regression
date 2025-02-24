@@ -2,7 +2,7 @@
 from free_regression import Regression
 from data import MedidasDeMassa, density
 from models_regression import *
-from graphics import *
+#from graphics import *
 from random import random, seed
 
 # Biblioteca de teste
@@ -366,5 +366,20 @@ class Teste(unittest.TestCase):
         plot_expected(modelo2, dados)
 
         
-if __name__ == "__main__":    
-    unittest.main()
+if __name__ == "__main__":
+    def f(x, a, b) -> float:
+        return a*x**2 + x*b
+    data = [[x, x**2 + 20*x] for x in range(10, 30)]
+    modelo = Regression(f)
+    modelo.set_seed(1)
+    print(modelo.weights)
+    #modelo.run(data, especific_precision = [1, 0.1])
+    #print(modelo)
+
+    modelo = Regression(f)
+    modelo.set_seed(1)
+    modelo.adjust_weights(data)
+    print(modelo.weights)
+    #modelo.run(data, especific_precision = [1, 0.1])
+    #print(modelo)
+    #unittest.main()

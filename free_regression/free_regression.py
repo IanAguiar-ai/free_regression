@@ -25,7 +25,7 @@ class Regression:
         regressors (list): Lista de regressores, não é precisso passar se a função tiver apenas um parâmetro regressor e ele se chame 'x'.
         loss_function (function): Função de perda, é a função 'least squares' mas pode ser qualquer uma passada pelo usuário.
     """
-    __slots__ = ("iterations", "params", "regressors", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error", "__robust", "__limiar")
+    __slots__ = ("iterations", "params", "regressors", "weights", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error", "__robust", "__limiar")
     
     def __init__(self, function:"function", regressors:list = None, loss_function:"function" = least_squares) -> None:
         """
@@ -64,7 +64,10 @@ class Regression:
         self.iterations:int = min(50 * len(self.__args_function.keys()), 500) # Quanto mais parâmetros mais iterações eu precisso para que o valor mude
 
         # Variáveis bloqueadas
-        self.__lock = {}
+        self.__lock:dict = {}
+
+        # Pesos dos parâmetros
+        self.weights:dict = {key:1 for key in self.__args_function}
 
     def __eq__(self, obj) -> bool:
         """
@@ -406,7 +409,7 @@ class Regression:
 
                 for parameter in self.__args_function.keys():
                     if parameter not in self.__lock.keys():
-                        args_temp[parameter] += random()*precision - precision/2
+                        args_temp[parameter] += (random()*precision - precision/2)*self.weights[parameter]
                         
             # Aumenta a precisão
             if type(especific_precision) == list:
@@ -419,6 +422,18 @@ class Regression:
         self.__args_function = best_args
         self.__error = best_result/len(data)
         self.__robust:bool = False
+
+    def adjust_weights(self, data:[list]) -> None:
+        """
+        Função que ajusta pesos das mudanças dos parâmetros
+        """
+        X:[list] = [data_i[:-1] for data_i in data]
+        y:list = [data_i[-1] for data_i in data]
+
+        # Confere erro inicial:
+        errors = self.__loss_function(self.prediction(X), y)
+        print(errors)
+        
 
     def __new_data(self, data:[list], limiar:float) -> [list]:
         y_:list = self.prediction([data_i[:-1] for data_i in data])
