@@ -812,6 +812,8 @@ plot_expected(modelo, dados_)
 
 ![EX_5](free_regression/imagens_testes/reg_5_sigmoid.png)
 
+![EX_19](free_regression/imagens_testes/res_19.png)
+
 ## Com dados artificiais, cadeia de Markov com multiplas dependências
 
 ```
