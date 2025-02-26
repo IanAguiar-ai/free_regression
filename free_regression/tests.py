@@ -2,7 +2,7 @@
 from free_regression import Regression
 from data import MedidasDeMassa, density
 from models_regression import *
-from graphics import *
+#from graphics import *
 from random import random, seed
 
 # Biblioteca de teste
@@ -319,7 +319,7 @@ class Teste(unittest.TestCase):
         modelo = Regression(regressao_simples)
         erro = Regression(normal_assimetrica)
 
-        modelo.run(dados)
+        modelo.run(dados, especific_precision = [32, 16, 8, 4, 2, 1, 0.5, 0.2, 0.1])
         ruido = plot_residual(modelo, dados)
 
         media = sum(ruido)/len(ruido)
@@ -334,10 +334,10 @@ class Teste(unittest.TestCase):
         print("Teste run_robust")
         dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
         modelo1 = Regression(regressao_simples)
-        modelo1.run_robust(dados, especific_precision = [1, 0.1], limiar = 1.64)
+        modelo1.run_robust(dados, especific_precision = [32, 16, 8, 4, 2, 1, 0.5, 0.2, 0.1], limiar = 1.64)
 
         modelo2 = Regression(regressao_simples)
-        modelo2.run(dados, especific_precision = [1, 0.1])
+        modelo2.run(dados, especific_precision = [32, 16, 8, 4, 2, 1, 0.5, 0.2, 0.1])
 
         print(modelo2)
         print(modelo1)
