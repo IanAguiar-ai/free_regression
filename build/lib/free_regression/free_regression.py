@@ -446,7 +446,7 @@ class Regression:
         # Confere erro inicial:
         initial_error:float = self.__loss_function(self.prediction(X), y)
 
-        sum_errors:float = 0
+        sum_errors:list = []
         errors:dict = {}
         for key in self.__args_function: # Ver erros marginais de cada variável
             self.__args_function[key] += value
@@ -455,10 +455,9 @@ class Regression:
 
             # Calculando novos pesos
             self.weights[key] = 1/(abs(errors[key] - initial_error) + 1)
-            sum_errors += 1/(abs(errors[key] - initial_error) + 1)
+            sum_errors.append(1/(abs(errors[key] - initial_error) + 1))
 
-        self.weights = {key: value/sum_errors * len(self.__args_function) for key, value in self.weights.items()} #Normalizando pesos
-            
+        self.weights = {key: value/max(sum_errors) for key, value in self.weights.items()} #Normalizando pesos
 
     def __new_data(self, data:[list], limiar:float) -> [list]:
         y_:list = self.prediction([data_i[:-1] for data_i in data])
