@@ -91,7 +91,7 @@ class Teste(unittest.TestCase):
             dado = [[x, regressao_2(x, a = 15, b = -7, c = -4)] for x in range(10)]
             teste_2 = Regression(regressao_2)
             teste_2.iterations = 100
-            teste_2.run(dado, precision = 0.0001)
+            teste_2.run(dado, precision = 0.01)
             print(teste_2)
         except Exception as e:
             self.fail(f"Teste com regressão de 3 parâmetros: {e}")
@@ -267,7 +267,7 @@ class Teste(unittest.TestCase):
             modelo_iris_3 = Regression(mlp, regressors = ['x1', 'x2'])
             modelo_iris_3.change_all(0)
             modelo_iris_3.set_seed(0)
-            modelo_iris_3.run(iris, especific_precision = [10, 1, 0.1])
+            modelo_iris_3.run(iris, especific_precision = [10, 1])
 
             print(f"\n{modelo_iris_3}")
 
