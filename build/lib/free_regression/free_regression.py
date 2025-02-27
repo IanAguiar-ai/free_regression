@@ -370,18 +370,18 @@ class Regression:
         if self.__seed is not None:
             seed(self.__seed)
         if self.__print:
-            print(f"seed: {self.__seed}", end = "\r")
+            print(f"\rseed: {self.__seed}", end = "")
 
         # Método adaptativo
         if adaptive:
             self.adjust_weights(data = data, value = precision)
         if self.__print:
-            print(f"Adaptive mode: {adaptive}", end = "\r")
+            print(f"\rAdaptive mode: {adaptive}", end = "")
         
         # Pegando y esperado
         y_expected = [data[i][-1] for i in range(len(data))]
         if self.__print:
-            print(f"y_expected: True", end = "\r")
+            print(f"\ry_expected: True", end = "")
 
         # Salvando argumentos iniciais para a função
         args_temp:dict = {}
@@ -391,18 +391,18 @@ class Regression:
             else:
                 args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
                 if self.__print:
-                    print(f"Lock {parameter}: True", end = "\r")
+                    print(f"\rLock {parameter}: True", end = "")
 
         if type(especific_precision) == list:
             precision_final, precision = 1, len(especific_precision)
             index_precision = 0
             if self.__print:
-                print(f"|{' ' * len(especific_precision)}| (Precision: {especific_precision[index_precision]})", end = "\r")
+                print(f"\r|{' ' * len(especific_precision)}| (Precision: {especific_precision[index_precision]})", end = "")
         else:
             precision_final, precision = precision/2, precision * booster
             precision_k = 0
             if self.__print:
-                print(f"|{' '*9}| (Precision: {precision} | Final Precision: {precision_final})", end = "\r")
+                print(f"\r|{' '*9}| (Precision: {precision} | Final Precision: {precision_final})", end = "")
             
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
@@ -439,14 +439,14 @@ class Regression:
             # Aumenta a precisão
             if type(especific_precision) == list:
                 if self.__print:
-                    print(f"|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: self.__function.__name__)", end = "\r")
+                    print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: self.__function.__name__)", end = "")
                 precision_final += 1
                 precision:int = len(especific_precision)
             else:
                 precision_k += 1
                 precision /= 2
                 if self.__print:
-                    print(f"|{'#' * precision_k}{' '*(9 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final})", end = "\r")
+                    print(f"\r|{'#' * precision_k}{' '*(9 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final})", end = "")
 
             if adaptive:
                 self.adjust_weights(data = data, value = precision)
