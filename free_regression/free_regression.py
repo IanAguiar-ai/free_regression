@@ -439,7 +439,7 @@ class Regression:
             # Aumenta a precisão
             if type(especific_precision) == list:
                 if self.__print:
-                    print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: self.__function.__name__)", end = "")
+                    print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__})", end = "")
                 precision_final += 1
                 precision:int = len(especific_precision)
             else:
@@ -450,7 +450,9 @@ class Regression:
 
             if adaptive:
                 self.adjust_weights(data = data, value = precision)
-                
+
+        if self.__print:
+            print(" (end)")                
 
         # Salva o resultado
         self.__args_function = best_args

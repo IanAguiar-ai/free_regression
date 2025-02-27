@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: free_regression
 Version: 1.2.3
 Summary: Construtor de regressão genérico.
@@ -14,6 +14,14 @@ Classifier: Operating System :: Microsoft :: Windows
 Description-Content-Type: text/markdown
 Requires-Dist: matplotlib
 Requires-Dist: numpy
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: keywords
+Dynamic: requires-dist
+Dynamic: summary
 
 
 # free_regression
