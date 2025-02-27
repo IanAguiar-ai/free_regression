@@ -397,12 +397,12 @@ class Regression:
             precision_final, precision = 1, len(especific_precision)
             index_precision = 0
             if self.__print:
-                print(f"\r|{' ' * len(especific_precision)}| (Precision: {especific_precision[index_precision]})", end = "")
+                print(f"\r|{' ' * len(especific_precision)}| (Precision: {especific_precision[index_precision]}) (Model: {self.__function.__name__})", end = "")
         else:
             precision_final, precision = precision/2, precision * booster
             precision_k = 0
             if self.__print:
-                print(f"\r|{' '*9}| (Precision: {precision} | Final Precision: {precision_final})", end = "")
+                print(f"\r|{' '*9}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
             
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
@@ -446,12 +446,12 @@ class Regression:
                 precision_k += 1
                 precision /= 2
                 if self.__print:
-                    print(f"\r|{'#' * precision_k}{' '*(9 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final})", end = "")
+                    print(f"\r|{'#' * precision_k}{' '*(9 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
 
             if adaptive:
                 self.adjust_weights(data = data, value = precision)
 
-        if self.__print:
+        if self.__print and not self.__robust:
             print(" (end)")                
 
         # Salva o resultado
@@ -520,7 +520,9 @@ class Regression:
         assert limiar > 0, f"the limit must be greater than 0"           
 
         len_old_data = len(data)
+        iteration:int = 1
         while True:
+            self.__robust:bool = True
             self.run(data = data,
                      precision = precision,
                      booster = booster,
@@ -528,6 +530,9 @@ class Regression:
                      adaptive = adaptive)
 
             data:[list] = self.__new_data(data = data, limiar = limiar)
+
+            print(f" (Iteration: {iteration} | len(data): {len(data)})")
+            iteration += 1
 
             if len_old_data == len(data):
                 break
@@ -631,7 +636,7 @@ class Regression:
 
                 for parameter in self.__args_function.keys():
                     if parameter not in self.__lock.keys():
-                        args_temp[parameter] += random()*precision - precision/2
+                        args_temp[parameter] += (random()*precision - precision)*self.weights[parameter]
                         
             # Aumenta a precisão
             if type(especific_precision) == list:
