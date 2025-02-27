@@ -403,7 +403,8 @@ class Regression:
             precision_k = 0
             if self.__print:
                 print(f"\r|{' '*9}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
-            
+
+        all_iterations:int = 1
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
             if type(especific_precision) == list:
@@ -435,6 +436,21 @@ class Regression:
                 for parameter in self.__args_function.keys():
                     if parameter not in self.__lock.keys():
                         args_temp[parameter] += (random()*precision - precision/2)*self.weights[parameter]
+
+                if all_iterations % 10_000 == 0:
+                    if type(especific_precision) == list:
+                        if self.__print:
+                            precision:int = len(especific_precision)
+                            print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__})", end = "")
+                    else:
+                        if self.__print:
+                            print(f"\r|{'#' * precision_k}{' '*(9 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
+                    if self.__print:
+                        if len(list(self.__args_function.keys())) <= 5:
+                            values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
+                            print(f" || {' | '.join(values)}", end = "")
+                        
+                all_iterations += 1
                         
             # Aumenta a precisão
             if type(especific_precision) == list:
@@ -447,6 +463,9 @@ class Regression:
                 precision /= 2
                 if self.__print:
                     print(f"\r|{'#' * precision_k}{' '*(9 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
+            if self.__print:
+                values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
+                print(f" || {' | '.join(values)}", end = "")
 
             if adaptive:
                 self.adjust_weights(data = data, value = precision)
