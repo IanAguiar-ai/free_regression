@@ -30,6 +30,12 @@ class Regression:
     def __init__(self, function:"function", regressors:list = None, loss_function:"function" = least_squares, print:bool = False) -> None:
         """
         Inicializa a classe.
+
+        Args:
+            function:(função | def) Função qual será aplicada a regressão, por exemplo, f = lambda x, a, b: x*a + b.
+            regressors:[str] Lista de strings qual indica os regressores, por padrão é apenas 'x' mas se tiver mais do que um ou uma letra diferente ela deve ser indicada.
+            loss_function:(função | def) função que é minimizada ao fazer a regressão.
+            print:(bool) Booleano que indica se deve ser printado o estado da regressão.
         """
         assert callable(function), f"<function> is a {type(function)} not a function"
         assert callable(loss_function), f"<loss_function> is a {type(loss_function)} not a function"
@@ -394,8 +400,9 @@ class Regression:
                 print(f"|{' ' * len(especific_precision)}| (Precision: {especific_precision[index_precision]})", end = "\r")
         else:
             precision_final, precision = precision/2, precision * booster
+            precision_k = 0
             if self.__print:
-                print(f"Precision: {precision} | Final Precision: {precision_final}", end = "\r")
+                print(f"|{' '*9}| (Precision: {precision} | Final Precision: {precision_final})", end = "\r")
             
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
@@ -436,9 +443,10 @@ class Regression:
                 precision_final += 1
                 precision:int = len(especific_precision)
             else:
+                precision_k += 1
                 precision /= 2
                 if self.__print:
-                    print(f"Precision: {precision} | Final Precision: {precision_final}", end = "\r")
+                    print(f"|{'#' * precision_k}{' '*(9 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final})", end = "\r")
 
             if adaptive:
                 self.adjust_weights(data = data, value = precision)

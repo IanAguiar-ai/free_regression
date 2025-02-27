@@ -25,20 +25,27 @@ class Regression:
         regressors (list): Lista de regressores, não é precisso passar se a função tiver apenas um parâmetro regressor e ele se chame 'x'.
         loss_function (function): Função de perda, é a função 'least squares' mas pode ser qualquer uma passada pelo usuário.
     """
-    __slots__ = ("iterations", "params", "regressors", "weights", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error", "__robust", "__limiar")
+    __slots__ = ("iterations", "params", "regressors", "weights", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error", "__robust", "__limiar", "__print")
     
-    def __init__(self, function:"function", regressors:list = None, loss_function:"function" = least_squares) -> None:
+    def __init__(self, function:"function", regressors:list = None, loss_function:"function" = least_squares, print:bool = False) -> None:
         """
         Inicializa a classe.
+
+        Args:
+            function:(função | def) Função qual será aplicada a regressão, por exemplo, f = lambda x, a, b: x*a + b.
+            regressors:[str] Lista de strings qual indica os regressores, por padrão é apenas 'x' mas se tiver mais do que um ou uma letra diferente ela deve ser indicada.
+            loss_function:(função | def) função que é minimizada ao fazer a regressão.
+            print:(bool) Booleano que indica se deve ser printado o estado da regressão.
         """
         assert callable(function), f"<function> is a {type(function)} not a function"
         assert callable(loss_function), f"<loss_function> is a {type(loss_function)} not a function"
-        
+
         self.__function:"function" = function
         self.__loss_function:"function" = loss_function
         self.__error:float = None
         self.__robust:bool = True
         self.__limiar:float = 1.92
+        self.__print:float = print
         
         temp = tuple(signature(function).parameters.keys())
         assert len(temp) >= 2, "Your function must have at least two parameters. Example f(x, b) = x*b = y"
@@ -88,7 +95,7 @@ class Regression:
             output += f"\nLOCK PARAMS: {', '.join(self.__lock)}"
         output += "\nPARAMS:"
         for arg in self.__args_function.keys():
-            output += f"\n  {arg} = {self.__args_function[arg]:0.08f}"
+            output += f"\n  {arg} = {self.__args_function[arg]:0.08f} (w: {self.weights[arg]:0.08f})"
         return output
 
     def __len__(self) -> list:
@@ -355,20 +362,26 @@ class Regression:
 
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"
         assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"
-        assert len(data[0]) == len(self.regressors) + 1, f"The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]\n\tSize of the passed list: {len(data[0])} | {data[0]}\n\tExpected size: {len(self.regressors) + 1} | {self.regressors}"
+        assert len(data[0]) == len(self.regressors) + 1, f"The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]\n\tSize of the passed list: {len(data[0])} | {data[0]}\n\tExpected size: {len(self.regressors) + 1} | {self.regressors} + [y]"
         assert (k := list(map(len, data))) and max(k) == min(k), "The data list must be the same size in all itens"
         assert type(precision) == int or type(precision) == float, "Precision has to be a float or int"
 
         # Iniciando a seed
         if self.__seed is not None:
             seed(self.__seed)
+        if self.__print:
+            print(f"seed: {self.__seed}", end = "\r")
 
         # Método adaptativo
         if adaptive:
             self.adjust_weights(data = data, value = precision)
-
+        if self.__print:
+            print(f"Adaptive mode: {adaptive}", end = "\r")
+        
         # Pegando y esperado
         y_expected = [data[i][-1] for i in range(len(data))]
+        if self.__print:
+            print(f"y_expected: True", end = "\r")
 
         # Salvando argumentos iniciais para a função
         args_temp:dict = {}
@@ -376,13 +389,20 @@ class Regression:
             if parameter not in self.__lock.keys():
                 args_temp[parameter] = self.__args_function[parameter]
             else:
-                args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada        
+                args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
+                if self.__print:
+                    print(f"Lock {parameter}: True", end = "\r")
 
         if type(especific_precision) == list:
             precision_final, precision = 1, len(especific_precision)
             index_precision = 0
+            if self.__print:
+                print(f"|{' ' * len(especific_precision)}| (Precision: {especific_precision[index_precision]})", end = "\r")
         else:
             precision_final, precision = precision/2, precision * booster
+            precision_k = 0
+            if self.__print:
+                print(f"|{' '*9}| (Precision: {precision} | Final Precision: {precision_final})", end = "\r")
             
         while precision >= precision_final: # Vai diminuindo a variação da busca
             with_no_iteration = 0
@@ -418,10 +438,15 @@ class Regression:
                         
             # Aumenta a precisão
             if type(especific_precision) == list:
+                if self.__print:
+                    print(f"|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: self.__function.__name__)", end = "\r")
                 precision_final += 1
                 precision:int = len(especific_precision)
             else:
+                precision_k += 1
                 precision /= 2
+                if self.__print:
+                    print(f"|{'#' * precision_k}{' '*(9 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final})", end = "\r")
 
             if adaptive:
                 self.adjust_weights(data = data, value = precision)

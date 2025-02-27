@@ -250,13 +250,13 @@ class Teste(unittest.TestCase):
             iris = iris.data_list
             iris = [list(x[:3]) for x in iris]
             
-            modelo_iris = Regression(regressao_2_betas, regressors = ['x1', 'x2'])
+            modelo_iris = Regression(regressao_2_betas, regressors = ['x1', 'x2'], print = True)
             modelo_iris.set_seed(2024)
             modelo_iris.run(iris)
 
             print(f"\n{modelo_iris}")
 
-            modelo_iris_2 = Regression(regressao_4_betas, regressors = ['x1', 'x2'])
+            modelo_iris_2 = Regression(regressao_4_betas, regressors = ['x1', 'x2'], print = True)
             modelo_iris_2.set_seed(2024)
             modelo_iris_2 << modelo_iris
             print(modelo_iris_2)
@@ -264,7 +264,7 @@ class Teste(unittest.TestCase):
 
             print(f"\n{modelo_iris_2}")
 
-            modelo_iris_3 = Regression(mlp, regressors = ['x1', 'x2'])
+            modelo_iris_3 = Regression(mlp, regressors = ['x1', 'x2'], print = True)
             modelo_iris_3.change_all(0)
             modelo_iris_3.set_seed(0)
             modelo_iris_3.run(iris, especific_precision = [10, 1])
@@ -282,7 +282,7 @@ class Teste(unittest.TestCase):
         try:
             dados = MedidasDeMassa()
             
-            modelo = Regression(*generate_regression(3, 1))
+            modelo = Regression(*generate_regression(3, 1), print = True)
             modelo.set_seed(2024)
             modelo.run(dados[:], precision = 1)
             print(modelo)
@@ -290,7 +290,7 @@ class Teste(unittest.TestCase):
         except Exception as e:
             self.fail(f"Não foi possível completar o teste com o banco de dados iris: {e}")
 
-        teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
+        teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1), print = True)
         teste_1.set_seed(1)
         teste_1.change(b = 0)
         print(teste_1)
@@ -301,7 +301,7 @@ class Teste(unittest.TestCase):
         plot_expected(teste_1, dados)
         plot_residual(teste_1, dados)
         
-        teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 2))
+        teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 2), print = True)
         teste_1.set_seed(1)
         teste_1.change(mean_0 = 1, mean_1 = 3, var_1 = 0.3)
         print(teste_1)
@@ -319,7 +319,7 @@ class Teste(unittest.TestCase):
         modelo = Regression(regressao_simples)
         erro = Regression(normal_assimetrica)
 
-        modelo.run(dados)
+        modelo.run(dados, especific_precision = [32, 16, 8, 4, 2, 1, 0.5, 0.2, 0.1])
         ruido = plot_residual(modelo, dados)
 
         media = sum(ruido)/len(ruido)
@@ -333,11 +333,11 @@ class Teste(unittest.TestCase):
 
         print("Teste run_robust")
         dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
-        modelo1 = Regression(regressao_simples)
-        modelo1.run_robust(dados, especific_precision = [1, 0.1], limiar = 1.64)
+        modelo1 = Regression(regressao_simples, print = True)
+        modelo1.run_robust(dados, especific_precision = [32, 16, 8, 4, 2, 1, 0.5, 0.2, 0.1], limiar = 1.64)
 
-        modelo2 = Regression(regressao_simples)
-        modelo2.run(dados, especific_precision = [1, 0.1])
+        modelo2 = Regression(regressao_simples, print = True)
+        modelo2.run(dados, especific_precision = [32, 16, 8, 4, 2, 1, 0.5, 0.2, 0.1])
 
         print(modelo2)
         print(modelo1)
@@ -369,14 +369,14 @@ class Teste(unittest.TestCase):
             return a*x**2 + x*b
         
         data = [[x, x**2 + 20*x] for x in range(10, 30)]
-        modelo = Regression(f)
+        modelo = Regression(f, print = True)
         modelo.set_seed(1)
         print(modelo.weights)
         modelo.run(data, especific_precision = [1, 0.1], adaptive = False)
         print(modelo)
 
         data = [[x, x**2 + 20*x] for x in range(10, 30)]
-        modelo = Regression(f)
+        modelo = Regression(f, print = True)
         modelo.set_seed(1)
         print(modelo.weights)
         modelo.run(data, especific_precision = [1, 0.1])
