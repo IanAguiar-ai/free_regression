@@ -444,7 +444,7 @@ class Regression:
                             print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__})", end = "")
                     else:
                         if self.__print:
-                            print(f"\r|{'#' * precision_k}{' '*(9 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
+                            print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
                     if self.__print:
                         if len(list(self.__args_function.keys())) <= 5:
                             values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
