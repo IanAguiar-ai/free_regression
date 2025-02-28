@@ -437,7 +437,7 @@ class Regression:
                     if parameter not in self.__lock.keys():
                         args_temp[parameter] += (random()*precision - precision/2)*self.weights[parameter]
 
-                if all_iterations % 10_000 == 0:
+                if all_iterations % 1_000 == 0:
                     if type(especific_precision) == list:
                         if self.__print:
                             precision:int = len(especific_precision)
@@ -449,6 +449,7 @@ class Regression:
                         if len(list(self.__args_function.keys())) <= 5:
                             values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
                             print(f" || {' | '.join(values)}", end = "")
+                    self.adjust_weights(data = data, value = precision)
                         
                 all_iterations += 1
                         
