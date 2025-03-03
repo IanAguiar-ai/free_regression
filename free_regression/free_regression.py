@@ -465,8 +465,9 @@ class Regression:
                 if self.__print:
                     print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
             if self.__print:
-                values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
-                print(f" || {' | '.join(values)}", end = "")
+                if len(list(self.__args_function.keys())) <= 5:
+                    values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
+                    print(f" || {' | '.join(values)}", end = "")
 
             if adaptive:
                 self.adjust_weights(data = data, value = precision)
