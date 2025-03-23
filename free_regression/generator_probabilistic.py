@@ -26,7 +26,7 @@ def mcmc_anomaly(series:list, predict:list, dependence:int = 1, percentage:float
         plot: Booleano que indica se deverá ser colocado o plot
 
     Retorna:
-        Retorna uma lista do tamanho de predict - dependence mostrando quais pontos seriam anomalias
+        Retorna uma lista do tamanho de (predict - dependence) mostrando quais pontos seriam anomalias
     """
     def valor_mais_provavel(respostas:list) -> int:
         contagem = Counter(respostas)
