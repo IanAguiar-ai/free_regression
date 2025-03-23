@@ -552,7 +552,8 @@ class Regression:
 
             data:[list] = self.__new_data(data = data, limiar = limiar)
 
-            print(f" (Iteration: {iteration} | len(data): {len(data)})")
+            if self.__print:
+                print(f" (Iteration: {iteration} | len(data): {len(data)})")
             iteration += 1
 
             if len_old_data == len(data):

@@ -573,17 +573,25 @@ Recebe dois argumentos:
 
 ### *data_series*
 
+Cria um lista de listas para modelos de séries temporais.
+
 ...
 
 ### *round_series*
+
+Arredonda a série temporal.
 
 ...
 
 ### *exponential_smoothing*
 
+Suavização exponencial.
+
 ...
 
 ### *double_exponential_smoothing*
+
+Suavização exponencial dupla.
 
 ...
 
@@ -642,7 +650,29 @@ Esta função a predição da série temporal desde que ela tenha sido construid
 
 ### *Generator*
 
-...
+Classe de geradores por Cadeia de Markov.
+
+Recebe:
+
+-- **dependence**: Inteiro indicando número de dependência.
+
+Exemplo:
+
+```
+texto_exemplo:str = "seu texto aqui"
+
+for dependence in range(1, 10, 1):
+  test = Generator(dependence = dependence)
+  test.train(list(text))
+  
+  ### Descomente para ver as informações do gerador:
+  #print(test.chain)
+  #print(test.prob_chain)
+  #print(test.choice(["t", "a"])) # Prováveis respostas após esses dois caracteres
+  
+  resp:str = test.make_text(list("Frase que gererá uma sequencia"), lenth = 200)
+  print(f"\nDependenci: {'='*200}\n{dependence} -> {resp}\n")
+```
 
 ### *plot_time_series*
 
@@ -650,7 +680,35 @@ Esta função a predição da série temporal desde que ela tenha sido construid
 
 ### *mcmc_anomaly*
 
-...
+Função que identifica anomalias em séries temporais dado a probabilidade do acontecimento
+
+Função que recebe:
+
+-- **series**: Lista com série que deve treinar a cadeia de Markov;
+-- **predict**: Lista com os dados que devem ser preditos, o tamanho dele deve ser pelo menos de dependence + 1;
+-- **porcentage**: Float que considera o limiar que será considerado anomalia;
+-- **runs**: Inteiro com quantidade de vezes que MCMC deve ser executado por elemento, recomendado é 1000;
+-- **plot**: Booleano que indica se deverá ser colocado o plot.
+
+Retorna:
+
+-- Retorna uma lista do tamanho de (predict - dependence) mostrando quais pontos seriam anomalias.
+
+Exemplo:
+
+```
+from free_regression import Generator, mcmc_anomaly
+from random import random, seed
+from math import cos
+
+seed(0)
+dados = [10 + int(random()+random()+random()+cos(i/10)*30) for i in range(50_000)]
+dados_prev = dados[100:300]
+
+respostas = mcmc_anomaly(dados, dados_prev,
+                         dependence = 2,
+                         percentage = 10)
+```
 
 ## Salvar *plots* da iteração
 
@@ -771,6 +829,31 @@ plot_prediction_bands(teste_mlp_3, dados, amplitude = 1)
 ![EX_14](free_regression/imagens_testes/reg_14.png)
 
 ![EX_15](free_regression/imagens_testes/reg_15.png)
+
+### Colocando pesos nas amostras
+
+```
+from random import random, seed
+
+def loss(y1, y2):
+  pesos = globals()["pesos"]
+  return sum([(y1[i] - y2[i])*(y1[i] - y2[i])*pesos[i] for i in range(len(y1))])
+
+def regressao_simples(x:float, a:float, b:float) -> float:
+    return a*x + b
+
+seed(1)
+dados = [*[[i, random() * 10 + i] for i in range(100)], *[[i, random() * 10] for i in range(30, 100, 4)]]
+pesos = [random()/(i+1)**2 for i in range(len(dados))]
+
+modelo_normal = Regression(regressao_simples)
+modelo_normal.loss_function(loss)
+modelo_normal.run(dados, especific_precision = [1, 0.1])
+
+print(modelo_normal)
+
+plot_expected(modelo_normal, dados)
+```
 
 ### Com dados artificiais, regressão robusta
 
