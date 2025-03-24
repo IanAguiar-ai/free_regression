@@ -636,7 +636,7 @@ Classe de geradores por Cadeia de Markov.
 
 Recebe:
 
--- **dependence**: Inteiro indicando número de dependência.
+- **dependence**: Inteiro indicando número de dependência.
 
 Exemplo:
 
@@ -666,15 +666,15 @@ Função que identifica anomalias em séries temporais dado a probabilidade do a
 
 Função que recebe:
 
--- **series**: Lista com série que deve treinar a cadeia de Markov;
--- **predict**: Lista com os dados que devem ser preditos, o tamanho dele deve ser pelo menos de dependence + 1;
--- **porcentage**: Float que considera o limiar que será considerado anomalia;
--- **runs**: Inteiro com quantidade de vezes que MCMC deve ser executado por elemento, recomendado é 1000;
--- **plot**: Booleano que indica se deverá ser colocado o plot.
+- **series**: Lista com série que deve treinar a cadeia de Markov;
+- **predict**: Lista com os dados que devem ser preditos, o tamanho dele deve ser pelo menos de dependence + 1;
+- **porcentage**: Float que considera o limiar que será considerado anomalia;
+- **runs**: Inteiro com quantidade de vezes que MCMC deve ser executado por elemento, recomendado é 1000;
+- **plot**: Booleano que indica se deverá ser colocado o plot.
 
 Retorna:
 
--- Retorna uma lista do tamanho de (predict - dependence) mostrando quais pontos seriam anomalias.
+- Retorna uma lista do tamanho de (predict - dependence) mostrando quais pontos seriam anomalias.
 
 Exemplo:
 
