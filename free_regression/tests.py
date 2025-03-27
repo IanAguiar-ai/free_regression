@@ -384,4 +384,9 @@ class Teste(unittest.TestCase):
 
         
 if __name__ == "__main__":
-    unittest.main()
+    def f(x1:float, x2:float, a:float, b:float, c:float) -> (float, float):
+        return [x1*a + x2*b, x1*a - x2*c]
+
+    modelo = Regression(f)
+    print(modelo)
+    #unittest.main()

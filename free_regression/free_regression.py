@@ -47,11 +47,16 @@ class Regression:
         self.__limiar:float = 1.92
         self.__print:float = print
         
-        temp = tuple(signature(function).parameters.keys())
+        temp:tuple = tuple(signature(function).parameters.keys())
         assert len(temp) >= 2, "Your function must have at least two parameters. Example f(x, b) = x*b = y"
 
         # Definindo regressora
-        if regressors == None:
+        if sum([True if args_.lower().find("x") == 0 else False for args_ in temp]) > 1:
+            self.regressors = []
+            for args_ in temp:
+                if args_.lower().find("x") == 0:
+                    self.regressors.append(args_)
+        elif regressors == None:
             assert "x" in temp, "The passed function must have the parameter 'x' or explicitly specify the regressors with the parameter 'regressors'"
             self.regressors = ["x"]
         elif type(regressors) == int or type(regressors) == float:
