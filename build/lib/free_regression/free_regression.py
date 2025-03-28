@@ -8,6 +8,12 @@ def least_squares(vector_1:list, vector_2:list) -> float:
     """
     return sum([(vector_1[i] - vector_2[i])*(vector_1[i] - vector_2[i]) for i in range(len(vector_1))])
 
+def least_squares_multivariate(vector_1:list, vector_2:list) -> float:
+    """
+    Função de mínimos quadrados para listas de listas (espaço n-dimensional).
+    """
+    return sum(sum((vector_1[i][j] - vector_2[i][j]) * (vector_1[i][j] - vector_2[i][j]) for j in range(len(vector_1[i]))) for i in range(len(vector_1)))
+
 class Regression:
     """
     Classe de regressão que aceita qualquer função como regressora.
@@ -25,7 +31,7 @@ class Regression:
         regressors (list): Lista de regressores, não é precisso passar se a função tiver apenas um parâmetro regressor e ele se chame 'x'.
         loss_function (function): Função de perda, é a função 'least squares' mas pode ser qualquer uma passada pelo usuário.
     """
-    __slots__ = ("iterations", "params", "regressors", "weights", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error", "__robust", "__limiar", "__print")
+    __slots__ = ("iterations", "params", "regressors", "weights", "__len_y", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error", "__robust", "__limiar", "__print")
     
     def __init__(self, function:"function", regressors:list = None, loss_function:"function" = least_squares, print:bool = False) -> None:
         """
@@ -41,17 +47,21 @@ class Regression:
         assert callable(loss_function), f"<loss_function> is a {type(loss_function)} not a function"
 
         self.__function:"function" = function
-        self.__loss_function:"function" = loss_function
         self.__error:float = None
         self.__robust:bool = True
         self.__limiar:float = 1.92
         self.__print:float = print
         
-        temp = tuple(signature(function).parameters.keys())
+        temp:tuple = tuple(signature(function).parameters.keys())
         assert len(temp) >= 2, "Your function must have at least two parameters. Example f(x, b) = x*b = y"
 
         # Definindo regressora
-        if regressors == None:
+        if sum([True if args_.lower().find("x") == 0 else False for args_ in temp]) > 1:
+            self.regressors = []
+            for args_ in temp:
+                if args_.lower().find("x") == 0:
+                    self.regressors.append(args_)
+        elif regressors == None:
             assert "x" in temp, "The passed function must have the parameter 'x' or explicitly specify the regressors with the parameter 'regressors'"
             self.regressors = ["x"]
         elif type(regressors) == int or type(regressors) == float:
@@ -67,14 +77,33 @@ class Regression:
                 self.params.append(parameter)
                 self.__args_function[parameter] = 0.1
         
-        self.__seed = None
-        self.iterations:int = min(50 * len(self.__args_function.keys()), 500) # Quanto mais parâmetros mais iterações eu precisso para que o valor mude
-
         # Variáveis bloqueadas
         self.__lock:dict = {}
 
         # Pesos dos parâmetros
         self.weights:dict = {key:1 for key in self.__args_function}
+
+        # Conferir quantos parâmetros de volta existem
+        self.__len_y:int = None
+        for i in [0.1, 1, 2, 5]:
+            if self.__len_y == None:
+                try:
+                    self.__len_y:int = len(self.__function(*[i for _ in range(len(self.regressors) + len(self.__args_function))]))
+                except:
+                    pass
+        if self.__len_y == None:
+            self.__len_y:int = 1
+
+        # Loss function
+        if self.__len_y > 1:
+            self.__loss_function:"function" = least_squares_multivariate
+        else:
+            self.__loss_function:"function" = loss_function
+
+        # Definindo seed e critério de parada
+        self.__seed = None
+        self.iterations:int = min(50 * len(self.__args_function.keys()) * self.__len_y, 500 * self.__len_y) # Quanto mais parâmetros mais iterações eu precisso para que o valor mude
+
 
     def __eq__(self, obj) -> bool:
         """
@@ -90,7 +119,10 @@ class Regression:
         output:str = f"FUNCTION: {self.__function.__name__}"
         if self.__error != None:
             output += f"\nLOSS FUNCTION({self.__loss_function.__name__}): {self.__error:0.08f}"
+        else:
+            output += f"\nLOSS FUNCTION: {self.__loss_function.__name__}"
         output += f"\nREGRESSORS: {', '.join(self.regressors)}"
+        output += f"\nLENTH OUTPUT: {self.__len_y} ({'MULTIVARIATE' if self.__len_y > 1 else 'UNIVARIATE'})"
         if len(self.__lock) > 0:
             output += f"\nLOCK PARAMS: {', '.join(self.__lock)}"
         output += "\nPARAMS:"
@@ -348,7 +380,7 @@ class Regression:
         y:list = [data_i[-1] for data_i in data]
         return sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
 
-    def run(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None, adaptive:bool = True) -> None:
+    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True) -> None:
         """
         Faz a regressão.
 
@@ -362,7 +394,12 @@ class Regression:
 
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"
         assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"
-        assert len(data[0]) == len(self.regressors) + 1, f"The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]\n\tSize of the passed list: {len(data[0])} | {data[0]}\n\tExpected size: {len(self.regressors) + 1} | {self.regressors} + [y]"
+        
+        for i in range(len(data)):
+            if type(data[i][-1]) == list:
+                data[i] = [*data[i][:-1], *data[i][-1]]
+            
+        assert len(data[0]) == len(self.regressors) + self.__len_y, f"The list of lists must have an x_n and a y parameter\n For example [[x_0, x_1, ..., y_1, ...], [x_0, x_1, ..., y_1, ...], ...] or [[x_0, x_1, ..., [y1, ...]], [x_0, x_1, ..., [y1, ...]], ...]\n\tSize of the passed list: {len(data[0])} | {data[0]}\n\tExpected size: {len(self.regressors) + self.__len_y} | {self.regressors} + [y's]"
         assert (k := list(map(len, data))) and max(k) == min(k), "The data list must be the same size in all itens"
         assert type(precision) == int or type(precision) == float, "Precision has to be a float or int"
 
@@ -379,7 +416,10 @@ class Regression:
             print(f"\rAdaptive mode: {adaptive}", end = "")
         
         # Pegando y esperado
-        y_expected = [data[i][-1] for i in range(len(data))]
+        if self.__len_y > 1:
+            y_expected = [data[i][-self.__len_y:] for i in range(len(data))]
+        else:
+            y_expected = [data[i][-1] for i in range(len(data))]
         if self.__print:
             print(f"\ry_expected: True", end = "")
 
@@ -414,9 +454,8 @@ class Regression:
             while with_no_iteration < self.iterations:
                 with_no_iteration += 1
                 
-                # y predito                
-                y_predicted:list = [self.__function(**{self.regressors[i]: x[i] for i in range(len(x))}, **args_temp) for *x, _ in data]
-
+                # y predito
+                y_predicted:list = [self.__function(**{self.regressors[i]: x[i] for i in range(len(x) - self.__len_y)}, **args_temp) for x in data]
 
                 # Resultado dos minimos quadrados
                 result:float = self.__loss_function(y_predicted, y_expected)
@@ -488,8 +527,12 @@ class Regression:
             data(list(list)): lista de listas com x e y.
             value(float): Valor que define quanto será o salto para teste
         """
-        X:[list] = [data_i[:-1] for data_i in data]
-        y:list = [data_i[-1] for data_i in data]
+        if self.__len_y > 1:
+            X:[list] = [data_i[:-self.__len_y] for data_i in data]
+            y:list = [data_i[self.__len_y:] for data_i in data]
+        else:
+            X:[list] = [data_i[:-1] for data_i in data]
+            y:list = [data_i[-1] for data_i in data]
 
         # Confere erro inicial:
         initial_error:float = self.__loss_function(self.prediction(X), y)

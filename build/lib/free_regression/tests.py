@@ -66,6 +66,38 @@ def normal_assimetrica(x:list, m:float, v1:float, v2:float, c:float) -> list:
 # Classe de testes
 class Teste(unittest.TestCase):
     def teste_classe(self):
+
+        print("\nTeste multivariado 1")
+        try:
+            def f(x1:float, x2:float, a:float, b:float, c:float) -> (float, float):
+                return [x1*a + x2*b, x1*a - x2*c]
+
+            modelo = Regression(f, print = False)
+            print(modelo)
+            print(modelo.iterations)
+
+            a_, b_, c_ = 0.8, 3, -2
+            dados = [[0, 0, f(0, 0, a_, b_, c_)],
+                     [1, 0, *f(1, 0, a_, b_, c_)],
+                     [0, 1, *f(0, 1, a_, b_, c_)],
+                     [1, 1, f(1, 1, a_, b_, c_)],
+                     [2, 2, *f(2, 2, a_, b_, c_)],
+                     [1, 3, *f(1, 3, a_, b_, c_)],
+                     [3, 1, *f(3, 1, a_, b_, c_)],]
+            print(dados)
+
+            modelo.run(dados)
+
+            print(dados)
+
+            for x1, x2, *_ in dados:
+                print(x1, x2, modelo.prediction(x1 = x1, x2 = x2), _)
+
+            print(modelo)
+        except:
+            self.fail("Erro!")
+
+            
         # Testando classe e métodos
         print("Testes de regressão:")
         print("\nTeste 1.1:")
@@ -148,9 +180,9 @@ class Teste(unittest.TestCase):
             self.fail(f"Teste da predição com regressão com 2 regressores e lista: {e}")
 
         print(f"\n\n{'='*50}\nTestes de excessões Regression/run:")
-        print("\nTeste 4.1...")
-        with self.assertRaises(AssertionError):
-            teste_6 = Regression(regressao_2_regressores)
+        print("\nTeste 4.1 (CANCELADO)...")
+        #with self.assertRaises(AssertionError):
+        #    teste_6 = Regression(regressao_2_regressores)
 
         print("\nTeste 4.2...")
         with self.assertRaises(AssertionError):

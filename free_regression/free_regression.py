@@ -392,12 +392,13 @@ class Regression:
             adaptive(bool): Se o método deve dar pesos diferentes para cada parâmetro (recomendado).
         """
 
+        assert type(data) == list, f"The data must be a list of lists not {type(data)}"
+        assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"
+        
         for i in range(len(data)):
             if type(data[i][-1]) == list:
                 data[i] = [*data[i][:-1], *data[i][-1]]
             
-        assert type(data) == list, f"The data must be a list of lists not {type(data)}"
-        assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"
         assert len(data[0]) == len(self.regressors) + self.__len_y, f"The list of lists must have an x_n and a y parameter\n For example [[x_0, x_1, ..., y_1, ...], [x_0, x_1, ..., y_1, ...], ...] or [[x_0, x_1, ..., [y1, ...]], [x_0, x_1, ..., [y1, ...]], ...]\n\tSize of the passed list: {len(data[0])} | {data[0]}\n\tExpected size: {len(self.regressors) + self.__len_y} | {self.regressors} + [y's]"
         assert (k := list(map(len, data))) and max(k) == min(k), "The data list must be the same size in all itens"
         assert type(precision) == int or type(precision) == float, "Precision has to be a float or int"
@@ -415,7 +416,10 @@ class Regression:
             print(f"\rAdaptive mode: {adaptive}", end = "")
         
         # Pegando y esperado
-        y_expected = [data[i][-self.__len_y:] for i in range(len(data))]
+        if self.__len_y > 1:
+            y_expected = [data[i][-self.__len_y:] for i in range(len(data))]
+        else:
+            y_expected = [data[i][-1] for i in range(len(data))]
         if self.__print:
             print(f"\ry_expected: True", end = "")
 
@@ -523,8 +527,12 @@ class Regression:
             data(list(list)): lista de listas com x e y.
             value(float): Valor que define quanto será o salto para teste
         """
-        X:[list] = [data_i[:-self.__len_y] for data_i in data]
-        y:list = [data_i[self.__len_y:] for data_i in data]
+        if self.__len_y > 1:
+            X:[list] = [data_i[:-self.__len_y] for data_i in data]
+            y:list = [data_i[self.__len_y:] for data_i in data]
+        else:
+            X:[list] = [data_i[:-1] for data_i in data]
+            y:list = [data_i[-1] for data_i in data]
 
         # Confere erro inicial:
         initial_error:float = self.__loss_function(self.prediction(X), y)
