@@ -228,6 +228,29 @@ modelo2 = Regression(regressao_simples)
 modelo2.run(dados, especific_precision = [1, 0.1])
 ```
 
+### Regressão multivariada
+
+Ainda é possível fazer regressões de $f(x_1, x_2, ...) = [y_1, y_2, ...]$:
+
+```
+def f(x1:float, x2:float, a:float, b:float, c:float) -> (float, float):
+    return [x1*a + x2*b, x1*a - x2*c]
+
+modelo = Regression(f, print = False)
+
+a_, b_, c_ = 0.8, 3, -2
+dados = [[0, 0, f(0, 0, a_, b_, c_)],
+         [1, 0, *f(1, 0, a_, b_, c_)],
+         [0, 1, *f(0, 1, a_, b_, c_)],
+         [1, 1, f(1, 1, a_, b_, c_)],
+         [2, 2, *f(2, 2, a_, b_, c_)],
+         [1, 3, *f(1, 3, a_, b_, c_)],
+         [3, 1, *f(3, 1, a_, b_, c_)],]
+
+modelo.run(dados)
+print(modelo)
+```
+
 ### Parâmetros de regressão
 
 Além da regressão simples, é possível realizar diversas alterações nos parâmetros a fim de controlar melhor o processo de regressão. Algumas das funções embutidas na classe *Regression* são:
