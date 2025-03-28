@@ -224,8 +224,8 @@ print(modelo)
 Os dados no caso acima podiam estar dispostos de tal forma:
 
 ```
-dados = [[0, 0, [3, 4],
-         [1, 0, [y1, y2],
+dados = [[0, 0, [3, 4]],
+         [1, 0, [y1, y2]],
          ...]
 ```
 
@@ -233,7 +233,7 @@ ou
 
 ```
 dados = [[0, 0, 3, 4],
-         [1, 0, y1, y2,
+         [1, 0, y1, y2],
          ...]
 ```
 
