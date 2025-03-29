@@ -189,7 +189,7 @@ from random import random
 
 def regressao_simples(x:float, a:float, b:float) -> float:
     return a*x + b
-    
+
 dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
 modelo1 = Regression(regressao_simples)
 modelo1.run_robust(dados, especific_precision = [1, 0.1])
@@ -864,6 +864,20 @@ print(modelo_normal)
 plot_expected(modelo_normal, dados)
 ```
 
+Saída:
+
+```
+FUNCTION: regressao_simples
+LOSS FUNCTION(loss): 0.11023756
+REGRESSORS: x
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  a = 0.99507940 (w: 1.00000000)
+  b = 2.96292225 (w: 0.15609214)
+```
+
+![EX_COM_PESOS_NAS_AMOSTRAS](free_regression/imagens_testes/com_pesoS_nas_amostras.png)
+
 ### Com dados artificiais, regressão robusta
 
 Para realizar uma regressão semelhante ao método **.run**, mas de forma robusta:
@@ -884,10 +898,31 @@ modelo_robust = Regression(regressao_simples)
 modelo_robust.run_robust(dados, especific_precision = [1, 0.1])
 
 print(modelo_normal)
+print()
 print(modelo_robust)
 
 plot_expected(modelo_normal, dados)
 plot_expected(modelo_robust, dados)
+```
+
+Saída:
+
+```
+FUNCTION: regressao_simples
+LOSS FUNCTION(least_squares): 244.40520424
+REGRESSORS: x
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  a = 1.03362084 (w: 0.08661750)
+  b = -4.98997949 (w: 1.00000000)
+  
+FUNCTION: regressao_simples
+LOSS FUNCTION(least_squares): 1.77871458
+REGRESSORS: x
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  a = 1.01147102 (w: 0.00030542)
+  b = 2.07874404 (w: 1.00000000)
 ```
 
 ![EX_robust_1](free_regression/imagens_testes/robust_1.png)
@@ -970,7 +1005,74 @@ for i in range(len(data)):
 plot_series(model_ar_2, data, size = (14, 8))
 ```
 
+Saída:
+
+```
+FUNCTION: ar_2
+LOSS FUNCTION(least_squares): 0.26035616
+REGRESSORS: y1, y2
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  b1 = -0.97013635 (w: 0.07102360)
+  b2 = 0.42563299 (w: 0.08974967)
+  b3 = 6.70987577 (w: 1.00000000)
+```
+
 ![EX_TEMPORAL_SERIES_1](free_regression/imagens_testes/ts_1.png)
+
+## Com dados artificiais, função dependente em função idependente
+
+Transformando função dependente:
+
+$$ f(x) = b_1*f(x-1) + b_2*f(x-2) $$
+
+em função idependente
+
+$$ f(x) = c_1*\lambda_1^{x} + c_2*\lambda_2^{x} $$
+
+```
+from random import random, seed
+from free_regression import Regression, plot_expected
+
+# Dados ########################################
+dados = [0, 1]
+for _ in range(8):
+  dados.append(-0.8*dados[-1] + 1.2*dados[-2])
+
+dados = [[i, x] for i, x in enumerate(dados)]
+print(dados)
+
+# Modelo ########################################
+def f(x:float, a:float, b:float, c:float, d:float) -> float:
+  return a*b**x + c*d**x
+
+modelo = Regression(f, print = True)
+modelo.set_seed(1)
+modelo.lock(d = dados[-1][1]/dados[-2][1]) # Aproximação de uma das raizes
+
+modelo.run(dados)
+
+# Resultado ######################################
+print(modelo)
+plot_expected(modelo, dados)
+```
+
+Saída:
+
+```
+LOSS FUNCTION(least_squares): 0.00268481
+REGRESSORS: x
+LENTH OUTPUT: 1 (UNIVARIATE)
+LOCK PARAMS: d
+PARAMS:
+  a = 0.42870316 (w: 0.99981393)
+  b = 0.75958136 (w: 1.00000000)
+  c = -0.41167104 (w: 0.99981393)
+  d = -1.57386689 (w: 1.00000000)
+```
+
+![EX_FUNC_DEPENDENTE_PARA_IDEPENDENTE](free_regression/imagens_testes/func_dep_para_idep.png)
+
 
 ## Com dados artificiais, MCMC (Markov Chain Monte Carlo)
 
