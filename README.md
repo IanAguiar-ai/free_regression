@@ -1024,11 +1024,11 @@ PARAMS:
 
 Transformando função dependente:
 
-$$ f(x) = b_1*f(x-1) + b_2*f(x-2) $$
+$$ f(x) = b_{1} \cdot f(x-1) + b_{2} \cdot f(x-2) $$
 
 em função idependente
 
-$$ f(x) = c_1*\lambda_1^{x} + c_2*\lambda_2^{x} $$
+$$ f(x) = c_{1} \cdot \lambda_{1}^{x} + c_{2} \cdot \lambda_{2}^{x} $$
 
 ```
 from random import random, seed
