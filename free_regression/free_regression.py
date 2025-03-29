@@ -511,7 +511,7 @@ class Regression:
             if adaptive:
                 self.adjust_weights(data = data, value = precision)
 
-        if self.__print and not self.__robust:
+        if (self.__print) and (not self.__robust):
             print(" (end)")                
 
         # Salva o resultado
