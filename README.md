@@ -1110,6 +1110,148 @@ mcmc_anomaly(dados, dados_prev,
              percentage = 10)
 ```
 
+## Com dados artificiais, montando redutor de dimensionalidade
+
+Redutor de dimensionalidade de $\mathbb{R}^3 \to \mathbb{R}^2$
+
+```
+from free_regression import Regression
+from random import random, seed
+
+
+# Funções ##################################################
+def relu(x:float) -> float:
+  return x if x >= 0 else 0
+
+def f(x1, x2, x3, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12) -> (float, float, float):
+  c11:float = relu(x1*w1 + x2*w2 + x3*w3)
+  c12:float = relu(x1*w4 + x2*w5 + x3*w6)
+  return [c11*w7 + c12*w8, c11*w9 + c12*w10, c11*w11 + c12*w12]
+
+def f_parc(x1, x2, x3, w1, w2, w3, w4, w5, w6) -> (float, float):
+  c11:float = relu(x1*w1 + x2*w2 + x3*w3)
+  c12:float = relu(x1*w4 + x2*w5 + x3*w6)
+  return [c11, c12]
+
+# Dados ####################################################
+seed(1)
+
+dados_1, dados_2, dados_3, dados_4 = [], [], [], []
+
+for _ in range(10):
+  temp = [random(), random(), random()]
+  temp = [*temp, *temp]
+  dados_1.append(temp.copy())
+
+for _ in range(10):
+  temp = [random() + 1, random(), random()]
+  temp = [*temp, *temp]
+  dados_2.append(temp.copy())
+
+for _ in range(10):
+  temp = [random(), random() + 1, random()]
+  temp = [*temp, *temp]
+  dados_3.append(temp.copy())
+
+for _ in range(10):
+  temp = [random(), random(), random() + 1]
+  temp = [*temp, *temp]
+  dados_4.append(temp.copy())
+
+dados = [*dados_1, *dados_2, *dados_3, *dados_4]
+colors = [*["blue"] * 10, *["red"] * 10, *["green"] * 10, *["grey"] * 10]
+
+# Modelo ####################################################
+modelo = Regression(f, print = True)
+modelo.set_seed(1)
+
+modelo.run(dados)
+print(modelo)
+```
+
+Saída
+
+```
+LOSS FUNCTION(least_squares_multivariate): 0.32185552
+REGRESSORS: x1, x2, x3
+LENTH OUTPUT: 3 (MULTIVARIATE)
+PARAMS:
+  w1 = 0.36331677 (w: 0.99981764)
+  w2 = 0.11716037 (w: 0.99487522)
+  w3 = 0.62754604 (w: 0.99713457)
+  w4 = 0.44668030 (w: 0.99981764)
+  w5 = 1.08678425 (w: 0.99487522)
+  w6 = -0.02016947 (w: 0.99713457)
+  w7 = 0.56208165 (w: 1.00000000)
+  w8 = 0.20981001 (w: 1.00000000)
+  w9 = -0.20802218 (w: 0.99473883)
+  w10 = 0.82910443 (w: 0.99473883)
+  w11 = 1.30493648 (w: 0.99714321)
+  w12 = -0.27646413 (w: 0.99714321)
+```
+
+Plotando:
+
+```
+import matplotlib.pyplot as plt
+
+modelo_parc = Regression(f_parc)
+modelo_parc << modelo # Pasando os pesos para o modelo parcial que permite vizualizar em 2d
+print(modelo_parc)
+
+x, y = zip(*modelo_parc.prediction([x_[:3] for x_ in dados]))
+
+
+plt.scatter(x, y, c = colors, alpha = 0.4, s = 100)
+
+plt.title("Redução de dimensionalidade")
+plt.xlabel("Eixo X")
+plt.ylabel("Eixo Y")
+
+plt.show()
+
+################################################################
+
+x, y, z = zip(*[x_[:3] for x_ in dados])
+
+for a, b in [[0, 0], [0, 45], [0, 90], [45, 90], [90, 90]]:
+
+  fig = plt.figure()
+  ax = fig.add_subplot(111, projection='3d')
+
+  ax.scatter(x, y, z, c = colors, s = 100, alpha = 0.4)
+  ax.view_init(elev = a, azim = b)
+
+  ax.set_title(f"Gráfico de Dispersão 3D ({a}, {b})")
+  ax.set_xlabel("Eixo X")
+  ax.set_ylabel("Eixo Y")
+  ax.set_zlabel("Eixo Z")
+```
+
+Saída:
+
+```
+FUNCTION: f_parc
+LOSS FUNCTION: least_squares_multivariate
+REGRESSORS: x1, x2, x3
+LENTH OUTPUT: 2 (MULTIVARIATE)
+PARAMS:
+  w1 = 0.36331677 (w: 1.00000000)
+  w2 = 0.11716037 (w: 1.00000000)
+  w3 = 0.62754604 (w: 1.00000000)
+  w4 = 0.44668030 (w: 1.00000000)
+  w5 = 1.08678425 (w: 1.00000000)
+  w6 = -0.02016947 (w: 1.00000000)
+```
+
+![EX_red_1](free_regression/imagens_testes/red_dim_1.png)
+
+![EX_red_2](free_regression/imagens_testes/red_dim_2.png)
+
+![EX_red_3](free_regression/imagens_testes/red_dim_3.png)
+
+![EX_red_4](free_regression/imagens_testes/red_dim_4.png)
+
 ## Com dados reais
 
 ```
