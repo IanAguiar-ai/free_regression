@@ -876,7 +876,7 @@ PARAMS:
   b = 2.96292225 (w: 0.15609214)
 ```
 
-![EX_COM_PESOS_NAS_AMOSTRAS](free_regression/imagens_testes/com_pesoS_nas_amostras.png)
+![EX_COM_PESOS_NAS_AMOSTRAS](free_regression/imagens_testes/com_pesos_nas_amostras.png)
 
 ### Com dados artificiais, regressão robusta
 
