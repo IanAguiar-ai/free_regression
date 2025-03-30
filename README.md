@@ -1123,45 +1123,50 @@ from random import random, seed
 
 # Funções ##################################################
 def relu(x:float) -> float:
-  return x if x >= 0 else 0
+  return x if x >= 0 else x/10
 
-def f(x1, x2, x3, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12) -> (float, float, float):
-  c11:float = relu(x1*w1 + x2*w2 + x3*w3)
-  c12:float = relu(x1*w4 + x2*w5 + x3*w6)
-  return [c11*w7 + c12*w8, c11*w9 + c12*w10, c11*w11 + c12*w12]
+def f(x1, x2, x3, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17) -> (float, float, float):
+  c11:float = relu(x1*w1 + x2*w2 + x3*w3 + w16)
+  c12:float = relu(x1*w4 + x2*w5 + x3*w6 + w17)
+  return [c11*w7 + c12*w8 + w13, c11*w9 + c12*w10 + w14, c11*w11 + c12*w12 + w15]
 
-def f_parc(x1, x2, x3, w1, w2, w3, w4, w5, w6) -> (float, float):
-  c11:float = relu(x1*w1 + x2*w2 + x3*w3)
-  c12:float = relu(x1*w4 + x2*w5 + x3*w6)
+def f_parc(x1, x2, x3, w1, w2, w3, w4, w5, w6, w16, w17) -> (float, float):
+  c11:float = relu(x1*w1 + x2*w2 + x3*w3 + w16)
+  c12:float = relu(x1*w4 + x2*w5 + x3*w6 + w17)
   return [c11, c12]
 
 # Dados ####################################################
 seed(1)
 
-dados_1, dados_2, dados_3, dados_4 = [], [], [], []
+dados_1, dados_2, dados_3, dados_4, dados_5 = [], [], [], [], []
 
-for _ in range(10):
+for _ in range(7):
   temp = [random(), random(), random()]
   temp = [*temp, *temp]
   dados_1.append(temp.copy())
 
-for _ in range(10):
+for _ in range(7):
   temp = [random() + 1, random(), random()]
   temp = [*temp, *temp]
   dados_2.append(temp.copy())
 
-for _ in range(10):
+for _ in range(7):
   temp = [random(), random() + 1, random()]
   temp = [*temp, *temp]
   dados_3.append(temp.copy())
 
-for _ in range(10):
+for _ in range(7):
   temp = [random(), random(), random() + 1]
   temp = [*temp, *temp]
   dados_4.append(temp.copy())
 
-dados = [*dados_1, *dados_2, *dados_3, *dados_4]
-colors = [*["blue"] * 10, *["red"] * 10, *["green"] * 10, *["grey"] * 10]
+for _ in range(7):
+  temp = [random() + 1, random() + 1, random() + 1]
+  temp = [*temp, *temp]
+  dados_5.append(temp.copy())
+
+dados = [*dados_1, *dados_2, *dados_3, *dados_4, *dados_5]
+colors = [*["blue"] * 7, *["red"] * 7, *["green"] * 7, *["grey"] * 7, *["pink"] * 7]
 
 # Modelo ####################################################
 modelo = Regression(f, print = True)
@@ -1174,22 +1179,28 @@ print(modelo)
 Saída
 
 ```
-LOSS FUNCTION(least_squares_multivariate): 0.32185552
+FUNCTION: f
+LOSS FUNCTION(least_squares_multivariate): 0.25298512
 REGRESSORS: x1, x2, x3
 LENTH OUTPUT: 3 (MULTIVARIATE)
 PARAMS:
-  w1 = 0.36331677 (w: 0.99981764)
-  w2 = 0.11716037 (w: 0.99487522)
-  w3 = 0.62754604 (w: 0.99713457)
-  w4 = 0.44668030 (w: 0.99981764)
-  w5 = 1.08678425 (w: 0.99487522)
-  w6 = -0.02016947 (w: 0.99713457)
-  w7 = 0.56208165 (w: 1.00000000)
-  w8 = 0.20981001 (w: 1.00000000)
-  w9 = -0.20802218 (w: 0.99473883)
-  w10 = 0.82910443 (w: 0.99473883)
-  w11 = 1.30493648 (w: 0.99714321)
-  w12 = -0.27646413 (w: 0.99714321)
+  w1 = 1.40160852 (w: 0.99609845)
+  w2 = 1.20905211 (w: 0.99240304)
+  w3 = 1.90383075 (w: 0.99379174)
+  w4 = 1.29010370 (w: 0.99609845)
+  w5 = -0.42315787 (w: 0.99240304)
+  w6 = 0.43193659 (w: 0.99379174)
+  w7 = 0.00722119 (w: 0.97849836)
+  w8 = 0.62503256 (w: 0.97849836)
+  w9 = 0.33884257 (w: 0.97258454)
+  w10 = -0.56880160 (w: 0.97258454)
+  w11 = 0.30476131 (w: 0.97627600)
+  w12 = -0.09723028 (w: 0.97627600)
+  w13 = 0.00903604 (w: 0.88725152)
+  w14 = 0.50654604 (w: 0.87470719)
+  w15 = -0.07919318 (w: 0.88812425)
+  w16 = -0.48020186 (w: 1.00000000)
+  w17 = 0.23674088 (w: 1.00000000)
 ```
 
 Plotando:
