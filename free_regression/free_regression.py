@@ -48,7 +48,7 @@ class Regression:
 
         self.__function:"function" = function
         self.__error:float = None
-        self.__robust:bool = True
+        self.__robust:bool = False
         self.__limiar:float = 1.92
         self.__print:float = print
         
@@ -355,7 +355,7 @@ class Regression:
 
         if type(list_prediction) == list or type(list_prediction) == tuple: # Caso o usuário tenha passado uma série de valores para a predição
             assert type(list_prediction[0]) == list or type(list_prediction[0]) == tuple, "If you want to pass a series of values​to predict, you should pass the list of lists of values with the regressors parameters"
-            assert min(map(len, list_prediction)) == max(map(len, list_prediction)) == len(self.regressors), f"Your list of lists must be {len(list_prediction)} by {len(self.regressors)} in size"
+            assert min(map(len, list_prediction)) == max(map(len, list_prediction)) == len(self.regressors), f"Your list of lists must be {len(list_prediction)} by {len(self.regressors)} in size\nlen min: {min(map(len, list_prediction))}\nlen max: {max(map(len, list_prediction))}"
 
             results = []
             x_args = {}
@@ -550,17 +550,34 @@ class Regression:
 
         self.weights = {key: value/max(sum_errors) for key, value in self.weights.items()} #Normalizando pesos
 
-    def __new_data(self, data:[list], limiar:float) -> [list]:
-        y_:list = self.prediction([data_i[:-1] for data_i in data])
-        y:list = [data_i[-1] for data_i in data]
-        variance:float = sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
-        sd:list = variance**(1/2)
+    def __new_data(self, data:[list], limiar:float) -> [list]:        
+        if self.__len_y == 1:
+            y_:list = self.prediction([data_i[:-1] for data_i in data])
+            y:list = [data_i[-1] for data_i in data]
+            variance:float = sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
+            sd:list = variance**(1/2)
 
-        new_data:list = []
-        for y_i, yi, i in zip(y_, y, range(len(y))):
-            if abs(yi - y_i) < limiar * sd:
-                new_data.append(data[i])
+            new_data:list = []
+            for y_i, yi, i in zip(y_, y, range(len(y))):
+                if abs(yi - y_i) < limiar * sd:
+                    new_data.append(data[i])
+
+        else:
+            def distancia(ponto1:list, ponto2:list):
+                return sum((p1 - p2) ** 2 for p1, p2 in zip(ponto1, ponto2))
+                
+            y_:list = self.prediction([data_i[:-self.__len_y] for data_i in data])
+            y:list = [data_i[:self.__len_y] for data_i in data]
+            variance:float = sum([distancia(y_i, yi) for y_i, yi in zip(y_, y)])/len(y)
+            sd:list = variance**(1/2)
+
+            new_data:list = []
+            for y_i, yi, i in zip(y_, y, range(len(y))):
+                if distancia(yi, y_i) < limiar * sd:
+                    new_data.append(data[i])
+
         return new_data
+        
 
     def run_robust(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None, limiar:float = 1.92, adaptive:bool = True) -> [list]:
         """
