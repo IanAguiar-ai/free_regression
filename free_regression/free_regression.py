@@ -578,7 +578,12 @@ class Regression:
         
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"
         assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"
-        assert len(data[0]) == len(self.regressors) + 1, f"The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]\n\tSize of the passed list: {len(data[0])}\n\tExpected size: {len(self.regressors) + 1}"
+        
+        for i in range(len(data)):
+            if type(data[i][-1]) == list:
+                data[i] = [*data[i][:-1], *data[i][-1]]
+            
+        assert len(data[0]) == len(self.regressors) + self.__len_y, f"The list of lists must have an x_n and a y parameter, for example [[x_0, x_1, ..., y], [x_0, x_1, ..., y], ...]\n\tSize of the passed list: {len(data[0])}\n\tExpected size: {len(self.regressors) + 1}"
         assert (k := list(map(len, data))) and max(k) == min(k), "The data list must be the same size in all itens"
         assert type(precision) == int or type(precision) == float, "Precision has to be a float or int"
         assert limiar > 0, f"the limit must be greater than 0"           

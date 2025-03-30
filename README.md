@@ -780,7 +780,9 @@ Nos geradores de regressões utilizados para classificação, ocasionalmente, qu
 
 # Exemplos
 
-## Com dados artificiais, lineares e descontinuos
+## Com dados artificiais
+
+### Lineares e Descontinuos
 
 ```
 dados = [*[[i, i] for i in range(0, 10)], *[[i, 20 - i] for i in range(10, 20)]]
@@ -929,7 +931,7 @@ PARAMS:
 
 ![EX_robust_2](free_regression/imagens_testes/robust_2.png)
 
-## Com dados artificiais, teste com logisticas
+### Teste com logisticas
 
 ```
 def reg_log(x, b0, b1) -> float:
@@ -959,7 +961,7 @@ plot_expected(modelo, dados_)
 
 ![EX_19](free_regression/imagens_testes/res_19.png)
 
-## Com dados artificiais, cadeia de Markov com multiplas dependências
+### Cadeia de Markov com multiplas dependências
 
 ```
 from free_regression import Generator
@@ -976,7 +978,7 @@ for dependence in range(1, 10, 1):
   print(f"\nDependenci: {'='*200}\n{dependence} -> {resp}\n")
 ```
 
-## Com dados artificiais, série temporal
+### Série temporal
 
 ```
 from random import random, seed
@@ -1020,7 +1022,7 @@ PARAMS:
 
 ![EX_TEMPORAL_SERIES_1](free_regression/imagens_testes/ts_1.png)
 
-## Com dados artificiais, função dependente em função idependente
+### Função dependente em função idependente
 
 Transformando função dependente:
 
@@ -1074,7 +1076,7 @@ PARAMS:
 ![EX_FUNC_DEPENDENTE_PARA_IDEPENDENTE](free_regression/imagens_testes/func_dep_para_idep.png)
 
 
-## Com dados artificiais, MCMC (Markov Chain Monte Carlo)
+### MCMC (Markov Chain Monte Carlo)
 
 ```
 from free_regression import Generator, plot_time_series, round_series
@@ -1110,7 +1112,7 @@ mcmc_anomaly(dados, dados_prev,
              percentage = 10)
 ```
 
-## Com dados artificiais, montando redutor de dimensionalidade
+### Montando redutor de dimensionalidade
 
 Redutor de dimensionalidade de $\mathbb{R}^3 \to \mathbb{R}^2$
 
@@ -1305,43 +1307,7 @@ plot_prediction_bands(modelo, dados, amplitude = 1.5)
 
 ![EX_17](free_regression/imagens_testes/res_17.png)
 
-## Com dados reais, tente você mesmo e veja o resultado!
-
-```
-dados = MedidasDeMassa()
-dados = transpose([dados["Age"], dados["LegLength"]])
-
-
-modelo_1 = Regression(*generate_regression(1, 1))
-modelo_1.set_seed(2024)
-modelo_1.run(dados, precision = 0.01)
-print(modelo_1)
-plot_expected(modelo_1, dados)
-plot_residual(modelo_1, dados)
-
-
-modelo_2 = Regression(*generate_mlp_sigmoid_sum(1, 2))
-modelo_2.set_seed(2024)
-modelo_2.run(dados, precision = 0.1)
-print(modelo_2)
-plot_expected(modelo_2, dados)
-plot_residual(modelo_2, dados)
-
-
-def lin(x0, a):
-  return x0*a
-
-modelo_3 = modelo_2 + Regression(lin, regressors = ["x0"])
-modelo_3.set_seed(2024)
-modelo_3 << modelo_2
-modelo_3.change(a = 0.3)
-modelo_3.run(dados, precision = 0.05)
-print(modelo_3)
-plot_expected(modelo_3, dados)
-plot_residual(modelo_3, dados)
-```
-
-## Com dados reais, usando dummys
+### Usando variáveis dummys
 
 ```
 dados = ProdutividadeTrabalhoRemoto()

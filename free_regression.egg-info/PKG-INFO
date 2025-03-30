@@ -207,7 +207,7 @@ from random import random
 
 def regressao_simples(x:float, a:float, b:float) -> float:
     return a*x + b
-    
+
 dados = [*[[i, random() * 5 + i] for i in range(100)], *[[i, random() * 3] for i in range(30, 60, 2)]]
 modelo1 = Regression(regressao_simples)
 modelo1.run_robust(dados, especific_precision = [1, 0.1])
@@ -798,7 +798,9 @@ Nos geradores de regressões utilizados para classificação, ocasionalmente, qu
 
 # Exemplos
 
-## Com dados artificiais, lineares e descontinuos
+## Com dados artificiais
+
+### Lineares e Descontinuos
 
 ```
 dados = [*[[i, i] for i in range(0, 10)], *[[i, 20 - i] for i in range(10, 20)]]
@@ -882,6 +884,20 @@ print(modelo_normal)
 plot_expected(modelo_normal, dados)
 ```
 
+Saída:
+
+```
+FUNCTION: regressao_simples
+LOSS FUNCTION(loss): 0.11023756
+REGRESSORS: x
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  a = 0.99507940 (w: 1.00000000)
+  b = 2.96292225 (w: 0.15609214)
+```
+
+![EX_COM_PESOS_NAS_AMOSTRAS](free_regression/imagens_testes/com_pesos_nas_amostras.png)
+
 ### Com dados artificiais, regressão robusta
 
 Para realizar uma regressão semelhante ao método **.run**, mas de forma robusta:
@@ -902,17 +918,38 @@ modelo_robust = Regression(regressao_simples)
 modelo_robust.run_robust(dados, especific_precision = [1, 0.1])
 
 print(modelo_normal)
+print()
 print(modelo_robust)
 
 plot_expected(modelo_normal, dados)
 plot_expected(modelo_robust, dados)
 ```
 
+Saída:
+
+```
+FUNCTION: regressao_simples
+LOSS FUNCTION(least_squares): 244.40520424
+REGRESSORS: x
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  a = 1.03362084 (w: 0.08661750)
+  b = -4.98997949 (w: 1.00000000)
+  
+FUNCTION: regressao_simples
+LOSS FUNCTION(least_squares): 1.77871458
+REGRESSORS: x
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  a = 1.01147102 (w: 0.00030542)
+  b = 2.07874404 (w: 1.00000000)
+```
+
 ![EX_robust_1](free_regression/imagens_testes/robust_1.png)
 
 ![EX_robust_2](free_regression/imagens_testes/robust_2.png)
 
-## Com dados artificiais, teste com logisticas
+### Teste com logisticas
 
 ```
 def reg_log(x, b0, b1) -> float:
@@ -942,7 +979,7 @@ plot_expected(modelo, dados_)
 
 ![EX_19](free_regression/imagens_testes/res_19.png)
 
-## Com dados artificiais, cadeia de Markov com multiplas dependências
+### Cadeia de Markov com multiplas dependências
 
 ```
 from free_regression import Generator
@@ -959,7 +996,7 @@ for dependence in range(1, 10, 1):
   print(f"\nDependenci: {'='*200}\n{dependence} -> {resp}\n")
 ```
 
-## Com dados artificiais, série temporal
+### Série temporal
 
 ```
 from random import random, seed
@@ -988,9 +1025,76 @@ for i in range(len(data)):
 plot_series(model_ar_2, data, size = (14, 8))
 ```
 
+Saída:
+
+```
+FUNCTION: ar_2
+LOSS FUNCTION(least_squares): 0.26035616
+REGRESSORS: y1, y2
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  b1 = -0.97013635 (w: 0.07102360)
+  b2 = 0.42563299 (w: 0.08974967)
+  b3 = 6.70987577 (w: 1.00000000)
+```
+
 ![EX_TEMPORAL_SERIES_1](free_regression/imagens_testes/ts_1.png)
 
-## Com dados artificiais, MCMC (Markov Chain Monte Carlo)
+### Função dependente em função idependente
+
+Transformando função dependente:
+
+$$ f(x) = b_{1} \cdot f(x-1) + b_{2} \cdot f(x-2) $$
+
+em função idependente
+
+$$ f(x) = c_{1} \cdot \lambda_{1}^{x} + c_{2} \cdot \lambda_{2}^{x} $$
+
+```
+from random import random, seed
+from free_regression import Regression, plot_expected
+
+# Dados ########################################
+dados = [0, 1]
+for _ in range(8):
+  dados.append(-0.8*dados[-1] + 1.2*dados[-2])
+
+dados = [[i, x] for i, x in enumerate(dados)]
+print(dados)
+
+# Modelo ########################################
+def f(x:float, a:float, b:float, c:float, d:float) -> float:
+  return a*b**x + c*d**x
+
+modelo = Regression(f, print = True)
+modelo.set_seed(1)
+modelo.lock(d = dados[-1][1]/dados[-2][1]) # Aproximação de uma das raizes
+
+modelo.run(dados)
+
+# Resultado ######################################
+print(modelo)
+plot_expected(modelo, dados)
+```
+
+Saída:
+
+```
+LOSS FUNCTION(least_squares): 0.00268481
+REGRESSORS: x
+LENTH OUTPUT: 1 (UNIVARIATE)
+LOCK PARAMS: d
+PARAMS:
+  a = 0.42870316 (w: 0.99981393)
+  b = 0.75958136 (w: 1.00000000)
+  c = -0.41167104 (w: 0.99981393)
+  d = -1.57386689 (w: 1.00000000)
+```
+
+![EX_FUNC_DEPENDENTE_PARA_IDEPENDENTE](free_regression/imagens_testes/func_dep_para_idep.png)
+
+
+### MCMC (Markov Chain Monte Carlo)
 
 ```
 from free_regression import Generator, plot_time_series, round_series
@@ -1025,6 +1129,148 @@ mcmc_anomaly(dados, dados_prev,
              dependence = 2,
              percentage = 10)
 ```
+
+### Montando redutor de dimensionalidade
+
+Redutor de dimensionalidade de $\mathbb{R}^3 \to \mathbb{R}^2$
+
+```
+from free_regression import Regression
+from random import random, seed
+
+
+# Funções ##################################################
+def relu(x:float) -> float:
+  return x if x >= 0 else 0
+
+def f(x1, x2, x3, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12) -> (float, float, float):
+  c11:float = relu(x1*w1 + x2*w2 + x3*w3)
+  c12:float = relu(x1*w4 + x2*w5 + x3*w6)
+  return [c11*w7 + c12*w8, c11*w9 + c12*w10, c11*w11 + c12*w12]
+
+def f_parc(x1, x2, x3, w1, w2, w3, w4, w5, w6) -> (float, float):
+  c11:float = relu(x1*w1 + x2*w2 + x3*w3)
+  c12:float = relu(x1*w4 + x2*w5 + x3*w6)
+  return [c11, c12]
+
+# Dados ####################################################
+seed(1)
+
+dados_1, dados_2, dados_3, dados_4 = [], [], [], []
+
+for _ in range(10):
+  temp = [random(), random(), random()]
+  temp = [*temp, *temp]
+  dados_1.append(temp.copy())
+
+for _ in range(10):
+  temp = [random() + 1, random(), random()]
+  temp = [*temp, *temp]
+  dados_2.append(temp.copy())
+
+for _ in range(10):
+  temp = [random(), random() + 1, random()]
+  temp = [*temp, *temp]
+  dados_3.append(temp.copy())
+
+for _ in range(10):
+  temp = [random(), random(), random() + 1]
+  temp = [*temp, *temp]
+  dados_4.append(temp.copy())
+
+dados = [*dados_1, *dados_2, *dados_3, *dados_4]
+colors = [*["blue"] * 10, *["red"] * 10, *["green"] * 10, *["grey"] * 10]
+
+# Modelo ####################################################
+modelo = Regression(f, print = True)
+modelo.set_seed(1)
+
+modelo.run(dados)
+print(modelo)
+```
+
+Saída
+
+```
+LOSS FUNCTION(least_squares_multivariate): 0.32185552
+REGRESSORS: x1, x2, x3
+LENTH OUTPUT: 3 (MULTIVARIATE)
+PARAMS:
+  w1 = 0.36331677 (w: 0.99981764)
+  w2 = 0.11716037 (w: 0.99487522)
+  w3 = 0.62754604 (w: 0.99713457)
+  w4 = 0.44668030 (w: 0.99981764)
+  w5 = 1.08678425 (w: 0.99487522)
+  w6 = -0.02016947 (w: 0.99713457)
+  w7 = 0.56208165 (w: 1.00000000)
+  w8 = 0.20981001 (w: 1.00000000)
+  w9 = -0.20802218 (w: 0.99473883)
+  w10 = 0.82910443 (w: 0.99473883)
+  w11 = 1.30493648 (w: 0.99714321)
+  w12 = -0.27646413 (w: 0.99714321)
+```
+
+Plotando:
+
+```
+import matplotlib.pyplot as plt
+
+modelo_parc = Regression(f_parc)
+modelo_parc << modelo # Pasando os pesos para o modelo parcial que permite vizualizar em 2d
+print(modelo_parc)
+
+x, y = zip(*modelo_parc.prediction([x_[:3] for x_ in dados]))
+
+
+plt.scatter(x, y, c = colors, alpha = 0.4, s = 100)
+
+plt.title("Redução de dimensionalidade")
+plt.xlabel("Eixo X")
+plt.ylabel("Eixo Y")
+
+plt.show()
+
+################################################################
+
+x, y, z = zip(*[x_[:3] for x_ in dados])
+
+for a, b in [[0, 0], [0, 45], [0, 90], [45, 90], [90, 90]]:
+
+  fig = plt.figure()
+  ax = fig.add_subplot(111, projection='3d')
+
+  ax.scatter(x, y, z, c = colors, s = 100, alpha = 0.4)
+  ax.view_init(elev = a, azim = b)
+
+  ax.set_title(f"Gráfico de Dispersão 3D ({a}, {b})")
+  ax.set_xlabel("Eixo X")
+  ax.set_ylabel("Eixo Y")
+  ax.set_zlabel("Eixo Z")
+```
+
+Saída:
+
+```
+FUNCTION: f_parc
+LOSS FUNCTION: least_squares_multivariate
+REGRESSORS: x1, x2, x3
+LENTH OUTPUT: 2 (MULTIVARIATE)
+PARAMS:
+  w1 = 0.36331677 (w: 1.00000000)
+  w2 = 0.11716037 (w: 1.00000000)
+  w3 = 0.62754604 (w: 1.00000000)
+  w4 = 0.44668030 (w: 1.00000000)
+  w5 = 1.08678425 (w: 1.00000000)
+  w6 = -0.02016947 (w: 1.00000000)
+```
+
+![EX_red_1](free_regression/imagens_testes/red_dim_1.png)
+
+![EX_red_2](free_regression/imagens_testes/red_dim_2.png)
+
+![EX_red_3](free_regression/imagens_testes/red_dim_3.png)
+
+![EX_red_4](free_regression/imagens_testes/red_dim_4.png)
 
 ## Com dados reais
 
@@ -1079,43 +1325,7 @@ plot_prediction_bands(modelo, dados, amplitude = 1.5)
 
 ![EX_17](free_regression/imagens_testes/res_17.png)
 
-## Com dados reais, tente você mesmo e veja o resultado!
-
-```
-dados = MedidasDeMassa()
-dados = transpose([dados["Age"], dados["LegLength"]])
-
-
-modelo_1 = Regression(*generate_regression(1, 1))
-modelo_1.set_seed(2024)
-modelo_1.run(dados, precision = 0.01)
-print(modelo_1)
-plot_expected(modelo_1, dados)
-plot_residual(modelo_1, dados)
-
-
-modelo_2 = Regression(*generate_mlp_sigmoid_sum(1, 2))
-modelo_2.set_seed(2024)
-modelo_2.run(dados, precision = 0.1)
-print(modelo_2)
-plot_expected(modelo_2, dados)
-plot_residual(modelo_2, dados)
-
-
-def lin(x0, a):
-  return x0*a
-
-modelo_3 = modelo_2 + Regression(lin, regressors = ["x0"])
-modelo_3.set_seed(2024)
-modelo_3 << modelo_2
-modelo_3.change(a = 0.3)
-modelo_3.run(dados, precision = 0.05)
-print(modelo_3)
-plot_expected(modelo_3, dados)
-plot_residual(modelo_3, dados)
-```
-
-## Com dados reais, usando dummys
+### Usando variáveis dummys
 
 ```
 dados = ProdutividadeTrabalhoRemoto()
