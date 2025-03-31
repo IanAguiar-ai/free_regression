@@ -223,6 +223,7 @@ class Regression:
         for arg in self.__args_function.keys():
             if arg in obj.__args_function.keys():
                 obj.__args_function[arg] = self.__args_function[arg]
+        obj._Regression__robust = self.__robust
 
     def __lshift__(self, obj) -> None:
         """
