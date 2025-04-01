@@ -160,6 +160,7 @@ class Regression:
         self + obj
         """
         modified_class = eval(self.__generic_function(obj, operator = "+"))
+        self.__rshift__(modified_class)
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_add_{obj.__function.__name__}"
         else:
@@ -172,6 +173,7 @@ class Regression:
         self - obj
         """
         modified_class = eval(self.__generic_function(obj, operator = "-"))
+        self.__rshift__(modified_class)
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_sub_{obj.__function.__name__}"
         else:
@@ -184,6 +186,7 @@ class Regression:
         self * obj
         """
         modified_class = eval(self.__generic_function(obj, operator = "*"))
+        self.__rshift__(modified_class)
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_mul_{obj.__function.__name__}"
         else:
@@ -196,6 +199,7 @@ class Regression:
         self / obj
         """
         modified_class = eval(self.__generic_function(obj, operator = "/"))
+        self.__rshift__(modified_class)
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_truediv_{obj.__function.__name__}"
         else:
@@ -208,6 +212,7 @@ class Regression:
         self ** obj
         """
         modified_class = eval(self.__generic_function(obj, operator = "**"))
+        self.__rshift__(modified_class)
         if type(self) == type(obj):
             modified_class.__function.__name__ = f"{self.__function.__name__}_pow_{obj.__function.__name__}"
         else:
@@ -278,7 +283,7 @@ class Regression:
             
             inputs_1 = ""
             for input_ in list(set(self.regressors) | set(self.params)):
-                inputs_1 += f"{input_} = {input_},"            
+                inputs_1 += f"{input_} = {input_},"
             return f"Regression(lambda {', '.join(all_parameters)} : {self.__function.__name__}({inputs_1}) {operator} {obj}, regressors = {all_regressorss})"
 
         else:
