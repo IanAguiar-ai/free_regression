@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: free_regression
-Version: 1.3.0
+Version: 1.3.1
 Summary: Construtor de regressão genérico.
 Author: ['Ian dos Anjos Melo Aguiar']
 Author-email: <iannaianjos@gmail.com>
@@ -1141,45 +1141,50 @@ from random import random, seed
 
 # Funções ##################################################
 def relu(x:float) -> float:
-  return x if x >= 0 else 0
+  return x if x >= 0 else x/10
 
-def f(x1, x2, x3, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12) -> (float, float, float):
-  c11:float = relu(x1*w1 + x2*w2 + x3*w3)
-  c12:float = relu(x1*w4 + x2*w5 + x3*w6)
-  return [c11*w7 + c12*w8, c11*w9 + c12*w10, c11*w11 + c12*w12]
+def f(x1, x2, x3, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17) -> (float, float, float):
+  c11:float = relu(x1*w1 + x2*w2 + x3*w3 + w16)
+  c12:float = relu(x1*w4 + x2*w5 + x3*w6 + w17)
+  return [c11*w7 + c12*w8 + w13, c11*w9 + c12*w10 + w14, c11*w11 + c12*w12 + w15]
 
-def f_parc(x1, x2, x3, w1, w2, w3, w4, w5, w6) -> (float, float):
-  c11:float = relu(x1*w1 + x2*w2 + x3*w3)
-  c12:float = relu(x1*w4 + x2*w5 + x3*w6)
+def f_parc(x1, x2, x3, w1, w2, w3, w4, w5, w6, w16, w17) -> (float, float):
+  c11:float = relu(x1*w1 + x2*w2 + x3*w3 + w16)
+  c12:float = relu(x1*w4 + x2*w5 + x3*w6 + w17)
   return [c11, c12]
 
 # Dados ####################################################
 seed(1)
 
-dados_1, dados_2, dados_3, dados_4 = [], [], [], []
+dados_1, dados_2, dados_3, dados_4, dados_5 = [], [], [], [], []
 
-for _ in range(10):
+for _ in range(7):
   temp = [random(), random(), random()]
   temp = [*temp, *temp]
   dados_1.append(temp.copy())
 
-for _ in range(10):
+for _ in range(7):
   temp = [random() + 1, random(), random()]
   temp = [*temp, *temp]
   dados_2.append(temp.copy())
 
-for _ in range(10):
+for _ in range(7):
   temp = [random(), random() + 1, random()]
   temp = [*temp, *temp]
   dados_3.append(temp.copy())
 
-for _ in range(10):
+for _ in range(7):
   temp = [random(), random(), random() + 1]
   temp = [*temp, *temp]
   dados_4.append(temp.copy())
 
-dados = [*dados_1, *dados_2, *dados_3, *dados_4]
-colors = [*["blue"] * 10, *["red"] * 10, *["green"] * 10, *["grey"] * 10]
+for _ in range(7):
+  temp = [random() + 1, random() + 1, random() + 1]
+  temp = [*temp, *temp]
+  dados_5.append(temp.copy())
+
+dados = [*dados_1, *dados_2, *dados_3, *dados_4, *dados_5]
+colors = [*["blue"] * 7, *["red"] * 7, *["green"] * 7, *["grey"] * 7, *["pink"] * 7]
 
 # Modelo ####################################################
 modelo = Regression(f, print = True)
@@ -1192,22 +1197,28 @@ print(modelo)
 Saída
 
 ```
-LOSS FUNCTION(least_squares_multivariate): 0.32185552
+FUNCTION: f
+LOSS FUNCTION(least_squares_multivariate): 0.25298512
 REGRESSORS: x1, x2, x3
 LENTH OUTPUT: 3 (MULTIVARIATE)
 PARAMS:
-  w1 = 0.36331677 (w: 0.99981764)
-  w2 = 0.11716037 (w: 0.99487522)
-  w3 = 0.62754604 (w: 0.99713457)
-  w4 = 0.44668030 (w: 0.99981764)
-  w5 = 1.08678425 (w: 0.99487522)
-  w6 = -0.02016947 (w: 0.99713457)
-  w7 = 0.56208165 (w: 1.00000000)
-  w8 = 0.20981001 (w: 1.00000000)
-  w9 = -0.20802218 (w: 0.99473883)
-  w10 = 0.82910443 (w: 0.99473883)
-  w11 = 1.30493648 (w: 0.99714321)
-  w12 = -0.27646413 (w: 0.99714321)
+  w1 = 1.40160852 (w: 0.99609845)
+  w2 = 1.20905211 (w: 0.99240304)
+  w3 = 1.90383075 (w: 0.99379174)
+  w4 = 1.29010370 (w: 0.99609845)
+  w5 = -0.42315787 (w: 0.99240304)
+  w6 = 0.43193659 (w: 0.99379174)
+  w7 = 0.00722119 (w: 0.97849836)
+  w8 = 0.62503256 (w: 0.97849836)
+  w9 = 0.33884257 (w: 0.97258454)
+  w10 = -0.56880160 (w: 0.97258454)
+  w11 = 0.30476131 (w: 0.97627600)
+  w12 = -0.09723028 (w: 0.97627600)
+  w13 = 0.00903604 (w: 0.88725152)
+  w14 = 0.50654604 (w: 0.87470719)
+  w15 = -0.07919318 (w: 0.88812425)
+  w16 = -0.48020186 (w: 1.00000000)
+  w17 = 0.23674088 (w: 1.00000000)
 ```
 
 Plotando:
@@ -1256,12 +1267,14 @@ LOSS FUNCTION: least_squares_multivariate
 REGRESSORS: x1, x2, x3
 LENTH OUTPUT: 2 (MULTIVARIATE)
 PARAMS:
-  w1 = 0.36331677 (w: 1.00000000)
-  w2 = 0.11716037 (w: 1.00000000)
-  w3 = 0.62754604 (w: 1.00000000)
-  w4 = 0.44668030 (w: 1.00000000)
-  w5 = 1.08678425 (w: 1.00000000)
-  w6 = -0.02016947 (w: 1.00000000)
+  w1 = 1.40160852 (w: 0.99609845)
+  w2 = 1.20905211 (w: 0.99240304)
+  w3 = 1.90383075 (w: 0.99379174)
+  w4 = 1.29010370 (w: 0.99609845)
+  w5 = -0.42315787 (w: 0.99240304)
+  w6 = 0.43193659 (w: 0.99379174)
+  w16 = -0.48020186 (w: 1.00000000)
+  w17 = 0.23674088 (w: 1.00000000)
 ```
 
 ![EX_red_1](free_regression/imagens_testes/red_dim_1.png)
@@ -1271,6 +1284,182 @@ PARAMS:
 ![EX_red_3](free_regression/imagens_testes/red_dim_3.png)
 
 ![EX_red_4](free_regression/imagens_testes/red_dim_4.png)
+
+
+Segundo exemplo reduzindo a dimensionalidade:
+
+```
+def s(x:float) -> float:
+  return x
+
+def f(x1, x2, x3, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17) -> (float, float, float):
+  c11:float = s(x1*w1 + x2*w2 + x3*w3 + w16)
+  c12:float = s(x1*w4 + x2*w5 + x3*w6 + w17)
+  return [c11*w7 + c12*w8 + w13, c11*w9 + c12*w10 + w14, c11*w11 + c12*w12 + w15]
+
+def f_parc(x1, x2, x3, w1, w2, w3, w4, w5, w6, w16, w17) -> (float, float):
+  c11:float = s(x1*w1 + x2*w2 + x3*w3 + w16)
+  c12:float = s(x1*w4 + x2*w5 + x3*w6 + w17)
+  return [c11, c12]
+  
+################################################################
+
+from random import random, seed
+seed(1)
+
+dados_1, dados_2, dados_3, dados_4, dados_5, dados_6, dados_7, dados_8 = [], [], [], [], [], [], [], []
+n:int = 2
+k:int = 10
+
+for _ in range(k):
+  temp = [random(), random(), random()]
+  temp = [*temp, [temp[0] - 3, temp[1] - 3, temp[2] - 3]]
+  dados_1.append(temp.copy())
+
+for _ in range(k):
+  temp = [random() + n, random(), random()]
+  temp = [*temp, [temp[0] - 3, temp[1] - 3, temp[2] - 3]]
+  dados_2.append(temp.copy())
+
+for _ in range(k):
+  temp = [random(), random() + n, random()]
+  temp = [*temp, [temp[0] - 3, temp[1] - 3, temp[2] - 3]]
+  dados_3.append(temp.copy())
+
+for _ in range(k):
+  temp = [random(), random(), random() + n]
+  temp = [*temp, [temp[0] - 3, temp[1] - 3, temp[2] - 3]]
+  dados_4.append(temp.copy())
+
+for _ in range(k):
+  temp = [random() + n, random() + n, random() + n]
+  temp = [*temp, [temp[0] - 3, temp[1] - 3, temp[2] - 3]]
+  dados_5.append(temp.copy())
+
+for _ in range(k):
+  temp = [random(), random() + n, random() + n]
+  temp = [*temp, [temp[0] - 3, temp[1] - 3, temp[2] - 3]]
+  dados_6.append(temp.copy())
+
+for _ in range(k):
+  temp = [random() + n, random(), random() + n]
+  temp = [*temp, [temp[0] - 3, temp[1] - 3, temp[2] - 3]]
+  dados_7.append(temp.copy())
+
+for _ in range(k):
+  temp = [random() + n, random() + n, random()]
+  temp = [*temp, [temp[0] - 3, temp[1] - 3, temp[2] - 3]]
+  dados_8.append(temp.copy())
+
+dados = [*dados_1, *dados_2, *dados_3, *dados_4, *dados_5, *dados_6, *dados_7, *dados_8]
+colors = [*["blue"] * k, *["red"] * k, *["green"] * k, *["grey"] * k, *["pink"] * k, *["yellow"] * k, *["black"] * k, *["purple"] * k]
+
+################################################################
+
+modelo = Regression(f, print = True)
+modelo.set_seed(1)
+print(modelo)
+
+modelo.run(dados)
+#modelo.run_robust(dados)
+print(modelo)
+
+################################################################
+
+import matplotlib.pyplot as plt
+
+modelo_parc = Regression(f_parc)
+modelo_parc << modelo # Pasando os pesos para o modelo parcial que permite vizualizar em 2d
+print(modelo_parc)
+
+x, y = zip(*modelo_parc.prediction([x_[:3] for x_ in dados]))
+
+
+plt.scatter(x, y, c = colors, alpha = 0.4, s = 100)
+
+plt.title("Redução de dimensionalidade")
+plt.xlabel("Eixo X")
+plt.ylabel("Eixo Y")
+
+plt.show()
+
+################################################################
+
+x, y, z = zip(*[x_[:3] for x_ in dados])
+
+for a, b in [[0, 0], [0, 45], [0, 90], [45, 90], [90, 90]]:
+
+  fig = plt.figure()
+  ax = fig.add_subplot(111, projection='3d')
+
+  ax.scatter(x, y, z, c = colors, s = 100, alpha = 0.4)
+  ax.view_init(elev = a, azim = b)
+
+  ax.set_title(f"Gráfico de Dispersão 3D ({a}, {b})")
+  ax.set_xlabel("Eixo X")
+  ax.set_ylabel("Eixo Y")
+  ax.set_zlabel("Eixo Z")
+```
+
+Saída:
+
+```
+FUNCTION: f
+LOSS FUNCTION(least_squares_multivariate): 1.02027349
+REGRESSORS: x1, x2, x3
+LENTH OUTPUT: 3 (MULTIVARIATE)
+PARAMS:
+  w1 = -0.21856788 (w: 0.93305773)
+  w2 = -0.70089477 (w: 0.92572803)
+  w3 = 1.04726199 (w: 0.93224252)
+  w4 = 0.19325063 (w: 0.93305773)
+  w5 = -0.48449476 (w: 0.92572803)
+  w6 = -0.01427655 (w: 0.93224252)
+  w7 = -0.31313602 (w: 0.86133541)
+  w8 = 1.03627477 (w: 0.86133541)
+  w9 = -0.14774773 (w: 0.87091987)
+  w10 = -1.62078327 (w: 0.87091987)
+  w11 = 0.79111506 (w: 0.86243128)
+  w12 = -0.87125258 (w: 0.86243128)
+  w13 = -2.36440081 (w: 0.63442108)
+  w14 = -0.63719914 (w: 0.64253031)
+  w15 = -0.39747654 (w: 0.63532989)
+  w16 = -0.93143102 (w: 1.00000000)
+  w17 = 1.05927996 (w: 1.00000000)
+  
+  
+FUNCTION: f
+LOSS FUNCTION(least_squares_multivariate): 1.02027349
+REGRESSORS: x1, x2, x3
+LENTH OUTPUT: 3 (MULTIVARIATE)
+PARAMS:
+  w1 = -0.21856788 (w: 0.93305773)
+  w2 = -0.70089477 (w: 0.92572803)
+  w3 = 1.04726199 (w: 0.93224252)
+  w4 = 0.19325063 (w: 0.93305773)
+  w5 = -0.48449476 (w: 0.92572803)
+  w6 = -0.01427655 (w: 0.93224252)
+  w7 = -0.31313602 (w: 0.86133541)
+  w8 = 1.03627477 (w: 0.86133541)
+  w9 = -0.14774773 (w: 0.87091987)
+  w10 = -1.62078327 (w: 0.87091987)
+  w11 = 0.79111506 (w: 0.86243128)
+  w12 = -0.87125258 (w: 0.86243128)
+  w13 = -2.36440081 (w: 0.63442108)
+  w14 = -0.63719914 (w: 0.64253031)
+  w15 = -0.39747654 (w: 0.63532989)
+  w16 = -0.93143102 (w: 1.00000000)
+  w17 = 1.05927996 (w: 1.00000000)
+```
+
+![EX_red_5](free_regression/imagens_testes/red_dim_5.png)
+
+![EX_red_6](free_regression/imagens_testes/red_dim_6.png)
+
+![EX_red_7](free_regression/imagens_testes/red_dim_7.png)
+
+![EX_red_8](free_regression/imagens_testes/red_dim_8.png)
+
 
 ## Com dados reais
 
