@@ -107,6 +107,9 @@ class Regression:
         self.__seed = None
         self.iterations:int = min(50 * len(self.__args_function.keys()) * self.__len_y, 500 * self.__len_y) # Quanto mais parâmetros mais iterações eu precisso para que o valor mude
 
+    def __call__(self, list_prediction:list = None, **x_args):
+        return self.prediction(list_prediction, **x_args)
+
     def __eq__(self, obj) -> bool:
         """
         Confere se as funções de regressões são as mesmas.
@@ -249,17 +252,20 @@ class Regression:
 
         # Tratando identação
         function:list = function.split("\n")
-
-        print(f">>{function[0][0]}<<")
-        while "\t" in function[0][0]:
+        while "\t" in function[0][0] or " " in function[0][0]:
             for i in range(len(function)):
-                function[i].remove("\t")
+                function[i] = function[i][1:]
+        function = "\n".join(function)
 
-        print(function)
+        loss_function:list = loss_function.split("\n")
+        while "\t" in loss_function[0][0] or " " in loss_function[0][0]:
+            for i in range(len(loss_function)):
+                loss_function[i] = loss_function[i][1:]
+        loss_function = "\n".join(loss_function)
 
         # Salvar tudo
-        #with open(f"{name.replace('.memory', '')}.memory", "w") as arq:
-        #    arq.write(f"{self.__args_function}\n|||\n{self.regressors}\n|||\n{function}\n|||\n{}\n|||\n{self.__error}\n|||\n{self.__seed}\n|||\n{self.iterations}\n|||\n{self.__len_y}")
+        with open(f"{name.replace('.memory', '')}.memory", "w") as arq:
+            arq.write(f"{self.__args_function}\n|||\n{self.regressors}\n|||\n{function}\n|||\n{loss_function}\n|||\n{self.__error}\n|||\n{self.__seed}\n|||\n{self.iterations}\n|||\n{self.__len_y}")
             
         return True
 
@@ -783,16 +789,3 @@ class Regression:
         # Salva o resultado
         self.__args_function = best_args
         self.__error = best_result/len(data)
-
-
-if __name__ == "__main__":
-    def f1(x1, x2, a, b, c) -> float:
-        return x1*a + x2*b + c, a + b + c
-
-    modelo_teste = Regression(f1)
-    modelo_teste["a"] = 11
-
-    modelo_teste.save("modelo_teste_1")
-
-    #modelo_teste = Regression()
-    #modelo_teste.open("modelo_teste_1")

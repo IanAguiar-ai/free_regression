@@ -335,6 +335,10 @@ meu_modelo_regressor.run(seus_dados)
 
 # Predição
 resposta = meu_modelo_regressor.prediction(x = 4)
+# Ou
+resposta = meu_modelo_regressor(x = 4)
+
+
 print(f"Predição para x = 4: {resposta}")
 ```
 
@@ -351,6 +355,9 @@ meu_modelo_regressor.run(seus_dados)
 
 # Predição
 resposta = meu_modelo_regressor.prediction(x1 = 2, x2 = 1.2)
+# Ou
+resposta = meu_modelo_regressor(x1 = 2, x2 = 1.2)
+
 print(f"Predição para x1 = 2 e x2 = 1.2: {resposta}")
 ```
 
@@ -369,6 +376,9 @@ meu_modelo_regressor.run(seus_dados)
 
 # Predição
 resposta = meu_modelo_regressor.prediction([[2, 1.2], [3, 1], [1, 1]])
+# Ou
+resposta = meu_modelo_regressor([[2, 1.2], [3, 1], [1, 1]])
+
 print(f"Predição: {resposta}")
 ```
 
@@ -471,7 +481,8 @@ meu_modelo.save(name = "nome_do_modelo")
 Isso salvará, na mesma pasta em que o código Python estiver sendo executado, um arquivo *.memory*, que pode ser acessado posteriormente por uma instância da classe *Regression* construída da mesma forma:
 
 ```
-# Depois de reconstruir o modelo...
+# Criar modelo vazio
+meu_modelo = Regression()
 
 # Puxar os parâmetros
 meu_modelo.open(name = "nome_do_modelo") # Não é preciso colocar o ".memory" no final do nome do modelo
