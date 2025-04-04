@@ -1,4 +1,4 @@
-from inspect import signature # Para pegar os argumentos de uma função
+from inspect import signature, getsource # Para pegar os argumentos de uma função e a própria função
 from copy import deepcopy
 from random import random, seed
 
@@ -33,7 +33,7 @@ class Regression:
     """
     __slots__ = ("iterations", "params", "regressors", "weights", "__len_y", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error", "__robust", "__limiar", "__print")
     
-    def __init__(self, function:"function", regressors:list = None, loss_function:"function" = least_squares, print:bool = False) -> None:
+    def __init__(self, function:"function" = None, regressors:list = None, loss_function:"function" = least_squares, print:bool = False) -> None:
         """
         Inicializa a classe.
 
@@ -43,6 +43,9 @@ class Regression:
             loss_function:(função | def) função que é minimizada ao fazer a regressão.
             print:(bool) Booleano que indica se deve ser printado o estado da regressão.
         """
+        if function == None:
+            function = lambda x, a, b : x*a + b
+
         assert callable(function), f"<function> is a {type(function)} not a function"
         assert callable(loss_function), f"<loss_function> is a {type(loss_function)} not a function"
 
@@ -103,7 +106,6 @@ class Regression:
         # Definindo seed e critério de parada
         self.__seed = None
         self.iterations:int = min(50 * len(self.__args_function.keys()) * self.__len_y, 500 * self.__len_y) # Quanto mais parâmetros mais iterações eu precisso para que o valor mude
-
 
     def __eq__(self, obj) -> bool:
         """
@@ -241,15 +243,55 @@ class Regression:
         """
         Salva os argumentos de memória em um arquivo chamado <name>.memory
         """
-        with open(f"{name.replace('.memory', '')}.memory", "w") as arq:
-            arq.write(f"{self.__args_function}")
+
+        function:str = getsource(self.__function)
+        loss_function:str = getsource(self.__loss_function)
+
+        # Tratando identação
+        function:list = function.split("\n")
+
+        print(f">>{function[0][0]}<<")
+        while "\t" in function[0][0]:
+            for i in range(len(function)):
+                function[i].remove("\t")
+
+        print(function)
+
+        # Salvar tudo
+        #with open(f"{name.replace('.memory', '')}.memory", "w") as arq:
+        #    arq.write(f"{self.__args_function}\n|||\n{self.regressors}\n|||\n{function}\n|||\n{}\n|||\n{self.__error}\n|||\n{self.__seed}\n|||\n{self.iterations}\n|||\n{self.__len_y}")
+            
+        return True
 
     def open(self, name:str) -> bool:
         """
         Abre os argumentos de memória em um arquivo chamado <name>.memory
         """
+
         with open(f"{name.replace('.memory', '')}.memory", "r") as arq:
-            self.__args_function = eval(arq.read())
+            arq_final:list = arq.read().split("\n|||\n")
+
+        self.__args_function:dict = eval(arq_final[0])
+        self.weights:dict = {key:1 for key in self.__args_function}
+
+        self.regressors:list = eval(arq_final[1])
+
+        func_code:str = arq_final[2]
+        local_vars = {}
+        exec(func_code, globals(), local_vars)
+        self.__function = next(iter(local_vars.values()))
+
+        func_code:str = arq_final[3]
+        local_vars = {}
+        exec(func_code, globals(), local_vars)
+        self.__loss_function = next(iter(local_vars.values()))
+
+        self.__error:float = float(arq_final[4]) if arq_final[4] != "None" else None
+        self.__seed:int = int(arq_final[5]) if arq_final[5] != "None" else None
+        self.iterations:int = int(arq_final[6])
+        self.__len_y:int = int(arq_final[7])
+
+        return True
 
     def loss_function(self, function:"function") -> None:
         """
@@ -741,3 +783,16 @@ class Regression:
         # Salva o resultado
         self.__args_function = best_args
         self.__error = best_result/len(data)
+
+
+if __name__ == "__main__":
+    def f1(x1, x2, a, b, c) -> float:
+        return x1*a + x2*b + c, a + b + c
+
+    modelo_teste = Regression(f1)
+    modelo_teste["a"] = 11
+
+    modelo_teste.save("modelo_teste_1")
+
+    #modelo_teste = Regression()
+    #modelo_teste.open("modelo_teste_1")
