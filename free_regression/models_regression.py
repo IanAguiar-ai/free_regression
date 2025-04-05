@@ -309,7 +309,7 @@ def asymmetric_normal(x:list, m:float, v1:float, v2:float, c:float) -> list:
     return (e**(-1/2 * (x-m)**2/v1) if x > m else e**(-1/2 * (x-m)**2/v2)) * c
 
 
-def generated_neural_network(struct:list = [2, 3, 2], activation:list = ["relu", "sigmoid"]) -> "function":
+def generate_neural_network(struct:list = [2, 3, 2], activation:list = ["relu", "sigmoid"]) -> "function":
     """
     Gera uma rede neural genérica.
     Retorna a função de rede neural com a quantidade de inputs, neuronios, camadas e outputs indicados em struct.

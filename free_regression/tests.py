@@ -333,7 +333,7 @@ class Teste(unittest.TestCase):
         plot_expected(teste_1, dados)
         plot_residual(teste_1, dados)
 
-        teste_1 = Regression(generated_neural_network([1, 2, 2, 1], activation = ["lrelu", "abs", "float"]), print = True)
+        teste_1 = Regression(generate_neural_network([1, 2, 2, 1], activation = ["lrelu", "abs", "float"]), print = True)
         teste_1.set_seed(1)
         print(teste_1)
         dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
