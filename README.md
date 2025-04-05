@@ -93,6 +93,13 @@ meu_modelo_regressor = Regression(*generate_regression(regressors = 3, degree = 
 meu_modelo.run(seus_dados) # Para começar a regressão
 ```
 
+Ou ainda
+
+```
+meu_modelo_regressor = Regression(generate_regression(regressors = 3, degree = 2))
+meu_modelo.run(seus_dados) # Para começar a regressão
+```
+
 Para ver o resultado da regressão:
 
 ```

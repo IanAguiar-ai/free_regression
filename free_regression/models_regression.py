@@ -14,8 +14,8 @@ def generate_regression(regressors:int, degree:int = 1) -> ("function", list):
     Returns:
         function: Função de regressão
     """
-    assert type(regressors) == int, "<regressors> must be an integer"
-    assert type(degree) == int, "<degree> must be an integer"
+    assert type(regressors) == int, "<regressors> must be a integer"
+    assert type(degree) == int, "<degree> must be a integer"
     assert regressors > 0, "<regressors> must be at least 1"
     assert degree > 0, "<degree> must be at least 1"
  
@@ -43,8 +43,8 @@ def generate_mlp(regressors:int, neurons:int = 1) -> ("function", list):
     Returns:
         function: Função MLP (Mult Layer Perceptron)
     """
-    assert type(regressors) == int, "<regressors> must be an integer"
-    assert type(neurons) == int, "<neurons> must be an integer"
+    assert type(regressors) == int, "<regressors> must be a integer"
+    assert type(neurons) == int, "<neurons> must be a integer"
     assert regressors > 0, "<regressors> must be at least 1"
     assert neurons > 0, "<neurons> must be at least 1"
 
@@ -88,8 +88,8 @@ def generate_mlp_classifier(regressors:int, neurons:int = 1) -> ("function", lis
     Returns:
         function: Função MLP (Mult Layer Perceptron)
     """
-    assert type(regressors) == int, "<regressors> must be an integer"
-    assert type(neurons) == int, "<neurons> must be an integer"
+    assert type(regressors) == int, "<regressors> must be a integer"
+    assert type(neurons) == int, "<neurons> must be a integer"
     assert regressors > 0, "<regressors> must be at least 1"
     assert neurons > 0, "<neurons> must be at least 1"
 
@@ -133,8 +133,8 @@ def generate_mlp_semi_classifier(regressors:int, neurons:int = 1) -> ("function"
     Returns:
         function: Função MLP (Mult Layer Perceptron)
     """
-    assert type(regressors) == int, "<regressors> must be an integer"
-    assert type(neurons) == int, "<neurons> must be an integer"
+    assert type(regressors) == int, "<regressors> must be a integer"
+    assert type(neurons) == int, "<neurons> must be a integer"
     assert regressors > 0, "<regressors> must be at least 1"
     assert neurons > 0, "<neurons> must be at least 1"
 
@@ -178,8 +178,8 @@ def generate_mlp_sigmoid_sum(regressors:int, neurons:int = 1) -> ("function", li
     Returns:
         function: Função MLP (Mult Layer Perceptron)
     """
-    assert type(regressors) == int, "<regressors> must be an integer"
-    assert type(neurons) == int, "<neurons> must be an integer"
+    assert type(regressors) == int, "<regressors> must be a integer"
+    assert type(neurons) == int, "<neurons> must be a integer"
     assert regressors > 0, "<regressors> must be at least 1"
     assert neurons > 0, "<neurons> must be at least 1"
 
@@ -224,8 +224,8 @@ def generate_mlp_normals(regressors:int, neurons:int = 1, max_:float = 999_999_9
     Returns:
         function: Função MLP (Mult Layer Perceptron)
     """
-    assert type(regressors) == int, "<regressors> must be an integer"
-    assert type(neurons) == int, "<neurons> must be an integer"
+    assert type(regressors) == int, "<regressors> must be a integer"
+    assert type(neurons) == int, "<neurons> must be a integer"
     assert regressors > 0, "<regressors> must be at least 1"
     assert neurons > 0, "<neurons> must be at least 1"
 
@@ -272,8 +272,8 @@ def generate_distribuction(regressors:int, normals:int = 1) -> ("function", list
     Returns:
         function: Função geradora de somas de normais normalizadas
     """
-    assert type(regressors) == int, "<regressors> must be an integer"
-    assert type(normals) == int, "<neurons> must be an integer"
+    assert type(regressors) == int, "<regressors> must be a integer"
+    assert type(normals) == int, "<neurons> must be a integer"
     assert regressors > 0, "<regressors> must be at least 1"
     assert normals > 0, "<normals> must be at least 1"
 
@@ -309,8 +309,47 @@ def asymmetric_normal(x:list, m:float, v1:float, v2:float, c:float) -> list:
     return (e**(-1/2 * (x-m)**2/v1) if x > m else e**(-1/2 * (x-m)**2/v2)) * c
 
 
+def generated_neural_network(struct:list = [2, 3, 2], activation:list = ["relu", "sigmoid"]) -> "function":
+    assert type(struct) == list, f"struct must be a list"
+    assert len(struct) > 1, f"len(struct) must be at least 2\nlen(struct): {len(struct)} < 2"
+    assert len(activation) + 1 == len(struct), f" len(activation) + 1 must be len(struct)\n{len(activation)} + 1 != {len(struct)}"    
+
+    var:str = [f"x_{i+1}" for i in range(struct[0])]
+    name:str = f"new_generated_neural_network_{'_'.join(list(map(str, struct)))}"
+    function_string:str = f"def new_generated_neural_network_{'_'.join(list(map(str, struct)))}(|params|):\n"
+    function_string += "\tdef relu(x):\n\t\treturn x if x > 0 else 0\n"
+    function_string += "\tdef lrelu(x):\n\t\treturn x if x > x/10 else 0\n"
+    function_string += "\tdef sigmoid(x):\n\t\treturn 1/(1 + 2**(-x))\n"
+
+    for neuron in range(struct[0]):
+        function_string += f"\tc_0_{neuron} = x_{neuron + 1}\n"
+        var.append(f"c_0_{neuron}")
+
+    for camade in range(1, len(struct)):
+        for neuron in range(struct[camade]):
+            temporary:list = [f"c_{camade - 1}_{i}*b_{camade}_{neuron}_{i}" for i in range(struct[camade - 1])]
+            function_string += f"\tc_{camade}_{neuron} = {activation[camade - 1]}(i_{camade}_{neuron} + {' + '.join(temporary)})\n"
+            var.append(f"c_{camade}_{neuron}")
+            var.extend([f"b_{camade}_{neuron}_{i}" for i in range(struct[camade - 1])])
+
+    if struct[-1] == 1:
+        function_string += f"\treturn c_{len(struct)}_0"
+    else:
+        temporary:list = [f"c_{len(struct)}_{i}" for i in range(struct[-1])]
+        function_string += f"\treturn [{', '.join(temporary)}]"
+
+    function_string = function_string.replace("|params|", f"{', '.join(var)}")
+    print(function_string)
+
+    function_string += f"\nglobals()['{name}'] = {name}"
+    final_function = exec(function_string)
+    return globals()[f"{name}"]
+
 if __name__ == "__main__":
     from free_regression import Regression
+    modelo = Regression(generated_neural_network([2, 1, 1]))
+
+    1/0
 ##    teste_1 = Regression(*generate_distribuction(regressors = 2, normals = 2))
 ##    teste_1.set_seed(1)
 ##    teste_1.run([[1, 4, 1], [6, 3, 0]])

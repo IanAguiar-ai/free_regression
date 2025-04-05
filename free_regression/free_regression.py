@@ -45,6 +45,9 @@ class Regression:
         """
         if function == None:
             function = lambda x, a, b : x*a + b
+        elif type(function) == list or type(function) == tuple:
+            if len(function) == 2 and regressors == None:
+                function, regressors = function[0], function[1]
 
         assert callable(function), f"<function> is a {type(function)} not a function"
         assert callable(loss_function), f"<loss_function> is a {type(loss_function)} not a function"

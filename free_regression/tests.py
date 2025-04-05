@@ -314,7 +314,7 @@ class Teste(unittest.TestCase):
         try:
             dados = MedidasDeMassa()
             
-            modelo = Regression(*generate_regression(3, 1), print = True)
+            modelo = Regression(generate_regression(3, 1), print = True)
             modelo.set_seed(2024)
             modelo.run(dados[:], precision = 1)
             print(modelo)
