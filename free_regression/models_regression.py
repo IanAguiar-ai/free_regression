@@ -310,6 +310,27 @@ def asymmetric_normal(x:list, m:float, v1:float, v2:float, c:float) -> list:
 
 
 def generated_neural_network(struct:list = [2, 3, 2], activation:list = ["relu", "sigmoid"]) -> "function":
+    """
+    Gera uma rede neural genérica.
+    Retorna a função de rede neural com a quantidade de inputs, neuronios, camadas e outputs indicados em struct.
+    Com funções de ativação ditas em activation.
+
+    Args:
+        struct (list): Lista com inteiros de [outputs, neuronios_camada_1, ..., outputs]. (tamanho de N)
+        activation (list) : Lista com [ativacao_camada_1, ..., ativacao_output]. (tamanho de N-1)
+
+    Returns:
+        function: Função de rede neural.
+
+    Funções de ativação:
+    - relu
+    - lrelu
+    - sigmoid
+    - abs
+    - float
+    - int
+    """
+    
     assert type(struct) == list, f"struct must be a list"
     assert len(struct) > 1, f"len(struct) must be at least 2\nlen(struct): {len(struct)} < 2"
     assert len(activation) + 1 == len(struct), f" len(activation) + 1 must be len(struct)\n{len(activation)} + 1 != {len(struct)}"    
@@ -331,23 +352,26 @@ def generated_neural_network(struct:list = [2, 3, 2], activation:list = ["relu",
             function_string += f"\tc_{camade}_{neuron} = {activation[camade - 1]}(i_{camade}_{neuron} + {' + '.join(temporary)})\n"
             var.append(f"c_{camade}_{neuron}")
             var.extend([f"b_{camade}_{neuron}_{i}" for i in range(struct[camade - 1])])
+            var.append(f"i_{camade}_{neuron}")
 
     if struct[-1] == 1:
-        function_string += f"\treturn c_{len(struct)}_0"
+        function_string += f"\treturn c_{len(struct) - 1}_0"
     else:
-        temporary:list = [f"c_{len(struct)}_{i}" for i in range(struct[-1])]
+        temporary:list = [f"c_{len(struct) - 1}_{i}" for i in range(struct[-1])]
         function_string += f"\treturn [{', '.join(temporary)}]"
 
     function_string = function_string.replace("|params|", f"{', '.join(var)}")
-    print(function_string)
 
     function_string += f"\nglobals()['{name}'] = {name}"
     final_function = exec(function_string)
+    #print(function_string)
     return globals()[f"{name}"]
 
 if __name__ == "__main__":
     from free_regression import Regression
-    modelo = Regression(generated_neural_network([2, 1, 1]))
+    modelo = Regression(generated_neural_network(struct = [2, 3, 3, 1], activation = ['relu', 'relu', 'sigmoid']))
+
+    print(modelo)
 
     1/0
 ##    teste_1 = Regression(*generate_distribuction(regressors = 2, normals = 2))

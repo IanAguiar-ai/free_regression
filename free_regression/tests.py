@@ -332,6 +332,16 @@ class Teste(unittest.TestCase):
         print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
         plot_expected(teste_1, dados)
         plot_residual(teste_1, dados)
+
+        teste_1 = Regression(generated_neural_network([1, 2, 2, 1], activation = ["lrelu", "abs", "float"]), print = True)
+        teste_1.set_seed(1)
+        print(teste_1)
+        dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
+        teste_1.run(dados)
+        print(f"{teste_1}\n")
+        print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
+        plot_expected(teste_1, dados)
+        plot_residual(teste_1, dados)
         
         teste_1 = Regression(*generate_distribuction(regressors = 1, normals = 2), print = True)
         teste_1.set_seed(1)

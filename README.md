@@ -77,6 +77,7 @@ Se o usuário desejar utilizar um regressor próprio, ele possui algumas opçõe
 - **generate_mlp_sigmoid_sum**: Para gerar um Multi Layer Perceptron com sigmoids na camada intermediária e sem função de ativação no ultimo neurônio, recebe dois parâmetros: *regressors* e *neurons*, utilizando uma função sigmoide para gerar a descontinuidade;
 - **generate_mlp_sigmoid_sum**: Para gerar um Multi Layer Perceptron com *Radial Basis Function (RBF)* na camada intermediária e sem função de ativação no ultimo neurônio, recebe três parâmetros: *regressors*, *neurons* e *max*, utilizando uma função sigmoide para gerar a descontinuidade;
 - **generate_distribuction**: Para gerar uma distribuição com integral de -infinito a +infinito sendo 1, usando *Radial Basis Function (RBF)*, recebe dois parâmetros: *regressors*, *normals*.
+- **generated_neural_network**: Para gerar uma rede neural artificial genérica, recebe dois parâmetros: *struct*(lista com quantidade de inputs, neuronios em cada camada e output) e *activation*(funções de ativação usada em cada camada, como a primeira camada não conta temos uma lista de tamanho len(struct) - 1).
 
 Todas essas funções retornam dois elementos: a função em si e a lista de regressores.
 
@@ -110,6 +111,63 @@ print(meu_modelo['str_nome_do_regressor'])
 ```
 
 Todas os geradores são chamados pelo usuário da mesma forma, apenas mudando o nome da função.
+
+### Exemplo rede neural com **generated_neural_network**
+
+Se o usuário quiser por exemplo uma rede com 2 inputs, duas camadas intermediarias com 3 camadas e um output, e apenas a ultima camada é um sigmoid e os outros são relu, basta montalo desta forma:
+
+```
+modelo = Regression(generated_neural_network(struct = [2, 3, 3, 1], activation = ['relu', 'relu', 'sigmoid']))
+
+print(modelo)
+```
+
+Saída:
+
+```
+FUNCTION: new_generated_neural_network_2_3_3_1
+LOSS FUNCTION: least_squares
+REGRESSORS: x_1, x_2
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  c_0_0 = 0.10000000 (w: 1.00000000)
+  c_0_1 = 0.10000000 (w: 1.00000000)
+  c_1_0 = 0.10000000 (w: 1.00000000)
+  b_1_0_0 = 0.10000000 (w: 1.00000000)
+  b_1_0_1 = 0.10000000 (w: 1.00000000)
+  c_1_1 = 0.10000000 (w: 1.00000000)
+  b_1_1_0 = 0.10000000 (w: 1.00000000)
+  b_1_1_1 = 0.10000000 (w: 1.00000000)
+  c_1_2 = 0.10000000 (w: 1.00000000)
+  b_1_2_0 = 0.10000000 (w: 1.00000000)
+  b_1_2_1 = 0.10000000 (w: 1.00000000)
+  c_2_0 = 0.10000000 (w: 1.00000000)
+  b_2_0_0 = 0.10000000 (w: 1.00000000)
+  b_2_0_1 = 0.10000000 (w: 1.00000000)
+  b_2_0_2 = 0.10000000 (w: 1.00000000)
+  c_2_1 = 0.10000000 (w: 1.00000000)
+  b_2_1_0 = 0.10000000 (w: 1.00000000)
+  b_2_1_1 = 0.10000000 (w: 1.00000000)
+  b_2_1_2 = 0.10000000 (w: 1.00000000)
+  c_2_2 = 0.10000000 (w: 1.00000000)
+  b_2_2_0 = 0.10000000 (w: 1.00000000)
+  b_2_2_1 = 0.10000000 (w: 1.00000000)
+  b_2_2_2 = 0.10000000 (w: 1.00000000)
+  c_3_0 = 0.10000000 (w: 1.00000000)
+  b_3_0_0 = 0.10000000 (w: 1.00000000)
+  b_3_0_1 = 0.10000000 (w: 1.00000000)
+  b_3_0_2 = 0.10000000 (w: 1.00000000)
+```
+
+Tipos de ativação:
+
+- relu
+- sigmoid
+- lrelu
+- abs
+- float
+- int
+- (função própria escrita no escopo global)
 
 ### Regressores próprios
 
@@ -216,10 +274,10 @@ def f(x1:float, x2:float, a:float, b:float, c:float) -> (float, float):
 modelo = Regression(f, print = False)
 
 a_, b_, c_ = 0.8, 3, -2
-dados = [[0, 0, f(0, 0, a_, b_, c_)],
+dados = [[0, 0, *f(0, 0, a_, b_, c_)],
          [1, 0, *f(1, 0, a_, b_, c_)],
          [0, 1, *f(0, 1, a_, b_, c_)],
-         [1, 1, f(1, 1, a_, b_, c_)],
+         [1, 1, *f(1, 1, a_, b_, c_)],
          [2, 2, *f(2, 2, a_, b_, c_)],
          [1, 3, *f(1, 3, a_, b_, c_)],
          [3, 1, *f(3, 1, a_, b_, c_)],]

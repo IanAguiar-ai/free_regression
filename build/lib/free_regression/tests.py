@@ -314,7 +314,7 @@ class Teste(unittest.TestCase):
         try:
             dados = MedidasDeMassa()
             
-            modelo = Regression(*generate_regression(3, 1), print = True)
+            modelo = Regression(generate_regression(3, 1), print = True)
             modelo.set_seed(2024)
             modelo.run(dados[:], precision = 1)
             print(modelo)
@@ -325,6 +325,16 @@ class Teste(unittest.TestCase):
         teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1), print = True)
         teste_1.set_seed(1)
         teste_1.change(b = 0)
+        print(teste_1)
+        dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
+        teste_1.run(dados)
+        print(f"{teste_1}\n")
+        print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
+        plot_expected(teste_1, dados)
+        plot_residual(teste_1, dados)
+
+        teste_1 = Regression(generated_neural_network([1, 2, 2, 1], activation = ["lrelu", "abs", "float"]), print = True)
+        teste_1.set_seed(1)
         print(teste_1)
         dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
         teste_1.run(dados)

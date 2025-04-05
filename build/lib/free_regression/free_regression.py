@@ -45,6 +45,9 @@ class Regression:
         """
         if function == None:
             function = lambda x, a, b : x*a + b
+        elif type(function) == list or type(function) == tuple:
+            if len(function) == 2 and regressors == None:
+                function, regressors = function[0], function[1]
 
         assert callable(function), f"<function> is a {type(function)} not a function"
         assert callable(loss_function), f"<loss_function> is a {type(loss_function)} not a function"
@@ -59,7 +62,7 @@ class Regression:
         assert len(temp) >= 2, "Your function must have at least two parameters. Example f(x, b) = x*b = y"
 
         # Definindo regressora
-        if sum([True if args_.lower().find("x") == 0 else False for args_ in temp]) > 1:
+        if sum([True if args_.lower().find("x") == 0 else False for args_ in temp]) >= 1:
             self.regressors = []
             for args_ in temp:
                 if args_.lower().find("x") == 0:
@@ -789,3 +792,13 @@ class Regression:
         # Salva o resultado
         self.__args_function = best_args
         self.__error = best_result/len(data)
+
+if __name__ == "__main__":
+    from models_regression import generated_neural_network
+    teste_1 = Regression(generated_neural_network([1, 2, 2, 1], activation = ["lrelu", "abs", "float"]), print = True)
+    teste_1.set_seed(1)
+    print(teste_1)
+    dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
+    teste_1.run(dados)
+    print(f"{teste_1}\n")
+    print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
