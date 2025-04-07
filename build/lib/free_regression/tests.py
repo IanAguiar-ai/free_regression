@@ -284,7 +284,7 @@ class Teste(unittest.TestCase):
             
             modelo_iris = Regression(regressao_2_betas, regressors = ['x1', 'x2'], print = True)
             modelo_iris.set_seed(2024)
-            modelo_iris.run(iris)
+            modelo_iris.run_independent(iris)
 
             print(f"\n{modelo_iris}")
 
