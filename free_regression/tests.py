@@ -299,7 +299,7 @@ class Teste(unittest.TestCase):
             modelo_iris_3 = Regression(mlp, regressors = ['x1', 'x2'], print = True)
             modelo_iris_3.change_all(0)
             modelo_iris_3.set_seed(0)
-            modelo_iris_3.run(iris, especific_precision = [10, 1])
+            modelo_iris_3.run_independent(iris, especific_precision = [10, 1])
 
             print(f"\n{modelo_iris_3}")
 

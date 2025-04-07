@@ -780,7 +780,7 @@ class Regression:
                 else:
                     args_temp:dict = deepcopy(best_args)
 
-                for parameter in list(self.__args_function.keys())[all_iterations % numbers_parameters]:
+                for parameter in list(self.__args_function.keys())[(all_iterations % numbers_parameters) - 1:all_iterations % numbers_parameters]:
                     if parameter not in self.__lock.keys():
                         args_temp[parameter] += precision*self.weights[parameter] if random() < 0.5 else -precision*self.weights[parameter]
 
