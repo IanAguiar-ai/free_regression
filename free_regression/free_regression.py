@@ -634,7 +634,6 @@ class Regression:
                     new_data.append(data[i])
 
         return new_data
-        
 
     def run_robust(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None, limiar:float = 1.92, adaptive:bool = True) -> [list]:
         """
@@ -686,7 +685,147 @@ class Regression:
         self.__limiar:float = limiar
         self.__robust:bool = True
         return data            
+
+    def run_idependent(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True) -> None:
+        """
+        Faz a regressão mas um parâmetro de cada vez, ou seja, as variáveis tem que ser idependentes entre sí, o que não é uma hipótese realista.
+        Esse método só faz sentido se cada variável puder ser minimizada individualmente. Caso isso não ocorra o treinamento pode ser lento ou o nunca convergir.
+
+        Args:
+            data(list(list)): Lista de listas com x e y.
+            precision(float): Numero da precisão para achar os parâmetros esperados.
+            booster(float): Numero que é multiplicado pela precisão para decidir o limite superior de treino.
+            especific_precision(list): Lista de valores específicos para precisão específica.
+            adaptive(bool): Se o método deve dar pesos diferentes para cada parâmetro (recomendado).
+        """
+
+        assert type(data) == list, f"The data must be a list of lists not {type(data)}"
+        assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"
         
+        for i in range(len(data)):
+            if type(data[i][-1]) == list:
+                data[i] = [*data[i][:-1], *data[i][-1]]
+            
+        assert len(data[0]) == len(self.regressors) + self.__len_y, f"The list of lists must have an x_n and a y parameter\n For example [[x_0, x_1, ..., y_1, ...], [x_0, x_1, ..., y_1, ...], ...] or [[x_0, x_1, ..., [y1, ...]], [x_0, x_1, ..., [y1, ...]], ...]\n\tSize of the passed list: {len(data[0])} | {data[0]}\n\tExpected size: {len(self.regressors) + self.__len_y} | {self.regressors} + [y's]"
+        assert (k := list(map(len, data))) and max(k) == min(k), "The data list must be the same size in all itens"
+        assert type(precision) == int or type(precision) == float, "Precision has to be a float or int"
+
+        # Iniciando a seed
+        if self.__seed is not None:
+            seed(self.__seed)
+        if self.__print:
+            print(f"\rseed: {self.__seed}", end = "")
+
+        # Método adaptativo
+        if adaptive:
+            self.adjust_weights(data = data, value = precision)
+        if self.__print:
+            print(f"\rAdaptive mode: {adaptive}", end = "")
+        
+        # Pegando y esperado
+        if self.__len_y > 1:
+            y_expected = [data[i][-self.__len_y:] for i in range(len(data))]
+        else:
+            y_expected = [data[i][-1] for i in range(len(data))]
+        if self.__print:
+            print(f"\ry_expected: True", end = "")
+
+        # Salvando argumentos iniciais para a função
+        args_temp:dict = {}
+        for parameter in self.__args_function.keys():
+            if parameter not in self.__lock.keys():
+                args_temp[parameter] = self.__args_function[parameter]
+            else:
+                args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
+                if self.__print:
+                    print(f"\rLock {parameter}: True", end = "")
+
+        if type(especific_precision) == list:
+            precision_final, precision = 1, len(especific_precision)
+            index_precision = 0
+            if self.__print:
+                print(f"\r|{' ' * len(especific_precision)}| (Precision: {especific_precision[index_precision]}) (Model: {self.__function.__name__})", end = "")
+        else:
+            precision_final, precision = precision/2, precision * booster
+            precision_k = 0
+            if self.__print:
+                print(f"\r|{' '*9}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
+
+        all_iterations:int = 1
+        numbers_parameters:int = len(self.__args_function.values())
+        while precision >= precision_final: # Vai diminuindo a variação da busca
+            with_no_iteration = 0
+            if type(especific_precision) == list:
+                precision:float = especific_precision[index_precision]
+                index_precision += 1
+
+            while with_no_iteration < self.iterations:
+                with_no_iteration += 1
+                
+                # y predito
+                y_predicted:list = [self.__function(**{self.regressors[i]: x[i] for i in range(len(x) - self.__len_y)}, **args_temp) for x in data]
+
+                # Resultado dos minimos quadrados
+                result:float = self.__loss_function(y_predicted, y_expected)
+
+                # Atualizando melhores parâmetros para regressora
+                if not "best_result" in locals():
+                    best_result:float = result
+                    best_args:dict = deepcopy(args_temp)
+
+                if result < best_result:
+                    with_no_iteration = 0
+                    best_result:float = result
+                    best_args:dict = deepcopy(args_temp)
+                else:
+                    args_temp:dict = deepcopy(best_args)
+
+                for parameter in list(self.__args_function.keys())[all_iterations % numbers_parameters]:
+                    if parameter not in self.__lock.keys():
+                        args_temp[parameter] += precision*self.weights[parameter] if random() < 0.5 else -precision*self.weights[parameter]
+
+                if all_iterations % 1_000 == 0:
+                    if type(especific_precision) == list:
+                        if self.__print:
+                            precision:int = len(especific_precision)
+                            print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__})", end = "")
+                    else:
+                        if self.__print:
+                            print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
+                    if self.__print:
+                        if len(list(self.__args_function.keys())) <= 5:
+                            values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
+                            print(f" || {' | '.join(values)}", end = "")
+                    self.adjust_weights(data = data, value = precision)
+                        
+                all_iterations += 1
+                        
+            # Aumenta a precisão
+            if type(especific_precision) == list:
+                if self.__print:
+                    print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__})", end = "")
+                precision_final += 1
+                precision:int = len(especific_precision)
+            else:
+                precision_k += 1
+                precision /= 2
+                if self.__print:
+                    print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
+            if self.__print:
+                if len(list(self.__args_function.keys())) <= 5:
+                    values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
+                    print(f" || {' | '.join(values)}", end = "")
+
+            if adaptive:
+                self.adjust_weights(data = data, value = precision)
+
+        if (self.__print) and (not self.__robust):
+            print(" (end)")                
+
+        # Salva o resultado
+        self.__args_function = best_args
+        self.__error = best_result/len(data)
+        self.__robust:bool = False 
 
     def __animation_run(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None) -> None:
         """
@@ -792,13 +931,3 @@ class Regression:
         # Salva o resultado
         self.__args_function = best_args
         self.__error = best_result/len(data)
-
-if __name__ == "__main__":
-    from models_regression import generated_neural_network
-    teste_1 = Regression(generated_neural_network([1, 2, 2, 1], activation = ["lrelu", "abs", "float"]), print = True)
-    teste_1.set_seed(1)
-    print(teste_1)
-    dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
-    teste_1.run(dados)
-    print(f"{teste_1}\n")
-    print(f"{teste_1.prediction([[0], [1], [2], [2.3], [2.5], [3]])}")
