@@ -686,7 +686,7 @@ class Regression:
         self.__robust:bool = True
         return data            
 
-    def run_idependent(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True) -> None:
+    def run_independent(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True) -> None:
         """
         Faz a regressão mas um parâmetro de cada vez, ou seja, as variáveis tem que ser idependentes entre sí, o que não é uma hipótese realista.
         Esse método só faz sentido se cada variável puder ser minimizada individualmente. Caso isso não ocorra o treinamento pode ser lento ou o nunca convergir.
