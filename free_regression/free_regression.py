@@ -437,7 +437,7 @@ class Regression:
         y:list = [data_i[-1] for data_i in data]
         return sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
 
-    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True) -> None:
+    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False) -> None:
         """
         Faz a regressão.
 
@@ -471,7 +471,12 @@ class Regression:
             self.adjust_weights(data = data, value = precision)
         if self.__print:
             print(f"\rAdaptive mode: {adaptive}", end = "")
-        
+
+        # Modo com inercia
+        if inertia:
+            inertia_dict:dict = {parameter:0 for parameter in self.__args_function.keys()}
+            inertia_pause:bool = False
+
         # Pegando y esperado
         if self.__len_y > 1:
             y_expected = [data[i][-self.__len_y:] for i in range(len(data))]
@@ -526,12 +531,23 @@ class Regression:
                     with_no_iteration = 0
                     best_result:float = result
                     best_args:dict = deepcopy(args_temp)
+                    if inertia:
+                        inertia_pause:bool = True
                 else:
                     args_temp:dict = deepcopy(best_args)
+                    if inertia:
+                        inertia_dict:dict = {parameter:0 for parameter in self.__args_function.keys()}
+                        inertia_pause:bool = False
 
                 for parameter in self.__args_function.keys():
                     if parameter not in self.__lock.keys():
-                        args_temp[parameter] += (random()*precision - precision/2)*self.weights[parameter]
+                            
+                        if inertia:
+                            if not inertia_pause:
+                                inertia_dict[parameter] = (random()*precision - precision/2)*self.weights[parameter]
+                            args_temp[parameter] += inertia_dict[parameter]
+                        else:
+                            args_temp[parameter] += (random()*precision - precision/2)*self.weights[parameter]
 
                 if all_iterations % 1_000 == 0:
                     if type(especific_precision) == list:
@@ -931,3 +947,29 @@ class Regression:
         # Salva o resultado
         self.__args_function = best_args
         self.__error = best_result/len(data)
+
+if __name__ == "__main__":
+    from time import time
+    
+    def f(x, a, b):
+        return x*a + b
+    dados = [[i, f(i, a = 3.9, b = 2.1) + random()] for i in range(300)]
+    modelo_1 = Regression(f)
+    modelo_2 = Regression(f)
+
+    modelo_1.set_seed(1)
+    modelo_2.set_seed(1)
+
+    t0 = time()
+    modelo_1.run(dados, inertia = False)
+    t1 = time()
+
+    t2 = time()
+    modelo_2.run(dados, inertia = True)
+    t3 = time()
+
+    print(t1-t0)
+    print(modelo_1)
+
+    print(t3-t2)
+    print(modelo_2)
