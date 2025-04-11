@@ -947,29 +947,3 @@ class Regression:
         # Salva o resultado
         self.__args_function = best_args
         self.__error = best_result/len(data)
-
-if __name__ == "__main__":
-    from time import time
-    
-    def f(x, a, b):
-        return x*a + b
-    dados = [[i, f(i, a = 3.9, b = 2.1) + random()] for i in range(300)]
-    modelo_1 = Regression(f)
-    modelo_2 = Regression(f)
-
-    modelo_1.set_seed(1)
-    modelo_2.set_seed(1)
-
-    t0 = time()
-    modelo_1.run(dados, inertia = False)
-    t1 = time()
-
-    t2 = time()
-    modelo_2.run(dados, inertia = True)
-    t3 = time()
-
-    print(t1-t0)
-    print(modelo_1)
-
-    print(t3-t2)
-    print(modelo_2)

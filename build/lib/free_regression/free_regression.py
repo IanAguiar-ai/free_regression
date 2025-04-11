@@ -437,7 +437,7 @@ class Regression:
         y:list = [data_i[-1] for data_i in data]
         return sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
 
-    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True) -> None:
+    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False) -> None:
         """
         Faz a regressão.
 
@@ -471,7 +471,12 @@ class Regression:
             self.adjust_weights(data = data, value = precision)
         if self.__print:
             print(f"\rAdaptive mode: {adaptive}", end = "")
-        
+
+        # Modo com inercia
+        if inertia:
+            inertia_dict:dict = {parameter:0 for parameter in self.__args_function.keys()}
+            inertia_pause:bool = False
+
         # Pegando y esperado
         if self.__len_y > 1:
             y_expected = [data[i][-self.__len_y:] for i in range(len(data))]
@@ -526,12 +531,23 @@ class Regression:
                     with_no_iteration = 0
                     best_result:float = result
                     best_args:dict = deepcopy(args_temp)
+                    if inertia:
+                        inertia_pause:bool = True
                 else:
                     args_temp:dict = deepcopy(best_args)
+                    if inertia:
+                        inertia_dict:dict = {parameter:0 for parameter in self.__args_function.keys()}
+                        inertia_pause:bool = False
 
                 for parameter in self.__args_function.keys():
                     if parameter not in self.__lock.keys():
-                        args_temp[parameter] += (random()*precision - precision/2)*self.weights[parameter]
+                            
+                        if inertia:
+                            if not inertia_pause:
+                                inertia_dict[parameter] = (random()*precision - precision/2)*self.weights[parameter]
+                            args_temp[parameter] += inertia_dict[parameter]
+                        else:
+                            args_temp[parameter] += (random()*precision - precision/2)*self.weights[parameter]
 
                 if all_iterations % 1_000 == 0:
                     if type(especific_precision) == list:
