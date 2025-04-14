@@ -367,8 +367,48 @@ def generate_neural_network(struct:list = [2, 3, 2], activation:list = ["relu", 
     #print(function_string)
     return globals()[f"{name}"]
 
+def generate_linear_spline(lines:int) -> "function":
+
+    name:str = f"new_generated_linear_spline_{lines}"
+    function_string = f"def {name}(|params|):\n"
+
+    function_string += f"\tf_0 = lambda x : b_0 + b_1*x\n"
+    for i in range(lines - 1):
+        if i >= 1:
+            function_string += f"\tl_{i} = abs(l_{i}) + l_{i-1}\n"
+        function_string += f"\tf_{i+1} = lambda x : b_{i+2}*(x - l_{i}) if x > l_{i} else 0\n"
+        
+    all_functions:list = [f"f_{i}(x)" for i in range(lines)]
+
+    function_string += f"\treturn {' + '.join(all_functions)}"
+
+    var:list = ["x",
+                *[f"b_{i}" for i in range(lines + 1)],
+                *[f"l_{i}" for i in range(lines - 1)]]
+    function_string:str = function_string.replace("|params|", ", ".join(var))
+
+    #print(function_string)
+
+    function_string += f"\nglobals()['{name}'] = {name}"
+    final_function = exec(function_string)
+    return globals()[f"{name}"]
+
+
 if __name__ == "__main__":
     from free_regression import Regression
+    from graphics import plot_expected
+
+    modelo = Regression(generate_linear_spline(lines = 5), print = True)
+    print(modelo)
+    modelo.lock(l_0 = 20, l_1 = 20, l_2 = 20, l_3 = 20)
+
+    dados = [[i, 0.02*i**2 - 2*i + 5] for i in range(100)]
+
+    modelo.run(dados, especific_precision = [1, 0.5, 0.1])
+    print(modelo)
+    plot_expected(modelo, dados)
+
+    1/0
     modelo = Regression(generated_neural_network(struct = [2, 3, 3, 1], activation = ['relu', 'relu', 'sigmoid']))
 
     print(modelo)
