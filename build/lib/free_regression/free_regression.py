@@ -553,10 +553,10 @@ class Regression:
                     if type(especific_precision) == list:
                         if self.__print:
                             precision:int = len(especific_precision)
-                            print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__} | Loss: {best_result:7g})", end = "")
+                            print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__} | Loss: {best_result/len(data):7g})", end = "")
                     else:
                         if self.__print:
-                            print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__} | Loss: {best_result:7g})", end = "")
+                            print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__} | Loss: {best_result/len(data):7g})", end = "")
                     if self.__print:
                         if len(list(self.__args_function.keys())) <= 5:
                             values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
@@ -568,14 +568,14 @@ class Regression:
             # Aumenta a precisão
             if type(especific_precision) == list:
                 if self.__print:
-                    print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__} | Loss: {best_result:7g})", end = "")
+                    print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__} | Loss: {best_result/len(data):7g})", end = "")
                 precision_final += 1
                 precision:int = len(especific_precision)
             else:
                 precision_k += 1
                 precision /= 2
                 if self.__print:
-                    print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__} | Loss: {best_result:7g})", end = "")
+                    print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__} | Loss: {best_result/len(data):7g})", end = "")
             if self.__print:
                 if len(list(self.__args_function.keys())) <= 5:
                     values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
