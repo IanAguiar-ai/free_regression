@@ -437,7 +437,7 @@ class Regression:
         y:list = [data_i[-1] for data_i in data]
         return sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
 
-    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False) -> None:
+    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False, loss_limiar:float = 0) -> None:
         """
         Faz a regressão.
 
@@ -447,6 +447,7 @@ class Regression:
             booster(float): Numero que é multiplicado pela precisão para decidir o limite superior de treino.
             especific_precision(list): Lista de valores específicos para precisão específica.
             adaptive(bool): Se o método deve dar pesos diferentes para cada parâmetro (recomendado).
+            loss_limiar(float): Loss mínima para parada, por padrão é 0, isso significa que ela não é considerada pois a loss sempre é maior que 0.
         """
 
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"
@@ -564,6 +565,9 @@ class Regression:
                     self.adjust_weights(data = data, value = precision)
                         
                 all_iterations += 1
+
+                if best_result/len(data) < loss_limiar:
+                    break
                         
             # Aumenta a precisão
             if type(especific_precision) == list:
