@@ -340,7 +340,7 @@ def generate_neural_network(struct:list = [2, 3, 2], activation:list = ["relu", 
     function_string:str = f"def new_generated_neural_network_{'_'.join(list(map(str, struct)))}(|params|):\n"
     function_string += "\tdef relu(x):\n\t\treturn x if x > 0 else 0\n"
     function_string += "\tdef lrelu(x):\n\t\treturn x if x > x/10 else 0\n"
-    function_string += "\tdef sigmoid(x):\n\t\treturn 1/(1 + 2**(-x))\n"
+    function_string += "\tdef sigmoid(x):\n\t\treturn 1/(1 + 2**(-min(max(x, -32), 32)))\n"
 
     for neuron in range(struct[0]):
         function_string += f"\tc_0_{neuron} = x_{neuron + 1}\n"
