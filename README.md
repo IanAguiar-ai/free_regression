@@ -66,6 +66,79 @@ Além disso, na classe principal, as variáveis às quais o usuário tem acesso 
 
 O usuário pode criar regressores de duas formas: utilizando as funções prontas ou desenvolvendo seus próprios regressores.
 
+### Regressores próprios
+
+Você pode criar regressores próprios para realizar a regressão, basta definir a função. Por exemplo:
+
+Com regressor implicito
+```
+def minha_funcao(x:float, b1:float, b2:float) -> float:
+	return x*b1 + b2
+	
+meu_modelo_regressor = Regression(minha_funcao)
+print(meu_modelo_regressor) # Para ver as propriedades do modelo
+meu_modelo_regressor.run(seus_dados) # Para começar a regressão
+```
+
+O usuário pedindo *print(meu_modelo_regressor)* verá:
+
+```
+FUNCTION: minha_funcao
+LOSS FUNCTION: least_squares
+REGRESSORS: x
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  b1 = 0.10000000 (w: 1.00000000)
+  b2 = 0.10000000 (w: 1.00000000)
+```
+
+ou
+
+```
+def minha_funcao(x1:float, x2:float, b1:float, b2:float) -> float:
+	return x1*b1 + x2*b2
+	
+meu_modelo_regressor = Regression(minha_funcao)
+print(meu_modelo_regressor) # Para ver as propriedades do modelo
+meu_modelo_regressor.run(seus_dados) # Para começar a regressão
+```
+
+Saída:
+
+```
+FUNCTION: minha_funcao
+LOSS FUNCTION: least_squares
+REGRESSORS: x1, x2
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  b1 = 0.10000000 (w: 1.00000000)
+  b2 = 0.10000000 (w: 1.00000000)
+```
+
+Com regressor explicito
+```
+def minha_funcao(h:float, b1:float, b2:float) -> float:
+	return h*b1 + b2
+	
+meu_modelo_regressor = Regression(minha_funcao, regressors = ["h"])
+print(meu_modelo_regressor) # Para ver as propriedades do modelo
+meu_modelo_regressor.run(seus_dados) # Para começar a regressão
+```
+
+Saída:
+
+```
+FUNCTION: minha_funcao
+LOSS FUNCTION: least_squares
+REGRESSORS: h
+LENTH OUTPUT: 1 (UNIVARIATE)
+PARAMS:
+  b1 = 0.10000000 (w: 1.00000000)
+  b2 = 0.10000000 (w: 1.00000000)
+```
+
+É importante observar que todo regressor personalizado, ou seja, uma função regressora criada do zero, deve incluir os **regressores**, que são os parâmetros a serem preenchidos pelos dados, e os **parâmetros ajustáveis**, que são aqueles que o modelo irá estimar ao minimizar uma função de perda. Assim, ao criar a função regressora, o usuário deve garantir que ambos os tipos de parâmetros sejam definidos como *inputs* da função.
+
 ### Geração de regressores (geradores)
 
 Se o usuário desejar utilizar um regressor próprio, ele possui algumas opções, como:
@@ -170,53 +243,6 @@ Tipos de ativação:
 - int
 - (função própria escrita no escopo global)
 
-### Regressores próprios
-
-Você pode criar regressores próprios para realizar a regressão, basta definir a função. Por exemplo:
-
-Com regressor implicito
-```
-def minha_funcao(x:float, b1:float, b2:float) -> float:
-	return x*b1 + b2
-	
-meu_modelo_regressor = Regression(minha_funcao)
-print(meu_modelo_regressor) # Para ver as propriedades do modelo
-meu_modelo_regressor.run(seus_dados) # Para começar a regressão
-```
-
-ou
-
-```
-def minha_funcao(x1:float, x2:float, b1:float, b2:float) -> float:
-	return x1*b1 + x2*b2
-	
-meu_modelo_regressor = Regression(minha_funcao)
-print(meu_modelo_regressor) # Para ver as propriedades do modelo
-meu_modelo_regressor.run(seus_dados) # Para começar a regressão
-```
-
-Com regressor explicito
-```
-def minha_funcao(h:float, b1:float, b2:float) -> float:
-	return h*b1 + b2
-	
-meu_modelo_regressor = Regression(minha_funcao, regressors = ["h"])
-print(meu_modelo_regressor) # Para ver as propriedades do modelo
-meu_modelo_regressor.run(seus_dados) # Para começar a regressão
-```
-
-O usuário pedindo *print(meu_modelo_regressor)* verá:
-
-```
-FUNCTION: minha_funcao
-REGRESSORS: h
-PARAMS:
-  b1 = 0.10000000
-  b2 = 0.10000000
-```
-
-É importante observar que todo regressor personalizado, ou seja, uma função regressora criada do zero, deve incluir os **regressores**, que são os parâmetros a serem preenchidos pelos dados, e os **parâmetros ajustáveis**, que são aqueles que o modelo irá estimar ao minimizar uma função de perda. Assim, ao criar a função regressora, o usuário deve garantir que ambos os tipos de parâmetros sejam definidos como *inputs* da função.
-
 ## Regressão
 
 Comandos para fazer a regressão.
@@ -312,6 +338,8 @@ Além da regressão simples, é possível realizar diversas alterações nos par
 2. **.change_all**: Recebe um valor do tipo float que é aplicado a todos os parâmetros válidos.
 
 3. **.lock**: Recebe cada parâmetro a ser bloqueado e o valor em que ele deve ser fixado. Após essa operação, esses parâmetros não são mais considerados na regressão, pois estão bloqueados.
+
+4. **.mutation**: Muda os parâmetros usando levemente de acordo com um parâmetro *w*. 
 
 A seguir, apresentamos um exemplo da função **.change**:
 

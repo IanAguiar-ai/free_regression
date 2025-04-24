@@ -245,13 +245,6 @@ class Regression:
         """
         obj.__rshift__(self)
 
-    def mutation(self, amplitude:float = 1) -> None:
-        """
-        Varia levemente os parametros
-        """
-        for parameter in self.params:
-            self.__args_function[parameter] += random()*amplitude - amplitude/2
-
     def save(self, name:str) -> bool:
         """
         Salva os argumentos de memória em um arquivo chamado <name>.memory
@@ -444,7 +437,7 @@ class Regression:
         y:list = [data_i[-1] for data_i in data]
         return sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
 
-    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False, loss_limiar:float = 0) -> None:
+    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False) -> None:
         """
         Faz a regressão.
 
@@ -454,7 +447,6 @@ class Regression:
             booster(float): Numero que é multiplicado pela precisão para decidir o limite superior de treino.
             especific_precision(list): Lista de valores específicos para precisão específica.
             adaptive(bool): Se o método deve dar pesos diferentes para cada parâmetro (recomendado).
-            loss_limiar(float): Loss mínima para parada, por padrão é 0, isso significa que ela não é considerada pois a loss sempre é maior que 0.
         """
 
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"
@@ -557,14 +549,14 @@ class Regression:
                         else:
                             args_temp[parameter] += (random()*precision - precision/2)*self.weights[parameter]
 
-                if all_iterations % 2_000 == 0:
+                if all_iterations % 1_000 == 0:
                     if type(especific_precision) == list:
                         if self.__print:
                             precision:int = len(especific_precision)
-                            print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__} | Loss: {best_result/len(data):7g})", end = "")
+                            print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__})", end = "")
                     else:
                         if self.__print:
-                            print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__} | Loss: {best_result/len(data):7g})", end = "")
+                            print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
                     if self.__print:
                         if len(list(self.__args_function.keys())) <= 5:
                             values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
@@ -572,21 +564,18 @@ class Regression:
                     self.adjust_weights(data = data, value = precision)
                         
                 all_iterations += 1
-
-                if best_result/len(data) < loss_limiar:
-                    break
                         
             # Aumenta a precisão
             if type(especific_precision) == list:
                 if self.__print:
-                    print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__} | Loss: {best_result/len(data):7g})", end = "")
+                    print(f"\r|{'#' * precision_final}{' ' * (len(especific_precision) - precision_final)}| (Precision: {especific_precision[precision_final - 1]}) (Model: {self.__function.__name__})", end = "")
                 precision_final += 1
                 precision:int = len(especific_precision)
             else:
                 precision_k += 1
                 precision /= 2
                 if self.__print:
-                    print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__} | Loss: {best_result/len(data):7g})", end = "")
+                    print(f"\r|{'#' * precision_k}{' '*(8 - precision_k)}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
             if self.__print:
                 if len(list(self.__args_function.keys())) <= 5:
                     values:str = [f"{key}: {values:7.04f}" for key, values in zip(best_args.keys(), best_args.values())]
@@ -957,4 +946,4 @@ class Regression:
 
         # Salva o resultado
         self.__args_function = best_args
-        self.__error = best_result/len(data)        
+        self.__error = best_result/len(data)
