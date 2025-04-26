@@ -1557,6 +1557,113 @@ PARAMS:
 
 ![EX_red_8](free_regression/imagens_testes/red_dim_8.png)
 
+### Spline linear
+
+Código:
+
+```
+from free_regression import Regression, generate_linear_spline, plot_expected
+from math import cos
+
+def f(x, a, b, c):
+  return a*x**2 + b*x + cos(x/c)*x
+
+dados = [[i, f(i, a = .15, b = 2, c = 4)] for i in range(30)]
+
+modelo = Regression(generate_linear_spline(lines = 10), print = True)
+modelo.lock(l_0 = 3, l_1 = 3, l_2 = 3, l_3 = 3, l_4 = 3, l_5 = 3, l_6 = 3, l_7 = 3, l_8 = 3)
+print(modelo)
+
+modelo.run(dados)
+
+plot_expected(modelo, dados)
+```
+
+Saída:
+
+![EX_spline_linear](free_regression/imagens_testes/spline_linear.png)
+
+
+### Avaliando parâmetro inicial ótimo
+
+Caso de uma variável e convexa:
+
+```
+from free_regression import Regression, plot_error_curve
+from random import random
+
+def f(x:float, a:float) -> float:
+  return x*a
+
+dados = [[x, f(x, a = 5.12) + random() - 0.5] for x in range(100)]
+modelo = Regression(f)
+plot_error_curve(modelo, dados, [0, 10])
+```
+
+Saída:
+
+![EX_avaliando_curva_1](free_regression/imagens_testes/loss_curve_1.png)
+
+
+
+Caso de duas variável e convexa:
+
+```
+from free_regression import Regression, plot_error_curve
+from random import random
+
+def lin_reg(x:float, a:float, b:float) -> float:
+  return x*a + b
+
+dados = [[x, lin_reg(x, a = 5.12, b = 8) + random() - 0.5] for x in range(100)]
+modelo = Regression(lin_reg)
+plot_error_curve(modelo, dados, [0, 10])
+```
+
+Saída:
+
+![EX_avaliando_curva_2](free_regression/imagens_testes/loss_curve_2.png)
+
+
+Caso de uma variável e não convexa:
+
+```
+from free_regression import Regression, plot_error_curve
+from random import random
+from math import cos
+
+def c(x:float, a:float) -> float:
+  return cos(x*a)
+
+dados = [[x/10, c(x/10, a = 5.12) + random() - 0.5] for x in range(100)]
+modelo = Regression(c)
+plot_error_curve(modelo, dados, [0, 10])
+```
+
+Saída:
+
+![EX_avaliando_curva_1](free_regression/imagens_testes/loss_curve_3.png)
+
+
+
+Caso de duas variável e não convexa:
+
+```
+from free_regression import Regression, plot_error_curve
+from random import random
+from math import cos
+
+def c2(x:float, a:float, b:float) -> float:
+  return cos(x*a) * b
+
+dados = [[x/10, c2(x/10, a = 5.12, b = 2.25) + random() - 0.5] for x in range(100)]
+modelo = Regression(c2)
+plot_error_curve(modelo, dados, [0, 10])
+```
+
+Saída:
+
+![EX_avaliando_curva_2](free_regression/imagens_testes/loss_curve_4.png)
 
 ## Com dados reais
 
