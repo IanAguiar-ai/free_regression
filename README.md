@@ -760,6 +760,16 @@ Função que recebe:
 
 Esta função a predição da série temporal desde que ela tenha sido construida corretamente.
 
+### *plot_error_curve*
+
+Função que mostra o erro dado os parâmetros, o modelo pode no máximo variar dois parâmetros, recebe:
+
+- **regression**: Instância da classe *Regression*;
+- **data**: Dados em lista de listas;
+- **size**: Tamanho da figura;
+- **steps**: Quantidade de passos na procura;
+- **limits**: Limites de busta, uma lista com dois parâmetros.
+
 ## Generator (MC e MCMC)
 
 ### *Generator*

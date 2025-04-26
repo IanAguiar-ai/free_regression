@@ -240,12 +240,20 @@ def plot_series(regression:"Regression", data:[list], size:list = (8, 6)) -> Non
     plt.show()
 
 
-def error_curve(model:"Regression", data:list, limits:list, steps:int = 50, size:list = (8, 6)) -> None:
+def plot_error_curve(model:"Regression", data:list, limits:list, steps:int = None, size:list = (8, 6)) -> None:
+    assert type(data) == list or type(data) == tuple, "The <data> must be a list"
+    assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
+    assert type(limits) == list or type(limits) == tuple, "The <limits> must to be a list"
+    assert len(limits) == 2, "The limits len must to be 2"
+    assert limits[0] < limits[1], "<limits[0]> must be lower than <limits[1]>"
+    
     def steps_(a:float, b:float, s:int) -> list:
         step:float = (b - a)/s
         return [a + step*i for i in range(s + 1)]
 
     if len(model.params) == 1:
+        if steps == None:
+            steps = 300
         dict_variables:dict = {}
         for regressor in model.params:
             dict_variables[regressor] = steps_(*limits, steps)
@@ -259,17 +267,16 @@ def error_curve(model:"Regression", data:list, limits:list, steps:int = 50, size
         all_errors:list = []
         x:list = []
         for variables in iteration:
-            print(variables)
             for key in variables.keys():
                 model[key] = variables[key]
                 x.append(variables[key])
             y_prediction:list = []
             for value in data:
-                y_prediction.append(model.prediction([value[:len(modelo.regressors)]])[0])
+                y_prediction.append(model.prediction([value[:len(model.regressors)]])[0])
 
             y_real:list = []
-            for dado in dados:
-                y_real.append(dado[-len(modelo.regressors):][0])
+            for dado in data:
+                y_real.append(dado[-len(model.regressors):][0])
 
             all_errors.append(model._Regression__loss_function(y_prediction, y_real)/len(data))
 
@@ -279,12 +286,15 @@ def error_curve(model:"Regression", data:list, limits:list, steps:int = 50, size
         ax.set_title("Loss Curve", fontsize = 16, weight = "bold")
         ax.set_xlabel(f"{list(dict_variables.keys())[0]}", fontsize = 14)
         ax.set_ylabel("Loss", fontsize = 14)
-        #ax.legend()
+        ax.axvline(x[all_errors.index(min(all_errors))], color = "red", linestyle = "--", alpha = 0.6, label = f"x: {x[all_errors.index(min(all_errors))]:0.06f}\nloss: {min(all_errors):0.04f}")
+        ax.legend()
 
         plt.subplots_adjust(left = 0.07, right = 0.99, top = 0.95, bottom = 0.07)
         plt.show()
 
     if len(model.params) == 2:
+        if steps == None:
+            steps = 100
         dict_variables:dict = {}
         for regressor in model.params:
             dict_variables[regressor] = steps_(*limits, steps)
@@ -305,15 +315,17 @@ def error_curve(model:"Regression", data:list, limits:list, steps:int = 50, size
 
             y_prediction:list = []
             for value in data:
-                y_prediction.append(model.prediction([value[:len(modelo.regressors)]])[0])
+                y_prediction.append(model.prediction([value[:len(model.regressors)]])[0])
 
             y_real:list = []
-            for dado in dados:
-                y_real.append(dado[-len(modelo.regressors):][0])
+            for dado in data:
+                y_real.append(dado[-len(model.regressors):][0])
 
             all_errors.append({var_1:variables[var_1],
                                var_2:variables[var_2],
-                               "loss":model._Regression__loss_function(y_prediction, y_real)/len(data)})
+                               "loss":model._Regression__loss_function(y_prediction, y_real)**(1/2)/len(data)})
+
+        best_loss:dict = min(all_errors, key = lambda x:x["loss"])
 
         x_values = [entry[var_1] for entry in all_errors]
         y_values = [entry[var_2] for entry in all_errors]
@@ -328,12 +340,16 @@ def error_curve(model:"Regression", data:list, limits:list, steps:int = 50, size
         fig, ax = plt.subplots(figsize = size)
         pcm = ax.pcolormesh(X, Y, loss_matrix, shading = "gouraud", cmap = "gist_stern")#"RdBu")
         cbar = plt.colorbar(pcm, ax = ax)
-        cbar.set_label("Loss", fontsize = 12)
+        cbar.set_label(f"Loss Modified\nmin: {best_loss['loss']:0.04f}", fontsize = 12)
 
         ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
         ax.set_title(f"Loss Curve", fontsize = 16, weight = "bold")
         ax.set_xlabel(f"{var_2}", fontsize = 14)
         ax.set_ylabel(f"{var_1}", fontsize = 14)
+
+        ax.axvline(best_loss[var_2], color = "lightgreen", linestyle = "--", alpha = 0.6, label = f"{var_2}: {best_loss[var_2]:0.04f}")
+        ax.axhline(best_loss[var_1], color = "lightgreen", linestyle = "--", alpha = 0.6, label = f"{var_1}: {best_loss[var_1]:0.04f}")
+        ax.legend()
 
         plt.subplots_adjust(left = 0.08, right = 0.99, top = 0.94, bottom = 0.08)
         plt.show()
@@ -352,17 +368,32 @@ if __name__ == "__main__":
         return x1*b1 + x2*b2
 
     def lin_reg(x:float, a:float, b:float) -> float:
-        return x*a + b/a
+        return x*a + b
 
     def f(x:float, a:float) -> float:
         return x*a
 
-    dados = [[cos(x/10), lin_reg(cos(x/10), a = 5, b = 5) + random() - 0.5] for x in range(30)]
+    def c(x:float, a:float) -> float:
+        return cos(x*a)
 
+    def c2(x:float, a:float, b:float) -> float:
+        return cos(x*a) * b
+
+    dados = [[x, f(x, a = 5.12) + random() - 0.5] for x in range(100)]
+    modelo = Regression(f)
+    plot_error_curve(modelo, dados, [0, 10], steps = None)
+
+    dados = [[x, lin_reg(x, a = 5.12, b = 8) + random() - 0.5] for x in range(100)]
     modelo = Regression(lin_reg)
-    #print(modelo)
+    plot_error_curve(modelo, dados, [0, 10], steps = None)
 
-    error_curve(modelo, dados, [0, 10], steps = 50)
+    dados = [[x/10, c(x/10, a = 5.12) + random() - 0.5] for x in range(100)]
+    modelo = Regression(c)
+    plot_error_curve(modelo, dados, [0, 10], steps = None)
+
+    dados = [[x/10, c2(x/10, a = 5.12, b = 2.25) + random() - 0.5] for x in range(100)]
+    modelo = Regression(c2)
+    plot_error_curve(modelo, dados, [0, 10], steps = None)
 
 ##    dado = [[x, regressao_2(x, a = 15, b = -7, c = -4) + random()*100-50] for x in range(30)]
 ##    dado = [[random()*i/100, random()*i/100] for i in range(40)]

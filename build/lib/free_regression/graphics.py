@@ -239,10 +239,127 @@ def plot_series(regression:"Regression", data:[list], size:list = (8, 6)) -> Non
     plt.subplots_adjust(left = 0.07, right = 0.99, top = 0.95, bottom = 0.07)
     plt.show()
 
+
+def plot_error_curve(model:"Regression", data:list, limits:list, steps:int = None, size:list = (8, 6)) -> None:
+    assert type(data) == list or type(data) == tuple, "The <data> must be a list"
+    assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
+    assert type(limits) == list or type(limits) == tuple, "The <limits> must to be a list"
+    assert len(limits) == 2, "The limits len must to be 2"
+    assert limits[0] < limits[1], "<limits[0]> must be lower than <limits[1]>"
+    
+    def steps_(a:float, b:float, s:int) -> list:
+        step:float = (b - a)/s
+        return [a + step*i for i in range(s + 1)]
+
+    if len(model.params) == 1:
+        if steps == None:
+            steps = 300
+        dict_variables:dict = {}
+        for regressor in model.params:
+            dict_variables[regressor] = steps_(*limits, steps)
+
+        iteration:dict = []
+        for i in range(len(dict_variables[list(dict_variables.keys())[0]])):
+            iteration.append({})
+            for key in dict_variables.keys():
+                iteration[-1][key] = dict_variables[key][i]
+
+        all_errors:list = []
+        x:list = []
+        for variables in iteration:
+            for key in variables.keys():
+                model[key] = variables[key]
+                x.append(variables[key])
+            y_prediction:list = []
+            for value in data:
+                y_prediction.append(model.prediction([value[:len(model.regressors)]])[0])
+
+            y_real:list = []
+            for dado in data:
+                y_real.append(dado[-len(model.regressors):][0])
+
+            all_errors.append(model._Regression__loss_function(y_prediction, y_real)/len(data))
+
+        fig, ax = plt.subplots(figsize = size)
+        ax.plot(x, all_errors, color = "blue", linestyle = "-")
+        ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
+        ax.set_title("Loss Curve", fontsize = 16, weight = "bold")
+        ax.set_xlabel(f"{list(dict_variables.keys())[0]}", fontsize = 14)
+        ax.set_ylabel("Loss", fontsize = 14)
+        ax.axvline(x[all_errors.index(min(all_errors))], color = "red", linestyle = "--", alpha = 0.6, label = f"x: {x[all_errors.index(min(all_errors))]:0.06f}\nloss: {min(all_errors):0.04f}")
+        ax.legend()
+
+        plt.subplots_adjust(left = 0.07, right = 0.99, top = 0.95, bottom = 0.07)
+        plt.show()
+
+    if len(model.params) == 2:
+        if steps == None:
+            steps = 100
+        dict_variables:dict = {}
+        for regressor in model.params:
+            dict_variables[regressor] = steps_(*limits, steps)
+
+        var_1, var_2 = list(dict_variables.keys())
+        iteration:dict = []
+        for i in dict_variables[var_1]:
+            for j in dict_variables[var_2]:
+                iteration.append({var_1:i, var_2:j})
+
+        all_errors:list = []
+        x1, x2 = [], []
+        for variables in iteration:
+            model[var_1] = variables[var_1]
+            model[var_2] = variables[var_2]
+            x1.append(variables[var_1])
+            x2.append(variables[var_2])
+
+            y_prediction:list = []
+            for value in data:
+                y_prediction.append(model.prediction([value[:len(model.regressors)]])[0])
+
+            y_real:list = []
+            for dado in data:
+                y_real.append(dado[-len(model.regressors):][0])
+
+            all_errors.append({var_1:variables[var_1],
+                               var_2:variables[var_2],
+                               "loss":model._Regression__loss_function(y_prediction, y_real)**(1/2)/len(data)})
+
+        best_loss:dict = min(all_errors, key = lambda x:x["loss"])
+
+        x_values = [entry[var_1] for entry in all_errors]
+        y_values = [entry[var_2] for entry in all_errors]
+        loss_values = [entry["loss"] for entry in all_errors]
+
+        X, Y = np.meshgrid(sorted(set(x_values)), sorted(set(y_values)))
+        loss_matrix = np.array(loss_values).reshape(len(set(y_values)), len(set(x_values)))
+
+        # Cores interessantes:
+        #flag, gist_earth, gist_ncar, gist_stern, nipy_spectral, prism_r, tab20c
+
+        fig, ax = plt.subplots(figsize = size)
+        pcm = ax.pcolormesh(X, Y, loss_matrix, shading = "gouraud", cmap = "gist_stern")#"RdBu")
+        cbar = plt.colorbar(pcm, ax = ax)
+        cbar.set_label(f"Loss Modified\nmin: {best_loss['loss']:0.04f}", fontsize = 12)
+
+        ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
+        ax.set_title(f"Loss Curve", fontsize = 16, weight = "bold")
+        ax.set_xlabel(f"{var_2}", fontsize = 14)
+        ax.set_ylabel(f"{var_1}", fontsize = 14)
+
+        ax.axvline(best_loss[var_2], color = "lightgreen", linestyle = "--", alpha = 0.6, label = f"{var_2}: {best_loss[var_2]:0.04f}")
+        ax.axhline(best_loss[var_1], color = "lightgreen", linestyle = "--", alpha = 0.6, label = f"{var_1}: {best_loss[var_1]:0.04f}")
+        ax.legend()
+
+        plt.subplots_adjust(left = 0.08, right = 0.99, top = 0.94, bottom = 0.08)
+        plt.show()
+
+
 if __name__ == "__main__":
     from free_regression import Regression
     from random import random
     from models_regression import *
+    from math import cos
 
     def regressao_2(x:float, a:float, b:float, c:float) -> float:
         return a*x**2 + b*x + c
@@ -253,6 +370,31 @@ if __name__ == "__main__":
     def lin_reg(x:float, a:float, b:float) -> float:
         return x*a + b
 
+    def f(x:float, a:float) -> float:
+        return x*a
+
+    def c(x:float, a:float) -> float:
+        return cos(x*a)
+
+    def c2(x:float, a:float, b:float) -> float:
+        return cos(x*a) * b
+
+    dados = [[x, f(x, a = 5.12) + random() - 0.5] for x in range(100)]
+    modelo = Regression(f)
+    plot_error_curve(modelo, dados, [0, 10], steps = None)
+
+    dados = [[x, lin_reg(x, a = 5.12, b = 8) + random() - 0.5] for x in range(100)]
+    modelo = Regression(lin_reg)
+    plot_error_curve(modelo, dados, [0, 10], steps = None)
+
+    dados = [[x/10, c(x/10, a = 5.12) + random() - 0.5] for x in range(100)]
+    modelo = Regression(c)
+    plot_error_curve(modelo, dados, [0, 10], steps = None)
+
+    dados = [[x/10, c2(x/10, a = 5.12, b = 2.25) + random() - 0.5] for x in range(100)]
+    modelo = Regression(c2)
+    plot_error_curve(modelo, dados, [0, 10], steps = None)
+
 ##    dado = [[x, regressao_2(x, a = 15, b = -7, c = -4) + random()*100-50] for x in range(30)]
 ##    dado = [[random()*i/100, random()*i/100] for i in range(40)]
 ##    teste = Regression(regressao_2)
@@ -262,52 +404,52 @@ if __name__ == "__main__":
 ##    plot_expected(teste, dado)
 ##    plot_residual(teste, dado)
 
-    dado = []
-    for i in range(20):
-        a = int(random()*i*5)
-        b = int(random()*i*5)
-        dado.append([a, b, a*7.5 + b*(-2.4) + random()*i - i/2])
-    dado = [[i, i*0.5 + 4 + random()*random()*random()*20] for i in range(100)]
-
-    teste_2 = Regression(lin_reg)
-    teste_2.run(dado)
-    print(teste_2)
-
-    #plot_expected(teste_2, dado)
-    #plot_residual(teste_2, dado)
-    plot_prediction_bands(teste_2, dado, sigma = None)
-
-    def reg_log(x, b0, b1) -> float:
-      return 1/(1 + 2.71**(-(b0*x+b1)))
-
-    dados_ = [[i/100, i/100] for i in range(100)]
-    modelo = Regression(reg_log)#Regression(*generate_mlp_classifier(1,1))
-    modelo.set_seed(2024)
-    modelo.run(dados_, precision = 0.1)
-    #modelo.change(b0 = 1, b1 = -0.5)
-    print(modelo)
-    plot_expected(modelo, dados_)
-    plot_prediction_bands(modelo, dados_)
-  
-    def reg_mult(x, b0, b1, b2, b3):
-      if x < 20:
-        return (b2*x + b3)
-      elif x > 40:
-        return (b0*x + b1)
-      else:
-        return ((x-20)/20) * (b0*x + b1) + (1 - (x-20)/20) * (b2*x + b3)
-
-    from data import MedidasDeMassa, transpose
-    dados = MedidasDeMassa()
-    dados = transpose([dados[1], dados["TotalHeight"]])
-    modelo = Regression(reg_mult)
-    modelo.set_seed(2024)
-    modelo.change(b0 = 0, b1 = 90, b2 = 0, b3 = 30)
-    modelo.run(dados, precision = 0.1)
-    print(modelo)
-    plot_expected(modelo, dados)
-    plot_prediction_bands(modelo, dados, amplitude = 1, sigma = 1.64)
-    plot_prediction_bands(modelo, dados, amplitude = 1)
+##    dado = []
+##    for i in range(20):
+##        a = int(random()*i*5)
+##        b = int(random()*i*5)
+##        dado.append([a, b, a*7.5 + b*(-2.4) + random()*i - i/2])
+##    dado = [[i, i*0.5 + 4 + random()*random()*random()*20] for i in range(100)]
+##
+##    teste_2 = Regression(lin_reg)
+##    teste_2.run(dado)
+##    print(teste_2)
+##
+##    #plot_expected(teste_2, dado)
+##    #plot_residual(teste_2, dado)
+##    plot_prediction_bands(teste_2, dado, sigma = None)
+##
+##    def reg_log(x, b0, b1) -> float:
+##      return 1/(1 + 2.71**(-(b0*x+b1)))
+##
+##    dados_ = [[i/100, i/100] for i in range(100)]
+##    modelo = Regression(reg_log)#Regression(*generate_mlp_classifier(1,1))
+##    modelo.set_seed(2024)
+##    modelo.run(dados_, precision = 0.1)
+##    #modelo.change(b0 = 1, b1 = -0.5)
+##    print(modelo)
+##    plot_expected(modelo, dados_)
+##    plot_prediction_bands(modelo, dados_)
+##  
+##    def reg_mult(x, b0, b1, b2, b3):
+##      if x < 20:
+##        return (b2*x + b3)
+##      elif x > 40:
+##        return (b0*x + b1)
+##      else:
+##        return ((x-20)/20) * (b0*x + b1) + (1 - (x-20)/20) * (b2*x + b3)
+##
+##    from data import MedidasDeMassa, transpose
+##    dados = MedidasDeMassa()
+##    dados = transpose([dados[1], dados["TotalHeight"]])
+##    modelo = Regression(reg_mult)
+##    modelo.set_seed(2024)
+##    modelo.change(b0 = 0, b1 = 90, b2 = 0, b3 = 30)
+##    modelo.run(dados, precision = 0.1)
+##    print(modelo)
+##    plot_expected(modelo, dados)
+##    plot_prediction_bands(modelo, dados, amplitude = 1, sigma = 1.64)
+##    plot_prediction_bands(modelo, dados, amplitude = 1)
 
 ##    
 ##    teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))

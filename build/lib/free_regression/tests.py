@@ -4,6 +4,7 @@ from data import MedidasDeMassa, density
 from models_regression import *
 from graphics import *
 from random import random, seed
+from math import cos
 
 # Biblioteca de teste
 import unittest
@@ -423,6 +424,34 @@ class Teste(unittest.TestCase):
         print(modelo.weights)
         modelo.run(data, especific_precision = [1, 0.1])
         print(modelo)
+
+        def lin_reg(x:float, a:float, b:float) -> float:
+            return x*a + b
+
+        def f(x:float, a:float) -> float:
+            return x*a
+
+        def c(x:float, a:float) -> float:
+            return cos(x*a)
+
+        def c2(x:float, a:float, b:float) -> float:
+            return cos(x*a) * b
+        
+        dados = [[x, f(x, a = 5.12) + random() - 0.5] for x in range(100)]
+        modelo = Regression(f)
+        plot_error_curve(modelo, dados, [0, 10], steps = None)
+
+        dados = [[x, lin_reg(x, a = 5.12, b = 8) + random() - 0.5] for x in range(100)]
+        modelo = Regression(lin_reg)
+        plot_error_curve(modelo, dados, [0, 10], steps = None)
+
+        dados = [[x/10, c(x/10, a = 5.12) + random() - 0.5] for x in range(100)]
+        modelo = Regression(c)
+        plot_error_curve(modelo, dados, [0, 10], steps = None)
+
+        dados = [[x/10, c2(x/10, a = 5.12, b = 2.25) + random() - 0.5] for x in range(100)]
+        modelo = Regression(c2)
+        plot_error_curve(modelo, dados, [0, 10], steps = None)
 
         
 if __name__ == "__main__":

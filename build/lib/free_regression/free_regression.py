@@ -245,6 +245,13 @@ class Regression:
         """
         obj.__rshift__(self)
 
+    def mutation(self, amplitude:float = 1) -> None:
+        """
+        Varia levemente os parametros
+        """
+        for parameter in self.params:
+            self.__args_function[parameter] += random()*amplitude - amplitude/2
+
     def save(self, name:str) -> bool:
         """
         Salva os argumentos de memória em um arquivo chamado <name>.memory
