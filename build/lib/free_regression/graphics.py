@@ -12,50 +12,87 @@ def plot_expected(regression:"Regression", data:[list], size:list = (8, 6)) -> N
         regression (Regression): Classe 'Regression' da função a ser plotada como preditora.
         data (list(list)): Dados, lista de listas sendo do tamanho nx2.
     """
-    assert len(regression.regressors) == 1, "This graph only works if you have only one regressors"
-    assert type(data) == list or type(data) == tuple, "The <data> must be a list"
-    assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
-    assert len(data[0]) == 2, "The <data[n]> has to be 2 elements"
-    
-    x:list = [values[0] for values in data]
-    y1:list = [values[1] for values in data]
-    x_new:list = [min(x)]
-    dif:list = sorted(x)
-    dif:float = min([dif[i+1] - dif[i] for i in range(len(dif) - 1)])
-    while x_new[-1] < max(x):
-        x_new.append(x_new[-1] + max(dif, (max(x) - min(x))/200))
-    y2:list = [regression.prediction(**{regression.regressors[0]: value}) for value in x_new]
-
-    fig, ax = plt.subplots(figsize = size)
-    if sorted(list(set(x))) == x:
-        ax.plot(x, y1, label = "Dados Observados", color = "blue", linestyle = "-")
-    else:
-        ax.scatter(x, y1, label = "Dados observados", color = "blue", alpha = 0.7)
-
-    ax.plot(x_new, y2, label = "Valores Preditos", color = "red", linestyle = "--")
-    ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
-
-    if regression._Regression__robust:
-        new_data:[list] = regression._Regression__new_data(data = data, limiar = regression._Regression__limiar)
-        old_data:[list] = data
-
-        outliers:list = []
-        for i in range(len(old_data)):
-            if not old_data[i] in new_data:
-                outliers.append(old_data[i])
-
-        ax.scatter([outliers_i[0] for outliers_i in outliers],
-                   [outliers_i[-1] for outliers_i in outliers],
-                   marker = "o", label = f"Desconsiderados", color = "red", alpha = 0.8)
+    if len(regression.regressors) == 1:
+        assert type(data) == list or type(data) == tuple, "The <data> must be a list"
+        assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
+        assert len(data[0]) == 2, "The <data[n]> has to be 2 elements"
         
-    
-    ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
-    ax.set_xlabel("X", fontsize = 14)
-    ax.set_ylabel("Y", fontsize = 14)
-    ax.legend()
-    
-    plt.subplots_adjust(left = 0.07, right = 0.99, top = 0.95, bottom = 0.07)
-    plt.show()
+        x:list = [values[0] for values in data]
+        y1:list = [values[1] for values in data]
+        x_new:list = [min(x)]
+        dif:list = sorted(x)
+        dif:float = min([dif[i+1] - dif[i] for i in range(len(dif) - 1)])
+        while x_new[-1] < max(x):
+            x_new.append(x_new[-1] + max(dif, (max(x) - min(x))/200))
+        y2:list = [regression.prediction(**{regression.regressors[0]: value}) for value in x_new]
+
+        fig, ax = plt.subplots(figsize = size)
+        if sorted(list(set(x))) == x:
+            ax.plot(x, y1, label = "Dados Observados", color = "blue", linestyle = "-")
+        else:
+            ax.scatter(x, y1, label = "Dados observados", color = "blue", alpha = 0.7)
+
+        ax.plot(x_new, y2, label = "Valores Preditos", color = "red", linestyle = "--")
+        ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
+
+        if regression._Regression__robust:
+            new_data:[list] = regression._Regression__new_data(data = data, limiar = regression._Regression__limiar)
+            old_data:[list] = data
+
+            outliers:list = []
+            for i in range(len(old_data)):
+                if not old_data[i] in new_data:
+                    outliers.append(old_data[i])
+
+            ax.scatter([outliers_i[0] for outliers_i in outliers],
+                       [outliers_i[-1] for outliers_i in outliers],
+                       marker = "o", label = f"Desconsiderados", color = "red", alpha = 0.8)
+            
+        
+        ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
+        ax.set_xlabel("X", fontsize = 14)
+        ax.set_ylabel("Y", fontsize = 14)
+        ax.legend()
+        
+        plt.subplots_adjust(left = 0.07, right = 0.99, top = 0.95, bottom = 0.07)
+        plt.show()
+
+    if len(regression.regressors) == 2:
+        assert type(data) == list or type(data) == tuple, "The <data> must be a list"
+        assert type(data[0]) == list or type(data[0]) == tuple, "The <data[n]> must be a list, <data> is list of lists"
+        assert len(data[0]) == len(regression.regressors) + regression._Regression__len_y, f"The <data[n]> has to be {len(regression.regressors) + regression._Regression__len_y} elements"
+
+        x1_name = f"{regression.regressors[0]}"
+        x2_name = f"{regression.regressors[1]}"
+        x1:list = [values[0] for values in data]
+        x2:list = [values[1] for values in data]
+        if regression._Regression__len_y > 1:
+            y:list = [values[-regression._Regression__len_y:] for values in data]
+        else:
+            y:list = [values[-1] for values in data]
+
+        y_prediction:list = []
+        for value in data:
+            y_prediction.append(regression.prediction([value[:len(regression.regressors)]])[0])
+
+        y_dif:list = [regression._Regression__loss_function([y[i]], [y_prediction[i]])**(1/2) for i in range(len(y_prediction))]
+
+        fig, ax = plt.subplots(figsize = size)
+        sc = ax.scatter(x1, x2, c = y_dif, cmap = "viridis", label = "Dados observados", alpha = 1/len(y_dif)**(1/4))
+        ax.grid(True, which = "both", linestyle = "--", linewidth = 0.7)
+
+        ax.set_title("Dados Observados vs Valores Preditos", fontsize = 16, weight = "bold")
+        ax.set_xlabel(f"{x1_name}", fontsize = 14)
+        ax.set_ylabel(f"{x2_name}", fontsize = 14)
+        ax.legend()
+
+        # Adiciona barra de cores para indicar valores de y_dif
+        cbar = plt.colorbar(sc)
+        cbar.set_label("Diferênça entre valor predito e esperado")
+
+        plt.subplots_adjust(left=0.07, right=0.99, top=0.95, bottom=0.07)
+        plt.show()
+
 
 def plot_residual(regression:"Regression", data:[list], size:list = (8, 6), percentile:list = [2.5, 97.5]) -> list:
     """
@@ -398,14 +435,30 @@ if __name__ == "__main__":
       dados.append([x1, x2, *f3(x1, x2, 8, 4)])
 
     modelo = Regression(f3)
-    plot_error_curve(modelo, dados, [0, 15])
+    #plot_error_curve(modelo, dados, [0, 15])
 
-    #modelo.run(dados)
-    #print(modelo)
-    modelo.change(a = 4.05, b = 7.95)
-
+    modelo.run(dados)
+    
     for dado in dados:
       print(f"{dado} -> {modelo([dado[:2]])}")
+
+    plot_expected(modelo, dados)
+
+    dados = []
+    for i in range(10):
+      x1, x2 = 4 + random()*5, 4 + random()*10
+      dados.append([x1, x2, f2(x1, x2, 8, 4)])
+
+    modelo = Regression(f2)
+    #plot_error_curve(modelo, dados, [0, 15])
+
+    modelo.run(dados)
+    
+    for dado in dados:
+      print(f"{dado} -> {modelo([dado[:2]])}")
+
+    plot_expected(modelo, dados)
+
 
     dados = []
     for i in range(10):

@@ -453,6 +453,16 @@ class Teste(unittest.TestCase):
         modelo = Regression(c2)
         plot_error_curve(modelo, dados, [0, 10], steps = None)
 
+        def f3(x1:float, x2:float, a:float, b:float) -> float:
+            return [x1*a + x2*b, a*b]
+        dados = []
+        for i in range(10):
+          x1, x2 = 4 + random()*5, 4 + random()*10
+          dados.append([x1, x2, *f3(x1, x2, 8, 4)])
+
+        modelo = Regression(f3)
+        plot_error_curve(modelo, dados, [0, 15])
+
         
 if __name__ == "__main__":
     unittest.main()
