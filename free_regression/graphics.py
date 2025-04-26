@@ -319,7 +319,14 @@ def plot_error_curve(model:"Regression", data:list, limits:list, steps:int = Non
 
             y_real:list = []
             for dado in data:
-                y_real.append(dado[-len(model.regressors):][0])
+                resp:list = dado[-model._Regression__len_y:]
+                if len(resp) == 1:
+                    y_real.append(resp[0])
+                else:
+                    y_real.append(resp)
+
+            #print(y_real)
+            #print(y_prediction)
 
             all_errors.append({var_1:variables[var_1],
                                var_2:variables[var_2],
@@ -378,6 +385,43 @@ if __name__ == "__main__":
 
     def c2(x:float, a:float, b:float) -> float:
         return cos(x*a) * b
+
+    def f2(x1:float, x2:float, a:float, b:float) -> float:
+      return x1*a + x2*b + a*b
+
+    def f3(x1:float, x2:float, a:float, b:float) -> float:
+      return [x1*a + x2*b, a*b]
+
+    dados = []
+    for i in range(10):
+      x1, x2 = 4 + random()*5, 4 + random()*10
+      dados.append([x1, x2, *f3(x1, x2, 8, 4)])
+
+    modelo = Regression(f3)
+    plot_error_curve(modelo, dados, [0, 15])
+
+    #modelo.run(dados)
+    #print(modelo)
+    modelo.change(a = 4.05, b = 7.95)
+
+    for dado in dados:
+      print(f"{dado} -> {modelo([dado[:2]])}")
+
+    dados = []
+    for i in range(10):
+      x1, x2 = 4 + random()*5, 4 + random()*10
+      dados.append([x1, x2, f2(x1, x2, 8, 4)])
+
+    modelo = Regression(f2)
+    plot_error_curve(modelo, dados, [0, 15])
+
+    modelo.run(dados)
+    print(modelo)
+    modelo.change(a = 4.05, b = 7.95)
+
+    for dado in dados:
+      print(f"{dado} -> {modelo([dado[:2]])}")
+
 
     dados = [[x, f(x, a = 5.12) + random() - 0.5] for x in range(100)]
     modelo = Regression(f)
