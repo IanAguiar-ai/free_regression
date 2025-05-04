@@ -44,7 +44,8 @@ def plot_expected_and_save(regression:"Regression", data:[list], name:str, size:
         os.makedirs(save_dir)
 
     name = os.path.join("temporary", name)
-    plt.savefig(f"{name}.png")    
+    plt.savefig(f"{name}.png")
+    plt.close(fig)
 
 def make_animation(obj:"Regression", data:list, precision:float = 0.01, booster:float = 100, especific_precision:list = None, image_folder:str = "temporary", output_video:str = "animation_temporary.mp4", frame_rate:int = 24) -> None:
     """
@@ -105,7 +106,10 @@ if __name__ == "__main__":
 ##    dados = [[0, 0], [1, 0.4], [2, 0], [2.1, 0.1], [2.12, 0.20], [2.5, 0.40], [3, 0]]
 ##    make_animation(teste_1, dados)
 
-    dados_ = [[i/100, i/100] for i in range(100)]
-    modelo = Regression(*generate_mlp_classifier(1,5))
+    def f(x, a, b, c, d):
+        return x*a + b if x < c else x*a + b + d*(x-c)
+
+    dados_ = [[i, i**2*1.6 - 8] for i in range(20)]
+    modelo = Regression(f)
     modelo.set_seed(2024)
     make_animation(modelo, dados_, especific_precision = [10, 1, 0.1])

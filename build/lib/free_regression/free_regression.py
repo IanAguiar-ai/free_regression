@@ -444,7 +444,7 @@ class Regression:
         y:list = [data_i[-1] for data_i in data]
         return sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
 
-    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False, loss_limiar:float = 0) -> None:
+    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False, loss_limiar:float = 0, max_iterations:int = None) -> None:
         """
         Faz a regressão.
 
@@ -516,12 +516,18 @@ class Regression:
 
         all_iterations:int = 1
         while precision >= precision_final: # Vai diminuindo a variação da busca
+            if (max_iterations != None) and (max_iterations < all_iterations):
+                break
+
             with_no_iteration = 0
             if type(especific_precision) == list:
                 precision:float = especific_precision[index_precision]
                 index_precision += 1
 
             while with_no_iteration < self.iterations:
+                if (max_iterations != None) and (max_iterations < all_iterations):
+                    break
+            
                 with_no_iteration += 1
                 
                 # y predito
@@ -854,7 +860,7 @@ class Regression:
         self.__error = best_result/len(data)
         self.__robust:bool = False 
 
-    def __animation_run(self, data:[list], precision:float = 0.001, booster:float = 100, especific_precision:list = None) -> None:
+    def __animation_run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False, loss_limiar:float = 0, max_iterations:int = 10) -> None:
         """
         Função modificada para fazer animações.
         
@@ -877,84 +883,26 @@ class Regression:
         # Iniciando a seed
         if self.__seed is not None:
             seed(self.__seed)
+            old_seed, self.__seed = self.__seed, None
 
-        # Pegando y esperado
-        y_expected = [data[i][-1] for i in range(len(data))]
-
-        # Salvando argumentos iniciais para a função
-        args_temp:dict = {}
-        for parameter in self.__args_function.keys():
-            if parameter not in self.__lock.keys():
-                args_temp[parameter] = self.__args_function[parameter]
+        number_iterations:int = max_iterations
+        errors:int = 0
+        iterations:int = 1
+        loss:float = self.__error
+        while iterations <= 1000:
+            self.run(data = data, precision = precision, booster = booster, especific_precision = especific_precision,
+                     adaptive = adaptive, inertia = inertia, loss_limiar = loss_limiar,
+                     max_iterations = number_iterations)
+            
+            if self.__error == loss:
+                if errors > max_iterations:
+                    break
+                errors += 1
+                number_iterations:int = int(number_iterations * 2)
             else:
-                args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
+                plot_expected_and_save(self, data, name = f"img_{int(iterations):04.00f}")
 
-        iteration_:int = 0
-        qnt_:int = 0
-        qnt_plot:list = [int(i + 1.04**i) for i in range(5_000)]
-        
-        if type(especific_precision) == list:
-            precision_final, precision = 1, len(especific_precision)
-            index_precision = 0
-        else:
-            precision_final, precision = precision/2, precision * booster
-        
-        while precision >= precision_final: # Vai diminuindo a variação da busca
-            with_no_iteration = 0
-            if type(especific_precision) == list:
-                precision:float = especific_precision[index_precision]
-                index_precision += 1
-                
-            while with_no_iteration < self.iterations:
-                iteration_ += 1
-                with_no_iteration += 1
-                
-                # y predito
-                y_predicted:list = []
-                for *x, _ in data:
+            iterations += 1
+            loss:float = self.__error
 
-                    # Separando as variáveis regressoras
-                    x_args:dict = {}
-                    for i in range(len(x)):
-                        x_args[self.regressors[i]] = x[i]
-
-                    # Fazendo a predição
-                    y_predicted.append(self.__function(**x_args, **args_temp))
-
-                # Resultado dos minimos quadrados
-                result:float = self.__loss_function(y_predicted, y_expected)
-
-                # Atualizando melhores parâmetros para regressora
-                if not "best_result" in locals():
-                    best_result:float = result
-                    best_args = deepcopy(args_temp)
-                    self.__args_function = best_args
-                    plot_expected_and_save(self, data, name = f"img_{int(iteration_):04.00f}")
-                    qnt_ += 1
-
-                if result < best_result:
-                    with_no_iteration = 0
-                    best_result:float = result
-                    best_args = deepcopy(args_temp)
-                    self.__args_function = best_args
-                    if qnt_ in qnt_plot:
-                        plot_expected_and_save(self, data, name = f"img_{int(iteration_):04.00f}")
-                    qnt_ += 1
-                    
-                else:
-                    args_temp = deepcopy(best_args)
-
-                for parameter in self.__args_function.keys():
-                    if parameter not in self.__lock.keys():
-                        args_temp[parameter] += (random()*precision - precision)*self.weights[parameter]
-                        
-            # Aumenta a precisão
-            if type(especific_precision) == list:
-                precision_final += 1
-                precision:int = len(especific_precision)
-            else:
-                precision /= 2
-
-        # Salva o resultado
-        self.__args_function = best_args
-        self.__error = best_result/len(data)        
+        self.__seed = old_seed    
