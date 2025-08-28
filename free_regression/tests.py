@@ -212,10 +212,10 @@ class Teste(unittest.TestCase):
         with self.assertRaises(AssertionError):
             teste_7.lock(x_1 = 2, x_2 = 1, b = 1)
 
-        print(f"\n\n{'='*50}\nTestes de excessões prediction:")
-        print("\nTeste 6.1...")
-        with self.assertRaises(AssertionError):
-            teste_5.prediction(dado)
+##        print(f"\n\n{'='*50}\nTestes de excessões prediction:")
+##        print("\nTeste 6.1...")
+##        with self.assertRaises(AssertionError):
+##            teste_5.prediction(dado)
 
         print("\nTeste 6.2...")
         with self.assertRaises(AssertionError):

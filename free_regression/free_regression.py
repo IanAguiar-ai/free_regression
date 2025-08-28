@@ -417,12 +417,19 @@ class Regression:
             float: Valor predito.
         """
 
+        # Pré tratamento da lista se o usuário passou a mesma lista do treino, ou seja, com as variáveis respostas
         if type(list_prediction) == list or type(list_prediction) == tuple: # Caso o usuário tenha passado uma série de valores para a predição
             assert type(list_prediction[0]) == list or type(list_prediction[0]) == tuple, "If you want to pass a series of values​to predict, you should pass the list of lists of values with the regressors parameters"
+
+            assert min(map(len, list_prediction)) == max(map(len, list_prediction)), "Inconsistent list!\nlen min: {min(map(len, list_prediction))}\nlen max: {max(map(len, list_prediction))}"        
+            if len(list_prediction[0]) == len(self.regressors) + self.__len_y:
+                list_prediction:list = [line[:len(self.regressors)] for line in list_prediction]
+
+            
             assert min(map(len, list_prediction)) == max(map(len, list_prediction)) == len(self.regressors), f"Your list of lists must be {len(list_prediction)} by {len(self.regressors)} in size\nlen min: {min(map(len, list_prediction))}\nlen max: {max(map(len, list_prediction))}"
 
-            results = []
-            x_args = {}
+            results:list = []
+            x_args:dict = {}
             for values in list_prediction:
                 for i in range(len(self.regressors)):
                     x_args[self.regressors[i]] = values[i]
@@ -435,6 +442,8 @@ class Regression:
             assert set(x_args.keys()) == set(self.regressors), f"Pass regressors parameters correctly\n  regressors parameters passed: {', '.join(x_args.keys())}\n  Expected regressors parameters: {', '.join(self.regressors)}"
 
             return self.__function(**x_args, **self.__args_function)
+
+    predict = prediction
 
     def variance_error(self, data:[list]) -> float:
         """
