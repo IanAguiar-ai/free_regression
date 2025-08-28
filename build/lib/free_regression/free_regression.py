@@ -628,7 +628,7 @@ class Regression:
         """
         if self.__len_y > 1:
             X:[list] = [data_i[:-self.__len_y] for data_i in data]
-            y:list = [data_i[self.__len_y:] for data_i in data]
+            y:list = [data_i[-self.__len_y:] for data_i in data]
         else:
             X:[list] = [data_i[:-1] for data_i in data]
             y:list = [data_i[-1] for data_i in data]
@@ -914,4 +914,4 @@ class Regression:
             iterations += 1
             loss:float = self.__error
 
-        self.__seed = old_seed    
+        self.__seed = old_seed
