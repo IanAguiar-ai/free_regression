@@ -1,6 +1,7 @@
 from inspect import signature, getsource # Para pegar os argumentos de uma função e a própria função
 from copy import deepcopy
 from random import random, seed
+from pandas import DataFrame
 
 def least_squares(vector_1:list, vector_2:list) -> float:
     """
@@ -245,6 +246,12 @@ class Regression:
         """
         obj.__rshift__(self)
 
+    def __dataframe_to_list(self, df:DataFrame):
+        """
+        Passa o DataFrame para uma lista de listas
+        """
+        return df.values.tolist()
+
     def mutation(self, amplitude:float = 1) -> None:
         """
         Varia levemente os parametros
@@ -417,6 +424,9 @@ class Regression:
             float: Valor predito.
         """
 
+        if type(list_prediction) == DataFrame:
+            list_prediction:list[list] = self.__dataframe_to_list(list_prediction)
+
         # Pré tratamento da lista se o usuário passou a mesma lista do treino, ou seja, com as variáveis respostas
         if type(list_prediction) == list or type(list_prediction) == tuple: # Caso o usuário tenha passado uma série de valores para a predição
             assert type(list_prediction[0]) == list or type(list_prediction[0]) == tuple, "If you want to pass a series of values​to predict, you should pass the list of lists of values with the regressors parameters"
@@ -465,6 +475,9 @@ class Regression:
             adaptive(bool): Se o método deve dar pesos diferentes para cada parâmetro (recomendado).
             loss_limiar(float): Loss mínima para parada, por padrão é 0, isso significa que ela não é considerada pois a loss sempre é maior que 0.
         """
+        if type(data) == DataFrame:
+            data:list[list] = self.__dataframe_to_list(data)
+
 
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"
         assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"
@@ -690,6 +703,8 @@ class Regression:
         Return:
             [list]: Nova lista com valores robustos (não anomalos)
         """
+        if type(data) == DataFrame:
+            data:list[list] = self.__dataframe_to_list(data)
         
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"
         assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"

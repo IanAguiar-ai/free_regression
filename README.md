@@ -14,6 +14,13 @@ Construtor de Regressão Genérico. Com esta biblioteca, o usuário é capaz de:
 pip install git+https://github.com/IanAguiar-ai/free_regression
 ```
 
+# Atualizações
+
+## 1.3.8
+
+- Agora são aceitos DataFrames pandas como input dos métodos ```.run``` e ```.predition```.
+
+
 # Importação
 
 Para importar a classe principal:
