@@ -1,6 +1,6 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: free_regression
-Version: 1.3.6
+Version: 1.3.8
 Summary: Construtor de regressão genérico.
 Author: ['Ian dos Anjos Melo Aguiar']
 Author-email: <iannaianjos@gmail.com>
@@ -14,6 +14,14 @@ Classifier: Operating System :: Microsoft :: Windows
 Description-Content-Type: text/markdown
 Requires-Dist: matplotlib
 Requires-Dist: numpy
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: keywords
+Dynamic: requires-dist
+Dynamic: summary
 
 
 # free_regression
@@ -31,6 +39,13 @@ Construtor de Regressão Genérico. Com esta biblioteca, o usuário é capaz de:
 ```
 pip install git+https://github.com/IanAguiar-ai/free_regression
 ```
+
+# Atualizações
+
+## 1.3.8
+
+- Agora são aceitos DataFrames pandas como input dos métodos ```.run``` e ```.predition```.
+
 
 # Importação
 
