@@ -250,7 +250,7 @@ class Regression:
         """
         Passa o DataFrame para uma lista de listas
         """
-        return df.values.tolist()
+        return df.dropna().values.tolist()
 
     def mutation(self, amplitude:float = 1) -> None:
         """

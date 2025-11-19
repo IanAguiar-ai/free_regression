@@ -1144,13 +1144,13 @@ PARAMS:
 
 ![EX_TEMPORAL_SERIES_1](free_regression/imagens_testes/ts_1.png)
 
-### Função dependente em função idependente
+### Função dependente em função independente
 
 Transformando função dependente:
 
 $$ f(x) = b_{1} \cdot f(x-1) + b_{2} \cdot f(x-2) $$
 
-em função idependente
+em função independente
 
 $$ f(x) = c_{1} \cdot \lambda_{1}^{x} + c_{2} \cdot \lambda_{2}^{x} $$
 
