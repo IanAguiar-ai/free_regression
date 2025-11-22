@@ -262,7 +262,7 @@ class Regression:
         for parameter in self.params:
             self.__args_function[parameter] += random()*amplitude - amplitude/2
 
-    def return_loss() -> DataFrame:
+    def return_loss(self) -> DataFrame:
         """
         Retorna o dataframe da loss
         """

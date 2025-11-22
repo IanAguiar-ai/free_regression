@@ -32,7 +32,9 @@ class Regression:
         regressors (list): Lista de regressores, não é precisso passar se a função tiver apenas um parâmetro regressor e ele se chame 'x'.
         loss_function (function): Função de perda, é a função 'least squares' mas pode ser qualquer uma passada pelo usuário.
     """
-    __slots__ = ("iterations", "params", "regressors", "weights", "__len_y", "__function", "__args_function", "__seed", "__lock", "__loss_function", "__error", "__robust", "__limiar", "__print")
+    __slots__ = ("iterations", "params", "regressors", "weights",
+                 "__len_y", "__function", "__args_function", "__seed", "__lock", "__loss_function",
+                  "__error", "__robust", "__limiar", "__print", "__memory")
     
     def __init__(self, function:"function" = None, regressors:list = None, loss_function:"function" = least_squares, print:bool = False) -> None:
         """
@@ -58,6 +60,7 @@ class Regression:
         self.__robust:bool = False
         self.__limiar:float = 1.92
         self.__print:float = print
+        self.__memory:list = []
         
         temp:tuple = tuple(signature(function).parameters.keys())
         assert len(temp) >= 2, "Your function must have at least two parameters. Example f(x, b) = x*b = y"
@@ -250,7 +253,7 @@ class Regression:
         """
         Passa o DataFrame para uma lista de listas
         """
-        return df.values.tolist()
+        return df.dropna().values.tolist()
 
     def mutation(self, amplitude:float = 1) -> None:
         """
@@ -258,6 +261,12 @@ class Regression:
         """
         for parameter in self.params:
             self.__args_function[parameter] += random()*amplitude - amplitude/2
+
+    def return_loss(self) -> DataFrame:
+        """
+        Retorna o dataframe da loss
+        """
+        return DataFrame({"Iteration":[1+i for i in range(len(self.__memory))], "loss":self.__memory})
 
     def save(self, name:str) -> bool:
         """
@@ -557,6 +566,7 @@ class Regression:
 
                 # Resultado dos minimos quadrados
                 result:float = self.__loss_function(y_predicted, y_expected)
+                self.__memory.append(result)
 
                 # Atualizando melhores parâmetros para regressora
                 if not "best_result" in locals():
