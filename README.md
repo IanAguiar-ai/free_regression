@@ -20,6 +20,10 @@ pip install git+https://github.com/IanAguiar-ai/free_regression
 
 - Agora são aceitos DataFrames pandas como input dos métodos ```.run``` e ```.predition```.
 
+## 1.3.9
+
+- Função que retorna um dataframe com o histórico da loss ```.return_loss()```.
+
 
 # Importação
 
@@ -1801,5 +1805,6 @@ print(f"\nMODELO_1: {num_acertos[0]*100:2.02f}%\nMODELO_2: {num_acertos[1]*100:2
 ![EX_11](free_regression/imagens_testes/reg_11.png)
 
 
+### Observando a loss do modelo no tempo
 
-
+[...]
