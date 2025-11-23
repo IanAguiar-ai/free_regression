@@ -268,7 +268,7 @@ class Regression:
         """
         return DataFrame({"iteration":[1+i for i in range(len(self.__memory["loss"]))],
                           "loss":self.__memory["loss"],
-                          "best_loss":min(self.__memory["loss"][:i]) for i in range(1, len(self.__memory["loss"])+1),
+                          "best_loss":[min(self.__memory["loss"][:i]) for i in range(1, len(self.__memory["loss"])+1)],
                           "precision":self.__memory["precision"]})
 
     def save(self, name:str) -> bool:
