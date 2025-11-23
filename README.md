@@ -23,6 +23,7 @@ pip install git+https://github.com/IanAguiar-ai/free_regression
 ## 1.3.9
 
 - Função que retorna um dataframe com o histórico da loss ```.return_loss()```.
+- Precision em ```.run``` pode ser uma lista.
 
 
 # Importação

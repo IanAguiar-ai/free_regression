@@ -266,7 +266,7 @@ class Regression:
         """
         Retorna o dataframe da loss
         """
-        return DataFrame({"Iteration":[1+i for i in range(len(self.__memory))], "loss":self.__memory})
+        return DataFrame({"iteration":[1+i for i in range(len(self.__memory))], "loss":self.__memory})
 
     def save(self, name:str) -> bool:
         """
@@ -472,7 +472,7 @@ class Regression:
         y:list = [data_i[-1] for data_i in data]
         return sum([(yi - y_i)**2 for yi, y_i in zip(y_, y)])/len(y)
 
-    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False, loss_limiar:float = 0, max_iterations:int = None) -> None:
+    def run(self, data:[list], precision:float = 0.01, booster:float = 100, especific_precision:list = None, adaptive:bool = True, inertia:bool = False, loss_limiar:float = 0, max_iterations:int = None, save_infos:bool = False) -> None:
         """
         Faz a regressão.
 
@@ -486,7 +486,6 @@ class Regression:
         """
         if type(data) == DataFrame:
             data:list[list] = self.__dataframe_to_list(data)
-
 
         assert type(data) == list, f"The data must be a list of lists not {type(data)}"
         assert type(data[0]) == list, f"The data must be a list of lists not {type(data[0])}"
@@ -534,14 +533,17 @@ class Regression:
                 if self.__print:
                     print(f"\rLock {parameter}: True", end = "")
 
+        if type(precision) == list:
+            especific_precision:list = precision
+
         if type(especific_precision) == list:
             precision_final, precision = 1, len(especific_precision)
-            index_precision = 0
+            index_precision:int = 0
             if self.__print:
                 print(f"\r|{' ' * len(especific_precision)}| (Precision: {especific_precision[index_precision]}) (Model: {self.__function.__name__})", end = "")
         else:
             precision_final, precision = precision/2, precision * booster
-            precision_k = 0
+            precision_k:int = 0
             if self.__print:
                 print(f"\r|{' '*9}| (Precision: {precision} | Final Precision: {precision_final}) (Model: {self.__function.__name__})", end = "")
 
@@ -566,7 +568,8 @@ class Regression:
 
                 # Resultado dos minimos quadrados
                 result:float = self.__loss_function(y_predicted, y_expected)
-                self.__memory.append(result)
+                if save_infos:
+                    self.__memory.append(result)
 
                 # Atualizando melhores parâmetros para regressora
                 if not "best_result" in locals():
