@@ -60,7 +60,7 @@ class Regression:
         self.__robust:bool = False
         self.__limiar:float = 1.92
         self.__print:float = print
-        self.__memory:list = []
+        self.__memory:dict = {"loss":[], "precision":[]}
         
         temp:tuple = tuple(signature(function).parameters.keys())
         assert len(temp) >= 2, "Your function must have at least two parameters. Example f(x, b) = x*b = y"
@@ -266,7 +266,10 @@ class Regression:
         """
         Retorna o dataframe da loss
         """
-        return DataFrame({"iteration":[1+i for i in range(len(self.__memory))], "loss":self.__memory})
+        return DataFrame({"iteration":[1+i for i in range(len(self.__memory["loss"]))],
+                          "loss":self.__memory["loss"],
+                          "best_loss":min(self.__memory["loss"][:i]) for i in range(1, len(self.__memory["loss"])+1),
+                          "precision":self.__memory["precision"]})
 
     def save(self, name:str) -> bool:
         """
@@ -569,7 +572,8 @@ class Regression:
                 # Resultado dos minimos quadrados
                 result:float = self.__loss_function(y_predicted, y_expected)
                 if save_infos:
-                    self.__memory.append(result)
+                    self.__memory["loss"].append(result)
+                    self.__memory["precision"].append(result)
 
                 # Atualizando melhores parâmetros para regressora
                 if not "best_result" in locals():
