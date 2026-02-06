@@ -25,6 +25,10 @@ pip install git+https://github.com/IanAguiar-ai/free_regression
 - Função que retorna um dataframe com o histórico da loss ```.return_loss()```.
 - Precision em ```.run``` pode ser uma lista.
 
+## 1.3.10
+
+- Agora é possível colocar limites na busca das variáveis, com o método ```.limits()```.
+
 
 # Importação
 
@@ -353,6 +357,8 @@ Além da regressão simples, é possível realizar diversas alterações nos par
 
 4. **.mutation**: Muda os parâmetros usando levemente de acordo com um parâmetro *w*. 
 
+5. **.limits**: Coloca limite nos valores que podem ser usados na busca para alguma variável.
+
 A seguir, apresentamos um exemplo da função **.change**:
 
 ```python
@@ -420,6 +426,19 @@ print(f"Depois do lock e do run:\n{meu_modelo_regressor}\n")
 O **.change** e o **.change_all** servem para iniciar a regressão a partir de um ponto diferente, sendo que, por padrão, todos os valores começam em 0.1. Caso o usuário fique preso em um mínimo local indesejado, ele pode modificar tanto todos os parâmetros quanto parâmetros específicos.
 
 O **.lock** pode ser utilizado para travar, por exemplo, um intercepto.
+
+Exemplo do **.limits**:
+
+```python
+def f(x, a, b):
+        return x*a + b
+
+data = DataFrame({"x":[1, 2, 3, 4, 5], "y":[3, 4, 3, 2, 1]})
+m = Regression(f)
+m.limits(a = (-1, 1), b = (4.5, 5))
+m.run(data)
+print(m)
+```
 
 O uso dessas técnicas requer um conhecimento um pouco mais aprofundado sobre a função de regressão utilizada.
 
