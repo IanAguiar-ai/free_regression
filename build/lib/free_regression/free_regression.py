@@ -33,7 +33,7 @@ class Regression:
         loss_function (function): Função de perda, é a função 'least squares' mas pode ser qualquer uma passada pelo usuário.
     """
     __slots__ = ("iterations", "params", "regressors", "weights",
-                 "__len_y", "__function", "__args_function", "__seed", "__lock", "__loss_function",
+                 "__len_y", "__function", "__args_function", "__seed", "__lock", "__limits", "__loss_function",
                   "__error", "__robust", "__limiar", "__print", "__memory")
     
     def __init__(self, function:"function" = None, regressors:list = None, loss_function:"function" = least_squares, print:bool = False) -> None:
@@ -87,8 +87,10 @@ class Regression:
                 self.params.append(parameter)
                 self.__args_function[parameter] = 0.1
         
-        # Variáveis bloqueadas
+        # Variáveis bloqueadas ou limitadas
         self.__lock:dict = {}
+        self.__limits:dict = {}
+
 
         # Pesos dos parâmetros
         self.weights:dict = {key:1 for key in self.__args_function}
@@ -397,6 +399,15 @@ class Regression:
             assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.__function.__name__}"
             self.__lock[arg] = args[arg]
 
+    def limits(self, **args) -> None:
+        """
+        Coloca limites na busca de uma ou mais variáveis
+        """
+        for arg in args:
+            assert arg in self.__args_function.keys(), f"'{arg}' not in parameters of the function {self.__function.__name__}"
+            assert (type(args[arg]) == list or type(args[arg]) == tuple) and (len(args[arg]) == 2), f"Pass a list or tuple as a parameter, it must have a size of 2, where var = (min, max)"
+            self.__limits[arg] = args[arg]
+
     def change(self, **args) -> None:
         """
         Troca um valor para que o chute inicial dele seja diferente.
@@ -593,14 +604,16 @@ class Regression:
                         inertia_pause:bool = False
 
                 for parameter in self.__args_function.keys():
-                    if parameter not in self.__lock.keys():
-                            
+                    if parameter not in self.__lock.keys():    
                         if inertia:
                             if not inertia_pause:
                                 inertia_dict[parameter] = (random()*precision - precision/2)*self.weights[parameter]
                             args_temp[parameter] += inertia_dict[parameter]
                         else:
                             args_temp[parameter] += (random()*precision - precision/2)*self.weights[parameter]
+                        if parameter in self.__limits:
+                            args_temp[parameter] = min(max(args_temp[parameter], self.__limits[parameter][0]), self.__limits[parameter][1])
+                        
 
                 if all_iterations % 2_000 == 0:
                     if type(especific_precision) == list:

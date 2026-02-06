@@ -1,6 +1,6 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: free_regression
-Version: 1.3.9
+Version: 1.3.10
 Summary: Construtor de regressão genérico.
 Author: ['Ian dos Anjos Melo Aguiar']
 Author-email: <iannaianjos@gmail.com>
@@ -14,6 +14,14 @@ Classifier: Operating System :: Microsoft :: Windows
 Description-Content-Type: text/markdown
 Requires-Dist: matplotlib
 Requires-Dist: numpy
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: keywords
+Dynamic: requires-dist
+Dynamic: summary
 
 
 # free_regression
@@ -28,7 +36,7 @@ Construtor de Regressão Genérico. Com esta biblioteca, o usuário é capaz de:
 
 # Download
 
-```
+```python
 pip install git+https://github.com/IanAguiar-ai/free_regression
 ```
 
@@ -43,36 +51,40 @@ pip install git+https://github.com/IanAguiar-ai/free_regression
 - Função que retorna um dataframe com o histórico da loss ```.return_loss()```.
 - Precision em ```.run``` pode ser uma lista.
 
+## 1.3.10
+
+- Agora é possível colocar limites na busca das variáveis, com o método ```.limits()```.
+
 
 # Importação
 
 Para importar a classe principal:
 
-```
+```python
 from free_regression import Regression
 ```
 
 Para importar os geradores de funções:
 
-```
+```python
 from free_regression import generate_regression, generate_mlp, generate_mlp_classifier, generate_mlp_semi_classifier, generate_mlp_sigmoid_sum, generate_mlp_normals, generate_distribuction
 ```
 
 Para importar as funções geradoras de imagens:
 
-```
+```python
 from free_regression import plot_expected, plot_residual, make_animation, plot_prediction_bands, plot_series
 ```
 
 Para importar as funções de manipulação de dados:
 
-```
+```python
 from free_regression import to_dummy, transpose, normalize, data_series, round_series
 ```
 
 Para importar funções de cadeia de Markov:
 
-```
+```python
 from free_regression import Generator
 ```
 
@@ -101,7 +113,7 @@ O usuário pode criar regressores de duas formas: utilizando as funções pronta
 Você pode criar regressores próprios para realizar a regressão, basta definir a função. Por exemplo:
 
 Com regressor implicito
-```
+```python
 def minha_funcao(x:float, b1:float, b2:float) -> float:
 	return x*b1 + b2
 	
@@ -112,7 +124,7 @@ meu_modelo_regressor.run(seus_dados) # Para começar a regressão
 
 O usuário pedindo *print(meu_modelo_regressor)* verá:
 
-```
+```python
 FUNCTION: minha_funcao
 LOSS FUNCTION: least_squares
 REGRESSORS: x
@@ -124,7 +136,7 @@ PARAMS:
 
 ou
 
-```
+```python
 def minha_funcao(x1:float, x2:float, b1:float, b2:float) -> float:
 	return x1*b1 + x2*b2
 	
@@ -135,7 +147,7 @@ meu_modelo_regressor.run(seus_dados) # Para começar a regressão
 
 Saída:
 
-```
+```python
 FUNCTION: minha_funcao
 LOSS FUNCTION: least_squares
 REGRESSORS: x1, x2
@@ -146,7 +158,7 @@ PARAMS:
 ```
 
 Com regressor explicito
-```
+```python
 def minha_funcao(h:float, b1:float, b2:float) -> float:
 	return h*b1 + b2
 	
@@ -185,7 +197,7 @@ Se o usuário desejar utilizar um regressor próprio, ele possui algumas opçõe
 
 Todas essas funções retornam dois elementos: a função em si e a lista de regressores.
 
-```
+```python
 funcao, regressores = generate_regression(regressors = 3, degree = 2)
 meu_modelo_regressor = Regression(function = funcao, regressors = regressores)
 meu_modelo.run(seus_dados) # Para começar a regressão
@@ -200,14 +212,14 @@ meu_modelo.run(seus_dados) # Para começar a regressão
 
 Ou ainda
 
-```
+```python
 meu_modelo_regressor = Regression(generate_regression(regressors = 3, degree = 2))
 meu_modelo.run(seus_dados) # Para começar a regressão
 ```
 
 Para ver o resultado da regressão:
 
-```
+```python
 print(meu_modelo_regressor)
 
 # Ou para ver os regressores individualmente
@@ -220,7 +232,7 @@ Todas os geradores são chamados pelo usuário da mesma forma, apenas mudando o 
 
 Se o usuário quiser por exemplo uma rede com 2 inputs, duas camadas intermediarias com 3 camadas e um output, e apenas a ultima camada é um sigmoid e os outros são relu, basta montalo desta forma:
 
-```
+```python
 modelo = Regression(generate_neural_network(struct = [2, 3, 3, 1], activation = ['relu', 'relu', 'sigmoid']))
 
 print(modelo)
@@ -287,7 +299,7 @@ Para realizar uma regressão com a biblioteca, o usuário deve seguir os seguint
 
 Em código, o passo a passo seria assim:
 
-```
+```python
 # Passo 1
 funcao_regressora, argumentos = generate_regression(regressors = 2, degree = 1)
 meu_modelo_regressor = Regression(funcao_regressora, argumentos)
@@ -306,7 +318,7 @@ print(meu_modelo_regressor)
 
 Para realizar uma regressão semelhante ao método **.run**, mas de forma robusta:
 
-```
+```python
 from random import random
 
 def regressao_simples(x:float, a:float, b:float) -> float:
@@ -324,7 +336,7 @@ modelo2.run(dados, especific_precision = [1, 0.1])
 
 Ainda é possível fazer regressões de $f(x_1, x_2, ...) = [y_1, y_2, ...]$:
 
-```
+```python
 def f(x1:float, x2:float, a:float, b:float, c:float) -> (float, float):
     return [x1*a + x2*b, x1*a - x2*c]
 
@@ -345,7 +357,7 @@ print(modelo)
 
 Os dados no caso acima podiam estar dispostos de tal forma:
 
-```
+```python
 dados = [[0, 0, [3, 4]],
          [1, 0, [y1, y2]],
          ...]
@@ -353,7 +365,7 @@ dados = [[0, 0, [3, 4]],
 
 ou
 
-```
+```python
 dados = [[0, 0, 3, 4],
          [1, 0, y1, y2],
          ...]
@@ -371,9 +383,11 @@ Além da regressão simples, é possível realizar diversas alterações nos par
 
 4. **.mutation**: Muda os parâmetros usando levemente de acordo com um parâmetro *w*. 
 
+5. **.limits**: Coloca limite nos valores que podem ser usados na busca para alguma variável.
+
 A seguir, apresentamos um exemplo da função **.change**:
 
-```
+```python
 # Criando a função
 def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
 	return b1*x**2 + x*b2 + b3
@@ -396,7 +410,7 @@ meu_modelo_regressor['b3'] = 15
 
 Exemplo do **.change_all**:
 
-```
+```python
 # Criando a função
 def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
 	return b1*x**2 + x*b2 + b3
@@ -414,7 +428,7 @@ print(f"Depois do change:\n{meu_modelo_regressor}\n")
 
 Exemplo do **.lock**:
 
-```
+```python
 # Criando a função
 def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
 	return b1*x**2 + x*b2 + b3
@@ -439,6 +453,19 @@ O **.change** e o **.change_all** servem para iniciar a regressão a partir de u
 
 O **.lock** pode ser utilizado para travar, por exemplo, um intercepto.
 
+Exemplo do **.limits**:
+
+```python
+def f(x, a, b):
+        return x*a + b
+
+data = DataFrame({"x":[1, 2, 3, 4, 5], "y":[3, 4, 3, 2, 1]})
+m = Regression(f)
+m.limits(a = (-1, 1), b = (4.5, 5))
+m.run(data)
+print(m)
+```
+
 O uso dessas técnicas requer um conhecimento um pouco mais aprofundado sobre a função de regressão utilizada.
 
 
@@ -446,7 +473,7 @@ O uso dessas técnicas requer um conhecimento um pouco mais aprofundado sobre a 
 
 Após o usuário realizar a regressão, é interessante que ele possa prever valores desconhecidos. Para isso, ele deve utilizar a função **.prediction** da classe *Regression*. Um exemplo de uso pode ser visto a seguir:
 
-```
+```python
 # Criando a função
 def minha_funcao(x:float, b1:float, b2:float, b3:float) -> float:
 	return b1*x**2 + x*b2 + b3
@@ -466,7 +493,7 @@ resposta = meu_modelo_regressor(x = 4)
 print(f"Predição para x = 4: {resposta}")
 ```
 
-```
+```python
 # Criando a função
 def minha_funcao(x1:float, x2:float, b1:float, b2:float, b3:float) -> float:
 	return x1*b1 + x2*b2 + b3
@@ -487,7 +514,7 @@ print(f"Predição para x1 = 2 e x2 = 1.2: {resposta}")
 
 Ou ainda uma lista de valores a serem preditos:
 
-```
+```python
 # Criando a função
 def minha_funcao(x1:float, x2:float, b1:float, b2:float, b3:float) -> float:
 	return x1*b1 + x2*b2 + b3
@@ -510,7 +537,7 @@ print(f"Predição: {resposta}")
 
 É possível fazer a mistura de funções de regressão, por exemplo:
 
-```
+```python
 # Criando as funções para a mistura
 
 def parte_1(x, a, b):
@@ -533,7 +560,7 @@ Perceba que, no caso acima, obtemos \( ax^3 + bx^2 + cx - 20 \).
 É possível criar modelos de mistura utilizando os operadores '+', '-', '*', '/', e '**'. Se o usuário desejar usar um operador diferente, basta utilizar a função **.operation** da classe *Regression*. Por exemplo:
 
 
-```
+```python
 # Criando as funções para a mistura
 
 def parte_1(x, a, b):
@@ -557,7 +584,7 @@ Atenção: observe que a mistura é feita da esquerda para a direita. Por exempl
 
 A função de perda é, por padrão, uma função de mínimos quadrados, sendo essa a sua forma específica:
 
-```
+```python
 def least_squares(vector_1:list, vector_2:list) -> float:
     """
     Função de minimos quadrados
@@ -567,7 +594,7 @@ def least_squares(vector_1:list, vector_2:list) -> float:
 
 Contudo, se o usuário seguir o padrão de criar uma função de perda que utiliza os dois vetores passados—sendo o vetor dos valores observados e o vetor dos valores preditos nessa ordem—é possível alterar a função de perda com a função **.loss_function** da classe *Regression*. Por exemplo:
 
-```
+```python
 # Criando função de perda
 def perda_modificada(v_1:list, v_2:list) -> float:
 	"""
@@ -595,7 +622,7 @@ meu_modelo.run(seus_dados)
 
 Assim que a regressão é realizada, é possível salvar os parâmetros. Para isso, basta utilizar a função **.save** da classe *Regression*. Por exemplo:
 
-```
+```python
 # Depois de treinar o modelo...
 
 # Salvando
@@ -604,7 +631,7 @@ meu_modelo.save(name = "nome_do_modelo")
 
 Isso salvará, na mesma pasta em que o código Python estiver sendo executado, um arquivo *.memory*, que pode ser acessado posteriormente por uma instância da classe *Regression* construída da mesma forma:
 
-```
+```python
 # Criar modelo vazio
 meu_modelo = Regression()
 
@@ -616,7 +643,7 @@ meu_modelo.open(name = "nome_do_modelo") # Não é preciso colocar o ".memory" n
 
 É possível transferir parâmetros comuns de uma instância para outra. Por exemplo:
 
-```
+```python
 def func_1(x, a, b):
 	return a*x**3 + b*x**2
 	
@@ -638,7 +665,7 @@ No caso acima, o valor do parâmetro *b* (parâmetro em comum) do *meu_modelo_2*
 
 A função **.set_seed** da classe *Regression* recebe um número inteiro e define a *seed* do processo, garantindo reprodutibilidade. Exemplo:
 
-```
+```python
 meu_modelo = Regression(func_1)
 meu_modelo.set_seed(1)
 ```
@@ -649,7 +676,7 @@ meu_modelo.set_seed(1)
 
 Existem funções que auxiliam o usuário no tratamento dos dados. Por exemplo, a função **to_dummy**. Essa função recebe uma lista de listas, onde algumas colunas são categóricas, e, desde que todas as categorias estejam presentes nas variáveis categóricas, ela cria novas colunas dummy para cada categoria, em ordem alfabética, por coluna categórica. Exemplo:
 
-```
+```python
 dados = [[1, "a", 5, "1"],
          [3, "b", 6, "2"],
          [0, "a", 4, "1"],
@@ -661,7 +688,7 @@ print(to_dummy(dados))
 
 Retorna:
 
-```
+```python
 [[1, 5, 1, 0, 1],
  [3, 6, 0, 1, 0],
  [0, 4, 1, 0, 1],
@@ -673,7 +700,7 @@ Antes existia 4 colunas, as colunas 0 e 2 são numéricas e as colunas 1 e 3 sã
 
 A dimensão da coluna que era 4 agora se torna 1(numerica 0) + 1(numerica 2) + 2(dummy coluna 1, que tinha 3 categorias) + 1(dummy coluna 3 que tinha 2 categorias) = 5. Perceba que a nova dimensão dos dados é:
 
-```
+```python
 numericas = 2 # colunas
 categorica_1 = ['a', 'b', 'c']
 categorica_1 = ['1', '2']
@@ -685,7 +712,7 @@ total = numericas + (len(categorica_1) - 1) (len(categorica_2) - 1)
 
 Transpõe a lista de listas. Exemplo:
 
-```
+```python
 dados = [
  [1, 5],
  [3, 6],
@@ -697,7 +724,7 @@ dados = [
 
 Se torna:
 
-```
+```python
 dados = transpose(dados)
 
 [[1, 3, 0, 6, 4],
@@ -812,7 +839,7 @@ Recebe:
 
 Exemplo:
 
-```
+```python
 texto_exemplo:str = "seu texto aqui"
 
 for dependence in range(1, 10, 1):
@@ -850,7 +877,7 @@ Retorna:
 
 Exemplo:
 
-```
+```python
 from free_regression import Generator, mcmc_anomaly
 from random import random, seed
 from math import cos
@@ -874,7 +901,7 @@ A função *make_animation* que recebe:
 Salva em uma pasta no diretório atual, chamada *temporary*, todos os *plots* para chegar no resultado da regressão e gera um vídeo em *.mp4* dessa animação.
 
 Exemplo:
-```
+```python
 teste_1 = Regression(*generate_mlp_normals(regressors = 1, neurons = 2, max_ = 1))
 teste_1.set_seed(1)
 teste_1.change(b = 0)
@@ -894,7 +921,7 @@ Dado o método de convergência, é muito fácil que a regressão fique presa em
 
 Se uma regressão não está apresentando boa precisão ou demora demais para chegar ao resultado esperado, é possível realizar uma regressão com maior precisão e, em seguida, com menor precisão. Por exemplo:
 
-```
+```python
 meu_modelo = Regression(*generate_regression(regressors = 2, degree = 1))
 
 meu_modelo.run(seus_dados, precision = 1)
@@ -903,7 +930,7 @@ meu_modelo.run(seus_dados, precision = 0.001)
 
 ou
 
-```
+```python
 meu_modelo = Regression(*generate_regression(regressors = 2, degree = 1))
 
 meu_modelo.run(seus_dados, especific_precision = [100, 1, 0.001])
@@ -913,7 +940,7 @@ meu_modelo.run(seus_dados, especific_precision = [100, 1, 0.001])
 
 O usuário ainda pode dividir os dados e treinar um modelo de cada vez. Isso faz sentido se o usuário deseja, por exemplo, modelar uma ação, aprendendo todo o histórico dela, e depois refazer a regressão com os últimos 30 dias, a fim de obter um viés mais recente da ação. Por exemplo:
 
-```
+```python
 meu_modelo = Regression(*generate_regression(regressors = 2, degree = 1))
 
 meu_modelo.run(seus_dados[:])
@@ -929,7 +956,7 @@ Nos geradores de regressões utilizados para classificação, ocasionalmente, qu
 
 ### Lineares e Descontinuos
 
-```
+```python
 dados = [*[[i, i] for i in range(0, 10)], *[[i, 20 - i] for i in range(10, 20)]]
 
 teste_mlp = Regression(*generate_mlp(regressors = 1, neurons = 2))
@@ -988,7 +1015,7 @@ plot_prediction_bands(teste_mlp_3, dados, amplitude = 1)
 
 ### Colocando pesos nas amostras
 
-```
+```python
 from random import random, seed
 
 def loss(y1, y2):
@@ -1029,7 +1056,7 @@ PARAMS:
 
 Para realizar uma regressão semelhante ao método **.run**, mas de forma robusta:
 
-```
+```python
 from random import random, seed
 
 def regressao_simples(x:float, a:float, b:float) -> float:
@@ -1078,7 +1105,7 @@ PARAMS:
 
 ### Teste com logisticas
 
-```
+```python
 def reg_log(x, b0, b1) -> float:
   return 1/(1 + 2.71**(-(b0*x+b1)))
 
@@ -1108,7 +1135,7 @@ plot_expected(modelo, dados_)
 
 ### Cadeia de Markov com multiplas dependências
 
-```
+```python
 from free_regression import Generator
 
 text = """COLOQUE SEU TEXTO AQUI, VÁRIAS LINHAS DE TEXTO"""
@@ -1125,7 +1152,7 @@ for dependence in range(1, 10, 1):
 
 ### Série temporal
 
-```
+```python
 from random import random, seed
 from free_regression import Regression, plot_series, data_series
     
@@ -1177,7 +1204,7 @@ em função independente
 
 $$ f(x) = c_{1} \cdot \lambda_{1}^{x} + c_{2} \cdot \lambda_{2}^{x} $$
 
-```
+```python
 from random import random, seed
 from free_regression import Regression, plot_expected
 
@@ -1223,7 +1250,7 @@ PARAMS:
 
 ### MCMC (Markov Chain Monte Carlo)
 
-```
+```python
 from free_regression import Generator, plot_time_series, round_series
 from random import random, seed
 from math import cos
@@ -1243,7 +1270,7 @@ resp = plot_time_series(generator = test,
 
 ![EX_MCMC_1](free_regression/imagens_testes/mcmc_1.png)
 
-```
+```python
 from free_regression import Generator, mcmc_anomaly
 from random import random, seed
 from math import cos
@@ -1261,7 +1288,7 @@ mcmc_anomaly(dados, dados_prev,
 
 Redutor de dimensionalidade de $\mathbb{R}^3 \to \mathbb{R}^2$
 
-```
+```python
 from free_regression import Regression
 from random import random, seed
 
@@ -1350,7 +1377,7 @@ PARAMS:
 
 Plotando:
 
-```
+```python
 import matplotlib.pyplot as plt
 
 modelo_parc = Regression(f_parc)
@@ -1415,7 +1442,7 @@ PARAMS:
 
 Segundo exemplo reduzindo a dimensionalidade:
 
-```
+```python
 def s(x:float) -> float:
   return x
 
@@ -1591,7 +1618,7 @@ PARAMS:
 
 Código:
 
-```
+```python
 from free_regression import Regression, generate_linear_spline, plot_expected
 from math import cos
 
@@ -1618,7 +1645,7 @@ Saída:
 
 Caso de uma variável e convexa:
 
-```
+```python
 from free_regression import Regression, plot_error_curve
 from random import random
 
@@ -1638,7 +1665,7 @@ Saída:
 
 Caso de duas variável e convexa:
 
-```
+```python
 from free_regression import Regression, plot_error_curve
 from random import random
 
@@ -1657,7 +1684,7 @@ Saída:
 
 Caso de uma variável e não convexa:
 
-```
+```python
 from free_regression import Regression, plot_error_curve
 from random import random
 from math import cos
@@ -1678,7 +1705,7 @@ Saída:
 
 Caso de duas variável e não convexa:
 
-```
+```python
 from free_regression import Regression, plot_error_curve
 from random import random
 from math import cos
@@ -1697,7 +1724,7 @@ Saída:
 
 ## Com dados reais
 
-```
+```python
 dados = MedidasDeMassa()
 dados = transpose([dados["LegLength"], dados["TotalHeight"]])
 
@@ -1727,13 +1754,13 @@ plot_residual(modelo_2, dados)
 
 ![EX_9](free_regression/imagens_testes/res_9.png)
 
-```
+```python
 # Predição
 print(f"Modelo 1 com 'LegLength' = 80cm -> {modelo_1.prediction(x_1 = 80/1.6):0.03f} polegadas")
 print(f"Modelo 2 com 'LegLength' = 80cm -> {modelo_2.prediction(x0 = 80/1.6):0.03f} polegadas")
 ```
 
-```
+```python
 dados = MedidasDeMassa()
 dados = transpose([dados[1], dados["TotalHeight"]])
 
@@ -1750,7 +1777,7 @@ plot_prediction_bands(modelo, dados, amplitude = 1.5)
 
 ### Usando variáveis dummys
 
-```
+```python
 dados = ProdutividadeTrabalhoRemoto()
 print(dados)
 
@@ -1826,4 +1853,36 @@ print(f"\nMODELO_1: {num_acertos[0]*100:2.02f}%\nMODELO_2: {num_acertos[1]*100:2
 
 ### Observando a loss do modelo no tempo
 
-[...]
+```python
+data = [0, 1]
+for _ in range(8):
+  data.append(-0.8*data[-1] + 1.2*data[-2])
+
+data = [[i, x] for i, x in enumerate(data)]
+
+def f(x:float, a:float, b:float, c:float, d:float) -> float:
+  return a*b**x + c*d**x
+
+modelo = Regression(f, print = True)
+modelo.set_seed(1)
+modelo.lock(d = data[-1][1]/data[-2][1])
+
+modelo.run(data, save_infos = True)
+print(modelo)
+
+import matplotlib.pyplot as plt
+loss = modelo.return_loss()
+
+plt.figure(figsize = (10, 4))
+plt.plot(loss["iteration"], loss["loss"], alpha = 0.4, zorder = 0, label = "Loss")
+plt.plot(loss["iteration"], loss["loss"].rolling(window = 300).quantile(0.2), alpha = .7, zorder = 1, label = "Loss Smoothed")
+plt.plot(loss["iteration"], loss["best_loss"], color = "red", linestyle = "--", zorder = 1, label = "Min Loss")
+plt.yscale("log")
+plt.xlabel("Iteration")
+plt.ylabel(r"Loss ($log_{10}$)")
+plt.title("Loss")
+plt.legend()
+plt.show()
+```
+
+![EX_loss](free_regression/imagens_testes/image_loss.png)
