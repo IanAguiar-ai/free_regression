@@ -27,7 +27,7 @@ pip install git+https://github.com/IanAguiar-ai/free_regression
 
 ## 1.3.10
 
-- Agora é possível colocar limites na busca das variáveis, com o método ```.limits()```.
+- Agora é possível colocar limites na busca das variáveis ```.limits()```.
 
 
 # Importação
@@ -376,10 +376,14 @@ print(f"Antes:\n{meu_modelo_regressor}\n")
 meu_modelo_regressor.change(b1 = 2, b2 = 1.1, b3 = 15)
 print(f"Depois do change:\n{meu_modelo_regressor}\n")
 
-# Ou ainda pode mudar usando
+# Ou
 meu_modelo_regressor['b1'] = 2
 meu_modelo_regressor['b2'] = 1.1
 meu_modelo_regressor['b3'] = 15
+
+# Ou
+meu_modelo_regressor(b1 = 2)
+meu_modelo_regressor(b1 = 2, b2 = 1.1, b3 = 15)
 ```
 
 Exemplo do **.change_all**:

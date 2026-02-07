@@ -117,7 +117,14 @@ class Regression:
         self.iterations:int = min(50 * len(self.__args_function.keys()) * self.__len_y, 500 * self.__len_y) # Quanto mais parâmetros mais iterações eu precisso para que o valor mude
 
     def __call__(self, list_prediction:list = None, **x_args):
-        return self.prediction(list_prediction, **x_args)
+        change_args:bool = False
+        for arg in x_args.keys():
+            if arg in self.__args_function:
+                self.__args_function[arg] = x_args[arg]
+                change_args:bool = True
+
+        if not change_args:
+            return self.prediction(list_prediction, **x_args)
 
     def __eq__(self, obj) -> bool:
         """
@@ -141,7 +148,7 @@ class Regression:
             output += f"\nLOCK PARAMS: {', '.join(self.__lock)}"
         output += "\nPARAMS:"
         for arg in self.__args_function.keys():
-            output += f"\n  {arg} = {self.__args_function[arg]:0.08f} (w: {self.weights[arg]:0.08f})"
+            output += f"\n  {arg} = {self.__args_function[arg]:0.08f} (w: {self.weights[arg]:0.08f})" + (f" ({self.__limits[arg][0]} <= {arg} <= {self.__limits[arg][1]})" if arg in self.__limits else "")
         return output
 
     def __len__(self) -> list:
@@ -546,6 +553,11 @@ class Regression:
                 args_temp[parameter] = self.__lock[parameter] # Caso a variável deva estar travada
                 if self.__print:
                     print(f"\rLock {parameter}: True", end = "")
+
+        # Ajustando limites logo no inicio
+        for parameter in self.__args_function:
+            if parameter in self.__limits:
+                self.__args_function[parameter] = min(max(self.__args_function[parameter], self.__limits[parameter][0]), self.__limits[parameter][1])
 
         if type(precision) == list:
             especific_precision:list = precision
