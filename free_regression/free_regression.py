@@ -120,7 +120,10 @@ class Regression:
         change_args:bool = False
         for arg in x_args.keys():
             if arg in self.__args_function:
-                self.__args_function[arg] = x_args[arg]
+                if type(x_args[arg]) == list or type(x_args[arg]) == tuple:
+                    self.__limits[arg] = x_args[arg]
+                else:
+                    self.__args_function[arg] = x_args[arg]
                 change_args:bool = True
 
         if not change_args:

@@ -440,6 +440,9 @@ def f(x, a, b):
 data = DataFrame({"x":[1, 2, 3, 4, 5], "y":[3, 4, 3, 2, 1]})
 m = Regression(f)
 m.limits(a = (-1, 1), b = (4.5, 5))
+# Ou
+m(a = (-1, 1), b = (4.5, 5))
+
 m.run(data)
 print(m)
 ```
