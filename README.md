@@ -404,6 +404,8 @@ meu_modelo_regressor.change_all(10)
 print(f"Depois do change:\n{meu_modelo_regressor}\n")
 ```
 
+O **.change** e o **.change_all** servem para iniciar a regressão a partir de um ponto diferente, sendo que, por padrão, todos os valores começam em 0.1. Caso o usuário fique preso em um mínimo local indesejado, ele pode modificar tanto todos os parâmetros quanto parâmetros específicos.
+
 Exemplo do **.lock**:
 
 ```python
@@ -426,8 +428,6 @@ meu_modelo_regressor.run(seus_dados)
 print(f"Depois do lock e do run:\n{meu_modelo_regressor}\n")
 # Perceba que as variáveis que estão bloqueadas não mudam mesmo depois da regressão
 ```
-
-O **.change** e o **.change_all** servem para iniciar a regressão a partir de um ponto diferente, sendo que, por padrão, todos os valores começam em 0.1. Caso o usuário fique preso em um mínimo local indesejado, ele pode modificar tanto todos os parâmetros quanto parâmetros específicos.
 
 O **.lock** pode ser utilizado para travar, por exemplo, um intercepto.
 
