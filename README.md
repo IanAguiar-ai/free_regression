@@ -579,11 +579,11 @@ Contudo, se o usuário seguir o padrão de criar uma função de perda que utili
 # Criando função de perda
 def perda_modificada(v_1:list, v_2:list) -> float:
 	"""
-	Função de perda que da mais pesso para perdas para valores abaixo do observado
+	Função de perda que da mais pesso para perdas com valores abaixo do esperado
 	"""
 	perda = 0
 	for i in range(len(v_1)):
-		if v_1 > v_2:
+		if v_1[i] > v_2[i]:
 			perda += (v_1[i] - v_2[i])**2
 		else:
 			perda += (v_2[i] - v_1[i])/10
