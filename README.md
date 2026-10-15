@@ -31,7 +31,7 @@ pip install git+https://github.com/IanAguiar-ai/free_regression
 
 ## 1.3.11
 
-- Função ```kernel_smoothing()``` que faz regressão usando kernel gaussiano.
+- Função ```kernel_regression()``` que faz regressão usando kernel gaussiano.
 
 
 # Importação
@@ -897,7 +897,7 @@ make_animation(teste_1, dados)
 ```
 
 markdown
-## `kernel_smoothing`
+## `kernel_regression`
 
 Realiza uma **Regressão por Kernel de Nadaraya-Watson adaptativa com ajuste por Gradient Boosting Residual (L2-Boosting)**. Esta função é capaz de suavizar dados e corrigir o viés/erro de forma iterativa, aceitando dados unidimensionais (1D) ou multidimensionais (ND).
 
@@ -906,7 +906,7 @@ Ao aplicar a suavização recursivamente sobre os resíduos (erros), o modelo ca
 ### Assinatura da Função
 
 ```python
-def kernel_smoothing(
+def kernel_regression(
     df: pd.DataFrame, 
     points: list, 
     x: str | list[str] = "x", 
@@ -948,7 +948,7 @@ df_real = pd.DataFrame({"x":[i for i in range(100)],
 
 df = pd.DataFrame(df)
 
-resp = kernel_smoothing(df, points = [i/10 for i in range(100*10)], std = 6)
+resp = kernel_regression(df, points = [i/10 for i in range(100*10)], std = 6)
 
 plt.figure(figsize = (9, 5))
 

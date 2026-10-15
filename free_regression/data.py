@@ -1779,7 +1779,7 @@ def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", s
     return pd.DataFrame(real)
 
 
-def kernel_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, iterations:int = 20):
+def kernel_regression(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, iterations:int = 20):
     """
     Ajuste recursivo (Gradient Boosting Residual) que se auto-adapta para 1D ou ND.
     """
