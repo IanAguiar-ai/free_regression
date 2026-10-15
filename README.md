@@ -29,6 +29,10 @@ pip install git+https://github.com/IanAguiar-ai/free_regression
 
 - Agora é possível colocar limites na busca das variáveis ```.limits()```.
 
+## 1.3.11
+
+- Função ```kernel_smoothing()``` que faz regressão usando kernel gaussiano.
+
 
 # Importação
 
@@ -891,6 +895,75 @@ dados = [[0, 0], [1, 1], [2, 0], [2.1, 1], [2.12, 1], [2.5, 1], [3, 0]]
 
 make_animation(teste_1, dados)
 ```
+
+markdown
+## `kernel_smoothing`
+
+Realiza uma **Regressão por Kernel de Nadaraya-Watson adaptativa com ajuste por Gradient Boosting Residual (L2-Boosting)**. Esta função é capaz de suavizar dados e corrigir o viés/erro de forma iterativa, aceitando dados unidimensionais (1D) ou multidimensionais (ND).
+
+Ao aplicar a suavização recursivamente sobre os resíduos (erros), o modelo captura padrões sistemáticos que ficaram para trás na primeira passada, fazendo com que o erro final tenda a ficar simétrico e centrado no zero (comportamento próximo ao ruído branco).
+
+### Assinatura da Função
+
+```python
+def kernel_smoothing(
+    df: pd.DataFrame, 
+    pontos: list, 
+    x: str | list[str] = "x", 
+    y: str = "y", 
+    desvio: float = 3, 
+    iteracoes: int = 20
+) -> pd.DataFrame
+```
+
+### Parâmetros
+
+* **`df`** (`pd.DataFrame`): O DataFrame contendo os dados originais de treino/amostragem.
+* **`points`** (`list`): A lista de coordenadas onde a curva ou superfície deve ser estimada.
+  * Para dados **1D**: Uma lista simples de números `[x_0, x_1, ...]`.
+  * Para dados **ND**: Uma lista de tuplas ou sublistas contendo as coordenadas `[(x1_0, x2_0), (x1_1, x2_1), ...]`.
+* **`x`** (`str` ou `list[str]`, padrão `"x"`): O nome da coluna (ou lista com os nomes das colunas) que representam as variáveis independentes no `df`.
+* **`y`** (`str`, padrão `"y"`): O nome da coluna que representa a variável dependente (alvo) no `df`.
+* **`std`** (`float`, padrão `3`): O desvio padrão (\(\sigma\)) do Kernel Gaussiano. Controla o raio de vizinhança e o nível de suavização física do modelo.
+* **`iterations`** (`int`, padrão `20`): O número total de passadas do algoritmo. Cada iteração treina um novo estimador sobre os resíduos da etapa anterior para corrigir a predição. `1` significa apenas a suavização original sem correção de erro.
+
+### Retorno
+
+Retorna um **`pd.DataFrame`** contendo as coordenadas dos pontos solicitados avaliadas com o valor de `y` corrigido e suavizado após todas as iterações de boosting.
+
+### Exemplo de Uso
+
+```python
+from math import cos
+from random import random, seed
+import pandas as pd
+import matplotlib.pyplot as plt 
+
+seed(1)
+df = {"x":[*[i+random()*2-1 for i in range(100)], *[i+random()*2-1 for i in range(100)]],
+      "y":[*[cos(i/12) + cos(i/5) + random()*2-1 for i in range(100)], *[cos(i/12) + cos(i/5) + random()*2-1 for i in range(100)]],}
+
+df_real = pd.DataFrame({"x":[i for i in range(100)],
+                       "y":[cos(i/12) + cos(i/5) for i in range(100)]})
+
+df = pd.DataFrame(df)
+
+resp = kernel_smoothing(df, points = [i/10 for i in range(100*10)], std = 6)
+
+plt.figure(figsize = (9, 5))
+
+plt.scatter(df["x"], df["y"], color = "gray", alpha = 0.4, label = "Samples")
+plt.plot(df_real["x"], df_real["y"], color = "blue", linestyle = ":", alpha = 0.8, label = "Generating function")
+plt.plot(resp["x"], resp["y"], color = "red", linestyle = "--", linewidth = 2, label = "Kernel regression estimation")
+plt.fill_between(resp["x"], resp["y"] - resp["std"], resp["y"] + resp["std"], color = "green", alpha = 0.1, label = "Standard deviation")
+
+plt.legend()
+plt.ylabel("y")
+plt.xlabel("x")
+plt.show()
+```
+
+![EX_gaussian_kernel](free_regression/imagens_testes/exemplo_kernel_gaussiano.png)
 
 # Limitação da biblioteca
 

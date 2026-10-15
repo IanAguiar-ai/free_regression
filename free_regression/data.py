@@ -1724,6 +1724,87 @@ trabalho_remoto = """Employee_ID,Employment_Type,Hours_Worked_Per_Week,Productiv
 1000,Remote,34,80,82
 """
 
+import pandas as pd
+import numpy as np
+
+def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3):
+    """
+    Suavização Gaussiana genérica (Nadaraya-Watson).
+    :param x: Pode ser uma string 'x' (1D) ou uma lista de strings ['x1', 'x2', ...] (ND).
+    :param points: Se 1D, lista de números. Se ND, lista de tuplas/listas com N coordenadas.
+    """
+    colunas_x = [x] if isinstance(x, str) else list(x)
+    is_1d = len(colunas_x) == 1
+
+    variancia = std * std
+    limite = std * 3.5
+    e = 2.718281828459045
+
+    X_treino = df[colunas_x].values
+    Y_treino = df[y].values
+
+    real = {col: [] for col in colunas_x}
+    real.update({y: [], "std": []})
+
+    for p in points:
+        p_vetor = np.array([p]) if is_1d else np.array(p)
+
+        dentro_do_limite = np.all(np.abs(X_treino - p_vetor) < limite, axis=1)
+
+        X_vizinhos = X_treino[dentro_do_limite]
+        Y_vizinhos = Y_treino[dentro_do_limite]
+
+        if len(Y_vizinhos) == 0:
+            for idx, col in enumerate(colunas_x):
+                real[col].append(p_vetor[idx])
+            real[y].append(0.0)
+            real["std"].append(0.0)
+            continue
+
+        distancias_quadradas = np.sum((X_vizinhos - p_vetor) ** 2, axis=1)
+        pesos = e ** (-1/2 * distancias_quadradas / variancia)
+        sum_pesos = np.sum(pesos)
+
+        if sum_pesos == 0:
+            sum_pesos = 1e-10
+
+        y_estimado = np.sum(Y_vizinhos * pesos) / sum_pesos
+        std_estimado = np.sum(np.abs(y_estimado - Y_vizinhos) * pesos) / sum_pesos
+
+        for idx, col in enumerate(colunas_x):
+            real[col].append(p_vetor[idx])
+        real[y].append(y_estimado)
+        real["std"].append(std_estimado)
+
+    return pd.DataFrame(real)
+
+
+def kernel_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, iterations:int = 20):
+    """
+    Ajuste recursivo (Gradient Boosting Residual) que se auto-adapta para 1D ou ND.
+    """
+    colunas_x = [x] if isinstance(x, str) else list(x)
+
+    df_est_total = gaussian_smoothing(df, points=points, x=x, y=y, std=std)
+
+    X_originais = df[colunas_x].values
+    points_originais = list(X_originais[:, 0]) if len(colunas_x) == 1 else [tuple(row) for row in X_originais]
+
+    df_pred_points_originais = gaussian_smoothing(df, points=points_originais, x=x, y=y, std=std)
+
+    erro_puro = df[y].values - df_pred_points_originais[y].values
+    dados_residuos = {col: df[col].values for col in colunas_x}
+    dados_residuos[y] = erro_puro
+    df_residuos = pd.DataFrame(dados_residuos)
+
+    for _ in range(iterations - 1):
+        df_est_erro = gaussian_smoothing(df_residuos, points=points, x=x, y=y, std=std)
+        df_est_total[y] += df_est_erro[y].values
+
+        df_pred_erro_originais = gaussian_smoothing(df_residuos, points=points_originais, x=x, y=y, std=std)
+        df_residuos[y] = df_residuos[y].values - df_pred_erro_originais[y].values
+
+    return df_est_total
 
 def read_csv(csv:str, data = {"medidas_de_massa":medidas_de_massa, "trabalho_remoto":trabalho_remoto}) -> list:
     """
@@ -1763,7 +1844,7 @@ def normalize(data:list, only_y:bool = False) -> list:
 def transpose(data:list) -> list:
     """
     Faz a transposição dos dados
-    
+
     Args:
         data: Lista de listas com os dados do usuário
 
@@ -1793,9 +1874,9 @@ def data_series(data:list, p:int = 1) -> list:
     print(set(map(type, data)))
     if set(map(type, data)) != {list} and set(map(type, data)) != {tuple} :
         data:list = [[x_i] for x_i in data]
-        
+
     data:list = transpose(data)
-    
+
     new_data:list = []
     l:int = len(data)
     c:int = len(data[0])
@@ -1924,7 +2005,7 @@ def memory_alpha(memory:int, percent:float = 0.99) -> float:
     while op < sup:
         cont_inf:float = calc(alpha = lim_inf, n = memory)
         cont_sup:float = calc(alpha = lim_sup, n = memory)
-        
+
         if cont_inf > percent:
             lim_inf:float = 5/6 * lim_inf
         elif abs(cont_inf - percent) > abs(cont_sup - percent):
@@ -1947,7 +2028,7 @@ class Representation:
             return self.data_list
         elif type(index) == int and index <= len(self.columns):
             index = self.columns[index]
-                        
+
         assert index in self.data.keys(), f"Not exist colum '{index}' in data"
         return self.data[index]
 
@@ -2024,4 +2105,3 @@ if __name__ == "__main__":
         print(line)
 
 ##    print(to_dummy(dados))
-    
