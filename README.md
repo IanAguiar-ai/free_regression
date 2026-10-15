@@ -908,11 +908,11 @@ Ao aplicar a suavização recursivamente sobre os resíduos (erros), o modelo ca
 ```python
 def kernel_smoothing(
     df: pd.DataFrame, 
-    pontos: list, 
+    points: list, 
     x: str | list[str] = "x", 
     y: str = "y", 
-    desvio: float = 3, 
-    iteracoes: int = 20
+    std: float = 3, 
+    iterations: int = 20
 ) -> pd.DataFrame
 ```
 
