@@ -1751,7 +1751,7 @@ def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", s
 
         alpha = 1
         while True:
-            dentro_do_limite = np.all(np.abs(X_treino - p_vetor) < (limite_base * alpha), axis=1)
+            dentro_do_limite = np.all(np.abs(X_treino - p_vetor) < (limite * alpha), axis=1)
             X_vizinhos = X_treino[dentro_do_limite]
             Y_vizinhos = Y_treino[dentro_do_limite]
             if len(Y_vizinhos) > 0:
