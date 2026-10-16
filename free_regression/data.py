@@ -1749,14 +1749,18 @@ def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", s
     for p in points:
         p_vetor = np.array([p]) if is_1d else np.array(p)
 
-        alpha = 1
-        while alpha <= 2**15:
-            dentro_do_limite = np.all(np.abs(X_treino - p_vetor) < (limite * alpha), axis=1)
-            X_vizinhos = X_treino[dentro_do_limite]
-            Y_vizinhos = Y_treino[dentro_do_limite]
-            if len(Y_vizinhos) >= min_neighbors:
-                break
-            alpha *= 2
+        if type(min_neighbors) != int:
+            X_vizinhos = X_treino[:]
+            Y_vizinhos = Y_treino[:]
+        else:
+            alpha = 1
+            while alpha <= 2**15:
+                dentro_do_limite = np.all(np.abs(X_treino - p_vetor) < (limite * alpha), axis=1)
+                X_vizinhos = X_treino[dentro_do_limite]
+                Y_vizinhos = Y_treino[dentro_do_limite]
+                if len(Y_vizinhos) >= min_neighbors:
+                    break
+                alpha *= 2
 
         if len(Y_vizinhos) == 0:
             for idx, col in enumerate(colunas_x):
@@ -1783,7 +1787,7 @@ def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", s
     return pd.DataFrame(real)
 
 
-def kernel_regression(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, iterations:int = 20):
+def kernel_regression(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, iterations:int = 20, min_neighbors:int = 5):
     """
     Ajuste recursivo (Gradient Boosting Residual) que se auto-adapta para 1D ou ND.
     """
@@ -1794,7 +1798,7 @@ def kernel_regression(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", st
     X_originais = df[colunas_x].values
     points_originais = list(X_originais[:, 0]) if len(colunas_x) == 1 else [tuple(row) for row in X_originais]
 
-    df_pred_points_originais = gaussian_smoothing(df, points=points_originais, x=x, y=y, std=std)
+    df_pred_points_originais = gaussian_smoothing(df, points=points_originais, x=x, y=y, std=std, min_neighbors=min_neighbors)
 
     erro_puro = df[y].values - df_pred_points_originais[y].values
     dados_residuos = {col: df[col].values for col in colunas_x}
