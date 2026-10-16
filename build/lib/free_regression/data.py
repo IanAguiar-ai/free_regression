@@ -1727,7 +1727,7 @@ trabalho_remoto = """Employee_ID,Employment_Type,Hours_Worked_Per_Week,Productiv
 import pandas as pd
 import numpy as np
 
-def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3):
+def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, min_neighbors:int = 5):
     """
     Suavização Gaussiana genérica (Nadaraya-Watson).
     :param x: Pode ser uma string 'x' (1D) ou uma lista de strings ['x1', 'x2', ...] (ND).
@@ -1754,7 +1754,7 @@ def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", s
             dentro_do_limite = np.all(np.abs(X_treino - p_vetor) < (limite * alpha), axis=1)
             X_vizinhos = X_treino[dentro_do_limite]
             Y_vizinhos = Y_treino[dentro_do_limite]
-            if len(Y_vizinhos) > 0:
+            if len(Y_vizinhos) >= min_neighbors:
                 break
             alpha *= 2
 
