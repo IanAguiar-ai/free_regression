@@ -1793,7 +1793,7 @@ def kernel_regression(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", st
     """
     colunas_x:list["str"] = [x] if isinstance(x, str) else list(x)
     if type(points) == pd.DataFrame:
-        points = [tuple(x) for x in temp[colunas_x].to_numpy()]
+        points = [tuple(x) for x in df[colunas_x].to_numpy()]
 
     df_est_total:pd.DataFrame = gaussian_smoothing(df, points=points, x=x, y=y, std=std)
 
