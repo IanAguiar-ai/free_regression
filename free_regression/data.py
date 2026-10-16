@@ -1727,23 +1727,23 @@ trabalho_remoto = """Employee_ID,Employment_Type,Hours_Worked_Per_Week,Productiv
 import pandas as pd
 import numpy as np
 
-def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, min_neighbors:int = 5):
+def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, min_neighbors:int = 5) -> pd.DataFrame:
     """
     Suavização Gaussiana genérica (Nadaraya-Watson).
     :param x: Pode ser uma string 'x' (1D) ou uma lista de strings ['x1', 'x2', ...] (ND).
     :param points: Se 1D, lista de números. Se ND, lista de tuplas/listas com N coordenadas.
     """
-    colunas_x = [x] if isinstance(x, str) else list(x)
+    colunas_x:list[str] = [x] if isinstance(x, str) else list(x)
     is_1d = len(colunas_x) == 1
 
-    variancia = std * std
-    limite = std * 3.5
-    e = 2.718281828459045
+    variancia:float = std * std
+    limite:float = std * 3.5
+    e:float = 2.718281828459045
 
-    X_treino = df[colunas_x].values
-    Y_treino = df[y].values
+    X_treino:list = df[colunas_x].values
+    Y_treino:list = df[y].values
 
-    real = {col: [] for col in colunas_x}
+    real:dict = {col: [] for col in colunas_x}
     real.update({y: [], "std": []})
 
     for p in points:
@@ -1774,7 +1774,7 @@ def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", s
         sum_pesos = np.sum(pesos)
 
         if sum_pesos == 0:
-            sum_pesos = 1e-10
+            sum_pesos:float = 1e-10
 
         y_estimado = np.sum(Y_vizinhos * pesos) / sum_pesos
         std_estimado = np.sum(np.abs(y_estimado - Y_vizinhos) * pesos) / sum_pesos
@@ -1791,9 +1791,11 @@ def kernel_regression(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", st
     """
     Ajuste recursivo (Gradient Boosting Residual) que se auto-adapta para 1D ou ND.
     """
-    colunas_x = [x] if isinstance(x, str) else list(x)
+    colunas_x:list["str"] = [x] if isinstance(x, str) else list(x)
+    if type(points) == pd.DataFrame:
+        points = [tuple(x) for x in temp[colunas_x].to_numpy()]
 
-    df_est_total = gaussian_smoothing(df, points=points, x=x, y=y, std=std)
+    df_est_total:pd.DataFrame = gaussian_smoothing(df, points=points, x=x, y=y, std=std)
 
     X_originais = df[colunas_x].values
     points_originais = list(X_originais[:, 0]) if len(colunas_x) == 1 else [tuple(row) for row in X_originais]
