@@ -1786,14 +1786,38 @@ def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", s
 
     return pd.DataFrame(real)
 
+def optimal_deviation(df: pd.DataFrame, x: str = "x", y: str = "y", tolerance: float = 0.025) -> float:
+    colunas_x = [x] if isinstance(x, str) else list(x)
+    alpha_max = float(df[colunas_x].std().min())
+    alpha_min = alpha_max / 20
+    alvo = 0.6827
+    n = 0
+    while n < 10:
+        n += 1
+        alpha_atual = (alpha_max + alpha_min) / 2
+        modelo = kernel_regression(df, x=x, y=y, std=alpha_atual, iterations=3, points=df)
+        dentro_da_banda = modelo["std"].values > np.abs(df[y].values - modelo[y].values)
+        proporcao_interna = np.sum(dentro_da_banda) / len(df)
+        if alvo - tolerance <= proporcao_interna <= alvo + tolerance:
+            return alpha_atual
 
-def kernel_regression(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, iterations:int = 20, min_neighbors:int = 5):
+        if proporcao_interna < alvo:
+            alpha_min = alpha_atual
+        else:
+            alpha_max = alpha_atual
+
+    return (alpha_max + alpha_min)/2
+
+def kernel_regression(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, iterations:int = 20, min_neighbors:int = 5, verbose:bool = True):
     """
     Ajuste recursivo (Gradient Boosting Residual) que se auto-adapta para 1D ou ND.
     """
     colunas_x:list["str"] = [x] if isinstance(x, str) else list(x)
     if type(points) == pd.DataFrame:
         points = [tuple(x) for x in df[colunas_x].to_numpy()]
+    if (std == ..). or (std == None):
+        std:float = optimal_deviation(df, x, y)
+        [print(f"New std: {std:0.03f}") if verbose else None]
 
     df_est_total:pd.DataFrame = gaussian_smoothing(df, points=points, x=x, y=y, std=std)
 
