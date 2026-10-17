@@ -950,7 +950,7 @@ def kernel_regression(
   * Para dados **ND**: Uma lista de tuplas ou sublistas contendo as coordenadas `[(x1_0, x2_0), (x1_1, x2_1), ...]`.
 * **`x`** (`str` ou `list[str]`, padrão `"x"`): O nome da coluna (ou lista com os nomes das colunas) que representam as variáveis independentes no `df`.
 * **`y`** (`str`, padrão `"y"`): O nome da coluna que representa a variável dependente (alvo) no `df`.
-* **`std`** (`float`, padrão `3`): O desvio padrão (\(\sigma\)) do Kernel Gaussiano. Controla o raio de vizinhança e o nível de suavização física do modelo.
+* **`std`** (`float`, padrão `3`): O desvio padrão (\(\sigma\)) do Kernel Gaussiano. Controla o raio de vizinhança e o nível de suavização física do modelo. Em dúvida de qual usar, pode passar como parâmetro `std = ...`.
 * **`iterations`** (`int`, padrão `20`): O número total de passadas do algoritmo. Cada iteração treina um novo estimador sobre os resíduos da etapa anterior para corrigir a predição. `1` significa apenas a suavização original sem correção de erro.
 
 ### Retorno
