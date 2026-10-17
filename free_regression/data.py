@@ -1821,7 +1821,8 @@ def kernel_regression(df:pd.DataFrame, points:list = ..., x:str = "x", y:str = "
         if len(colunas_x) > 1:
             points:list[tuple] = [tuple(x) for x in df[colunas_x].to_numpy()]
         else:
-            points:list[tuple] = [x for x in df[colunas_x].to_numpy()]
+            points:list[tuple] = [x[0] for x in df[colunas_x].to_numpy()]
+
     if (std == ...) or (std == None):
         std:float = optimal_deviation(df, x, y, verbose = verbose)
         [print(f"\rNew std: {std:0.03f}") if verbose else None]
@@ -1846,6 +1847,23 @@ def kernel_regression(df:pd.DataFrame, points:list = ..., x:str = "x", y:str = "
         df_residuos[y] = df_residuos[y].values - df_pred_erro_originais[y].values
 
     return df_est_total
+
+from math import cos
+from random import random, seed
+import pandas as pd
+import matplotlib.pyplot as plt
+
+seed(1)
+df = {"x":[*[i+random()*2-1 for i in range(100)], *[i+random()*2-1 for i in range(100)]],
+      "y":[*[cos(i/12) + cos(i/5) + random()*2-1 for i in range(100)], *[cos(i/12) + cos(i/5) + random()*2-1 for i in range(100)]],}
+
+df_real = pd.DataFrame({"x":[i for i in range(100)],
+                       "y":[cos(i/12) + cos(i/5) for i in range(100)]})
+
+df = pd.DataFrame(df)
+
+resp = kernel_regression(df, points = ..., std = 6)
+print(resp)
 
 def read_csv(csv:str, data = {"medidas_de_massa":medidas_de_massa, "trabalho_remoto":trabalho_remoto}) -> list:
     """
