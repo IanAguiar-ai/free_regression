@@ -1806,7 +1806,7 @@ def optimal_deviation(df:pd.DataFrame, x:str = "x", y:str = "y", tolerance:float
             alpha_min = alpha_atual
         else:
             alpha_max = alpha_atual
-    [print(f"\r{' '*22})", end = "") if verbose else None]
+    [print(f"\r{' '*30}", end = "") if verbose else None]
 
     return (alpha_max + alpha_min)/2
 
@@ -1815,7 +1815,7 @@ def kernel_regression(df:pd.DataFrame, points:list = ..., x:str = "x", y:str = "
     Ajuste recursivo (Gradient Boosting Residual) que se auto-adapta para 1D ou ND.
     """
     colunas_x:list["str"] = [x] if isinstance(x, str) else list(x)
-    if points == ...:
+    if type(points) == type(...):
         points:pd.DataFrame = df
     if type(points) == pd.DataFrame:
         points:list[tuple] = [tuple(x) for x in df[colunas_x].to_numpy()]
