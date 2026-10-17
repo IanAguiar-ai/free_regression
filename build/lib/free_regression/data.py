@@ -1794,8 +1794,8 @@ def optimal_deviation(df:pd.DataFrame, x:str = "x", y:str = "y", tolerance:float
     n = 0
     while n < 10:
         n += 1
-        [print(f"\rIteration: {n:2} (std = {alpha_atual:0.04f})", end = "")  if verbose else None]
         alpha_atual = (alpha_max + alpha_min) / 2
+        [print(f"\rIteration: {n:2} (std = {alpha_atual:0.04f})", end = "")  if verbose else None]
         modelo = kernel_regression(df, x=x, y=y, std=alpha_atual, iterations=3, points=df)
         dentro_da_banda = modelo["std"].values > np.abs(df[y].values - modelo[y].values)
         proporcao_interna = np.sum(dentro_da_banda) / len(df)
