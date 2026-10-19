@@ -1819,9 +1819,9 @@ def kernel_regression(df:pd.DataFrame, points:list = ..., x:str = "x", y:str = "
         points:pd.DataFrame = df
     if type(points) == pd.DataFrame:
         if len(colunas_x) > 1:
-            points:list[tuple] = [tuple(x) for x in df[colunas_x].to_numpy()]
+            points:list[tuple] = [tuple(x) for x in points[colunas_x].to_numpy()]
         else:
-            points:list[tuple] = [x[0] for x in df[colunas_x].to_numpy()]
+            points:list[tuple] = [x[0] for x in points[colunas_x].to_numpy()]
 
     if (std == ...) or (std == None):
         std:float = optimal_deviation(df, x, y, verbose = verbose)
