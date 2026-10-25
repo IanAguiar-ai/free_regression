@@ -1780,7 +1780,7 @@ def kernel_density(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:f
 
         if np.sum(indices_vizinhos) == 0:
             df_vazio = df[colunas_x + [y]].copy().iloc[0:0]
-            df_vazio["peso"] = pd.Series(dtype=float)
+            df_vazio["weight"] = pd.Series(dtype=float)
             lista_dfs.append(df_vazio)
             continue
 
