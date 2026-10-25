@@ -1727,6 +1727,74 @@ trabalho_remoto = """Employee_ID,Employment_Type,Hours_Worked_Per_Week,Productiv
 import pandas as pd
 import numpy as np
 
+def kernel_density(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, min_neighbors:int = 5):
+    """
+    Calcula a densidade do kernel extraindo os vizinhos considerados e seus respectivos pesos.
+
+    :param df: DataFrame com os dados de treino.
+    :param points: DataFrame de 1 linha, dicionário de 1 observação ou lista/array para múltiplas amostras.
+    :param x: String para coluna 1D ou lista de strings para ND.
+    :param y: String com o nome da coluna alvo (Y).
+    :param std: Desvio padrão do kernel.
+    :param min_neighbors: Mínimo de vizinhos necessários na expansão do limite.
+    :return: Um DataFrame (se entrada for 1 amostra) ou uma lista de DataFrames (se múltiplas).
+    """
+    colunas_x: list[str] = [x] if isinstance(x, str) else list(x)
+    variancia: float = std * std
+    limite: float = std * 10
+    e: float = 2.718281828459045
+
+    X_treino = df[colunas_x].values
+    #Y_treino = df[y].values
+
+    retornar_lista = False
+
+    if isinstance(points, pd.DataFrame):
+        p_matriz = points[colunas_x].values
+        if len(points) > 1:
+            retornar_lista = True
+    elif isinstance(points, dict):
+        p_matriz = np.array([[points[col] for col in colunas_x]])
+    else:
+        p_matriz = np.array(points)
+        if len(colunas_x) == 1 and p_matriz.ndim == 1:
+            p_matriz = p_matriz.reshape(-1, 1)
+        elif len(colunas_x) > 1 and p_matriz.ndim == 1:
+            p_matriz = np.array([points])
+
+        if len(p_matriz) > 1:
+            retornar_lista = True
+
+    lista_dfs = []
+
+    for p_vetor in p_matriz:
+        if not isinstance(min_neighbors, int):
+            indices_vizinhos = np.ones(len(X_treino), dtype=bool)
+        else:
+            alpha = 1
+            while alpha <= 2**15:
+                indices_vizinhos = np.all(np.abs(X_treino - p_vetor) < (limite * alpha), axis=1)
+                if np.sum(indices_vizinhos) >= min_neighbors:
+                    break
+                alpha *= 2
+
+        if np.sum(indices_vizinhos) == 0:
+            df_vazio = df[colunas_x + [y]].copy().iloc[0:0]
+            df_vazio["peso"] = pd.Series(dtype=float)
+            lista_dfs.append(df_vazio)
+            continue
+
+        df_vizinhos = df.loc[indices_vizinhos, colunas_x + [y]].copy()
+        X_vizinhos = X_treino[indices_vizinhos]
+
+        distancias_quadradas = np.sum((X_vizinhos - p_vetor) ** 2, axis=1)
+        pesos = e ** (-1/2 * distancias_quadradas / variancia)
+
+        df_vizinhos["peso"] = pesos
+        lista_dfs.append(df_vizinhos)
+
+    return lista_dfs if retornar_lista else lista_dfs[0]
+
 def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, min_neighbors:int = 5) -> pd.DataFrame:
     """
     Suavização Gaussiana genérica (Nadaraya-Watson).
