@@ -1780,7 +1780,7 @@ def kernel_density(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:f
 
         if np.sum(indices_vizinhos) == 0:
             df_vazio = df[colunas_x + [y]].copy().iloc[0:0]
-            df_vazio["weight"] = pd.Series(dtype=float)
+            df_vazio["w_"] = pd.Series(dtype=float)
             lista_dfs.append(df_vazio)
             continue
 
@@ -1790,7 +1790,7 @@ def kernel_density(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:f
         distancias_quadradas = np.sum((X_vizinhos - p_vetor) ** 2, axis=1)
         pesos = e ** (-1/2 * distancias_quadradas / variancia)
 
-        df_vizinhos["weight"] = pesos
+        df_vizinhos["w_"] = pesos
         lista_dfs.append(df_vizinhos)
 
     return lista_dfs if retornar_lista else lista_dfs[0]
