@@ -1790,7 +1790,7 @@ def kernel_density(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:f
         distancias_quadradas = np.sum((X_vizinhos - p_vetor) ** 2, axis=1)
         pesos = e ** (-1/2 * distancias_quadradas / variancia)
 
-        df_vizinhos["peso"] = pesos
+        df_vizinhos["weight"] = pesos
         lista_dfs.append(df_vizinhos)
 
     return lista_dfs if retornar_lista else lista_dfs[0]
