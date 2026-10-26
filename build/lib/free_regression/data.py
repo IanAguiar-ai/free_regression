@@ -1741,6 +1741,13 @@ def density(df:pd.DataFrame, y:str, jump:float = 1) -> pd.DataFrame:
                 results[key] = 0
             if value <= df[y].iloc[i] < value + jump:
                 results[key] += df["w_"].iloc[i]
+
+                # Garantir que temos probabilidade 0 no próximo passo
+                value += jump
+                key:float = value + jump/2
+                if not key in results:
+                    results[key] = 0
+
                 break
     results = pd.DataFrame({y:[key for key in results.keys()], "w_":[results[key] for key in results.keys()]})
     results["w_"] = results["w_"]/results["w_"].sum()
