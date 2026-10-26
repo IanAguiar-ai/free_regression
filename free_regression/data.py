@@ -1743,7 +1743,7 @@ def density(df:pd.DataFrame, y:str, jump:float = 1) -> pd.DataFrame:
                 results[key] += df["w_"].iloc[i]
                 break
     results = pd.DataFrame({y:[key for key in results.keys()], "w_":[results[key] for key in results.keys()]})
-
+    results["w_"] = results["w_"]/results["w_"].sum()
     return results
 
 def kernel_density(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", std:float = 3, min_neighbors:int = 5):
