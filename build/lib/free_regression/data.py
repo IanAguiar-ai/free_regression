@@ -1733,13 +1733,13 @@ def density(df:pd.DataFrame, y:str, jump:float = 1) -> pd.DataFrame:
 
     results:dict = {}
     for i in range(len(df)):
-        value:float = ymin - jump
+        value:float = ymin - jump*2
         while True:
             value += jump
+            key:float = value + jump/2
+            if not key in results:
+                results[key] = 0
             if value <= df[y].iloc[i] < value + jump:
-                key:float = value + jump/2
-                if not key in results:
-                    results[key] = 0
                 results[key] += df["w_"].iloc[i]
                 break
     results = pd.DataFrame({y:[key for key in results.keys()], "w_":[results[key] for key in results.keys()]})
