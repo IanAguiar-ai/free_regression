@@ -1838,7 +1838,7 @@ def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", s
     Y_treino:list = df[y].values
 
     real:dict = {col: [] for col in colunas_x}
-    real.update({y: [], "std": []})
+    real.update({y: [], "std": [], "total_weight": []})
 
     for p in points:
         p_vetor = np.array([p]) if is_1d else np.array(p)
@@ -1861,6 +1861,7 @@ def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", s
                 real[col].append(p_vetor[idx])
             real[y].append(0.0)
             real["std"].append(0.0)
+            real["total_weight"].append(0.0)
             continue
 
         distancias_quadradas = np.sum((X_vizinhos - p_vetor) ** 2, axis=1)
@@ -1877,6 +1878,7 @@ def gaussian_smoothing(df:pd.DataFrame, points:list, x:str = "x", y:str = "y", s
             real[col].append(p_vetor[idx])
         real[y].append(y_estimado)
         real["std"].append(std_estimado)
+        real["total_weight"].append(float(sum_pesos))
 
     return pd.DataFrame(real)
 
