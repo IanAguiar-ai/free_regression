@@ -1944,6 +1944,50 @@ def kernel_regression(df:pd.DataFrame, points:list = ..., x:str = "x", y:str = "
 
     return df_est_total
 
+def conditional_density(df:pd.DataFrame, x_point, points:list, x:str | list[str] = "x", y:str = "y", std_x:float = 100.0, std_y:float = 5.0, min_neighbors:int = 5) -> pd.DataFrame:
+    colunas_x: list[str] = [x] if isinstance(x, str) else list(x)
+    p_x = np.array([x_point]) if len(colunas_x) == 1 and np.ndim(x_point) == 0 else np.array(x_point)
+
+    X_treino = df[colunas_x].values
+    Y_treino = df[y].values
+
+    var_x = std_x ** 2
+    var_y = std_y ** 2
+    limite_x = std_x * 3.5
+    e = 2.718281828459045
+
+    if not isinstance(min_neighbors, int):
+        indices = np.ones(len(X_treino), dtype=bool)
+    else:
+        alpha = 1
+        while alpha <= 2**15:
+            indices = np.all(np.abs(X_treino - p_x) < (limite_x * alpha), axis=1)
+            if np.sum(indices) >= min_neighbors:
+                break
+            alpha *= 2
+
+    X_viz = X_treino[indices]
+    Y_viz = Y_treino[indices]
+
+    dist_quad_x = np.sum((X_viz - p_x) ** 2, axis=1)
+    pesos_x = e ** (-0.5 * dist_quad_x / var_x)
+
+    y_array = np.array(points, dtype=float)
+    pesos_acumulados = []
+
+    for y_val in y_array:
+        dist_quad_y = (Y_viz - y_val) ** 2
+        pesos_y = e ** (-0.5 * dist_quad_y / var_y)
+
+        pesos_acumulados.append(float(np.sum(pesos_x * pesos_y)))
+
+    pesos_acumulados = np.array(pesos_acumulados)
+
+    area = np.trapezoid(pesos_acumulados, y_array) if len(y_array) > 1 else np.sum(pesos_acumulados)
+    densidade = pesos_acumulados / area if area > 0 else pesos_acumulados
+
+    return pd.DataFrame({y: y_array, "total_weight": pesos_acumulados, "density": densidade})
+
 def read_csv(csv:str, data = {"medidas_de_massa":medidas_de_massa, "trabalho_remoto":trabalho_remoto}) -> list:
     """
     Lê o csv sem precisar usar uma biblioteca
